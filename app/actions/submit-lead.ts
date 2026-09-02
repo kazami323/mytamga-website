@@ -3,17 +3,9 @@
 import {
   readLeadValues,
   validateLead,
-  type LeadFieldErrors,
+  type LeadState,
   type LeadValues,
 } from "@/lib/lead";
-
-export type LeadState =
-  | { status: "idle" }
-  | { status: "invalid"; values: LeadValues; fieldErrors: LeadFieldErrors }
-  | { status: "unavailable"; values: LeadValues }
-  | { status: "failed"; values: LeadValues };
-
-export const INITIAL_LEAD_STATE: LeadState = { status: "idle" };
 
 /**
  * The seam. Wiring a real channel — Telegram, email, a CRM — is a change to
@@ -32,6 +24,8 @@ async function deliverLead(
   return "unavailable";
 }
 
+// A "use server" module may only export async functions, so the state type and
+// its initial value live in lib/lead.ts rather than here.
 export async function submitLead(
   _previous: LeadState,
   formData: FormData,

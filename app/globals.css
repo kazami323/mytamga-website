@@ -353,6 +353,41 @@ body {
   pointer-events: none;
 }
 
+/* Only colour and shape here. Layout stays in utilities: rules in this file
+   load after Tailwind at equal specificity and would beat its variants. */
+.text-field {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 0.85rem;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--ink);
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease;
+}
+
+.text-field::placeholder {
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.text-field:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.text-field:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: rgba(255, 255, 255, 0.05);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.text-field[aria-invalid="true"] {
+  border-color: #f87171;
+}
+
+.field-error {
+  color: #fca5a5;
+}
+
 .spline-loader {
   width: 2.25rem;
   height: 2.25rem;
