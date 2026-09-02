@@ -111,13 +111,15 @@ body {
   pointer-events: none;
 }
 
-.hero-kicker {
+.hero-kicker,
+.section-kicker {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-.hero-kicker::before {
+.hero-kicker::before,
+.section-kicker::before {
   width: 2.5rem;
   height: 1px;
   background: var(--accent);
