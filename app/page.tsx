@@ -1,3 +1,4 @@
+import { About } from "@/components/about";
 import { Calculation } from "@/components/calculation";
 import { Capabilities } from "@/components/capabilities";
 import { SplineSceneBasic } from "@/components/demo";
@@ -10,6 +11,7 @@ export default function Home() {
       <Capabilities />
       <HowItWorks />
       <Calculation />
+      <About />
     </main>
   );
 }
