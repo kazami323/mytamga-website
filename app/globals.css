@@ -1,0 +1,426 @@
+@import "tailwindcss";
+
+:root {
+  --canvas: #050606;
+  --surface: #0b0d0d;
+  --surface-raised: #111414;
+  --ink: #f1efe9;
+  --ink-muted: #a7aaa4;
+  --line: #2a2e2d;
+  --accent: #c7a7ff;
+  --scrollbar-track: #080a0a;
+  --scrollbar-thumb: #414645;
+  --scrollbar-thumb-hover: #626866;
+  --radius: 1.75rem;
+  /* One horizontal inset shared by the header and the hero copy, so the
+     wordmark and the headline can never drift apart. */
+  --gutter: 2rem;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --gutter: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --gutter: 4.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --gutter: 6.75rem;
+  }
+}
+
+@theme inline {
+  --color-background: var(--canvas);
+  --color-foreground: var(--ink);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--ink);
+  --color-border: var(--line);
+  --color-muted-foreground: var(--ink-muted);
+  --font-sans: "Manrope Variable", sans-serif;
+  --font-display: "Unbounded Variable", sans-serif;
+  --radius-lg: var(--radius);
+}
+
+* {
+  box-sizing: border-box;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  scrollbar-width: thin;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+*::-webkit-scrollbar-thumb {
+  border: 2px solid var(--scrollbar-track);
+  border-radius: 999px;
+  background: var(--scrollbar-thumb);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+html {
+  overflow-x: clip;
+  background: var(--canvas);
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: clip;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(199, 167, 255, 0.07), transparent 38rem),
+    var(--canvas);
+  color: var(--ink);
+  font-family: "Manrope Variable", sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent);
+  color: #080909;
+}
+
+.hero-card::after {
+  position: absolute;
+  z-index: 0;
+  right: -18%;
+  bottom: -45%;
+  width: 58rem;
+  height: 58rem;
+  border: 1px solid rgba(199, 167, 255, 0.13);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 8rem rgba(199, 167, 255, 0.018),
+    0 0 0 16rem rgba(199, 167, 255, 0.012);
+  content: "";
+  pointer-events: none;
+}
+
+.hero-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.hero-kicker::before {
+  width: 2.5rem;
+  height: 1px;
+  background: var(--accent);
+  content: "";
+}
+
+.hero-scene::before {
+  position: absolute;
+  z-index: 1;
+  inset: 12% 8% 10%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(199, 167, 255, 0.12), transparent 66%);
+  filter: blur(28px);
+  content: "";
+  pointer-events: none;
+}
+
+/* The robot is cropped at the waist: the stage runs past the cell, and the
+   mask dissolves it just before the hip joint so the cut never reads as a
+   hard edge. Percentages track the cell, so the crop holds at every width. */
+.hero-stage {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0,
+    #000 42.5%,
+    transparent 46.4%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0,
+    #000 42.5%,
+    transparent 46.4%
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+/* Anchored sections stop below the fixed header instead of under it. */
+.section-anchor {
+  scroll-margin-top: 7rem;
+}
+
+/* The bar is invisible over the hero and only earns a surface once content
+   scrolls beneath it. */
+.site-header-bar {
+  border-bottom: 1px solid transparent;
+  transition:
+    background-color 260ms ease,
+    border-color 260ms ease;
+}
+
+.site-header-bar[data-scrolled="true"] {
+  border-bottom-color: rgba(255, 255, 255, 0.07);
+  background: color-mix(in srgb, var(--canvas) 88%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+}
+
+/* Header: quiet by default, the accent only appears on hover and focus so the
+   navigation never competes with the hero statement. */
+.site-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--ink);
+  text-decoration: none;
+  transition: opacity 200ms ease;
+}
+
+.site-brand::after {
+  width: 0.3rem;
+  height: 0.3rem;
+  border-radius: 50%;
+  background: var(--accent);
+  content: "";
+}
+
+.site-brand:hover {
+  opacity: 0.78;
+}
+
+.site-brand:focus-visible,
+.nav-link:focus-visible,
+.nav-toggle:focus-visible,
+.nav-panel-link:focus-visible {
+  border-radius: 0.35rem;
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+}
+
+.nav-link {
+  position: relative;
+  color: var(--ink-muted);
+  text-decoration: none;
+  transition: color 200ms ease;
+}
+
+.nav-link::after {
+  position: absolute;
+  bottom: -0.42rem;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 260ms ease;
+  content: "";
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
+  color: var(--ink);
+}
+
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Layout lives in utilities, not here: an equally specific `display` in this
+   file would load after Tailwind and defeat `md:hidden`. */
+.nav-toggle {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--ink);
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease;
+}
+
+.nav-toggle:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Opaque on purpose: this panel lands directly on the hero statement, and
+   readability of the links outranks the glass effect here. */
+.nav-panel {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 1.15rem;
+  background: var(--surface-raised);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.72);
+}
+
+.nav-panel-link {
+  display: block;
+  padding: 0.85rem 1.15rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--ink-muted);
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+.nav-panel li:last-child .nav-panel-link {
+  border-bottom: 0;
+}
+
+.nav-panel-link:hover,
+.nav-panel-link:focus-visible {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--ink);
+}
+
+/* The dock reads as one piece of smoked glass sitting on the canvas: the panel
+   carries the blur and the rim light, the items stay near-invisible until the
+   pointer or keyboard reaches them. */
+.dock-panel {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-raised) 68%, transparent);
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  backdrop-filter: blur(20px) saturate(140%);
+}
+
+.dock-item {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.045);
+  color: var(--ink-muted);
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease;
+}
+
+.dock-item:hover,
+.dock-item:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background: color-mix(in srgb, var(--accent) 14%, rgba(255, 255, 255, 0.05));
+  color: var(--ink);
+}
+
+.dock-item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.dock-label {
+  border: 1px solid var(--line);
+  background: var(--surface-raised);
+  color: var(--ink);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.01em;
+}
+
+.site-preloader {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(199, 167, 255, 0.06), transparent 32rem),
+    var(--canvas);
+  transition: opacity 500ms ease;
+}
+
+.site-preloader--done {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.spline-loader {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: loader-spin 900ms linear infinite;
+}
+
+.liquid-metal-shader canvas {
+  /* Paper Shaders writes canvas dimensions inline; the host frame owns them.
+     The radius is inherited so the same shader serves pills and panels. */
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: inherit !important;
+}
+
+.liquid-metal-ripple {
+  animation: liquid-metal-ripple 600ms ease-out forwards;
+  transform: translate(-50%, -50%) scale(0);
+}
+
+.liquid-metal-trigger:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+@keyframes loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes liquid-metal-ripple {
+  0% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(4);
+  }
+}
+
+@media (max-width: 767px) {
+  .hero-card::after {
+    right: -95%;
+    bottom: -18%;
+    width: 42rem;
+    height: 42rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+@media (forced-colors: active) {
+  * {
+    scrollbar-color: CanvasText Canvas;
+  }
+}

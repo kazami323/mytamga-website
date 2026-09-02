@@ -1,0 +1,36 @@
+{
+  "name": "mytamga-website",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@fontsource-variable/unbounded": "^5.3.0",
+    "@paper-design/shaders": "^0.0.80",
+    "@splinetool/react-spline": "^4.1.0",
+    "@splinetool/runtime": "^1.12.98",
+    "clsx": "^2.1.1",
+    "framer-motion": "^13.1.1",
+    "lucide-react": "^1.39.0",
+    "next": "^16.3.4",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tailwind-merge": "^3.6.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.4.1",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.4",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3"
+  }
+}
