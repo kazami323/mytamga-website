@@ -706,9 +706,14 @@ git commit -m "feat: add the about section"
   - `type LeadFieldErrors = Partial<Record<keyof LeadValues, string>>`
   - `readLeadValues(formData: FormData): LeadValues`
   - `validateLead(values: LeadValues): LeadFieldErrors`
-  - `type LeadState` — размеченное объединение, см. ниже
-  - `INITIAL_LEAD_STATE: LeadState`
-  - `submitLead(prev: LeadState, formData: FormData): Promise<LeadState>`
+  - `type LeadState` — размеченное объединение, **в `lib/lead.ts`**
+  - `INITIAL_LEAD_STATE: LeadState` — **тоже в `lib/lead.ts`**
+  - `submitLead(prev: LeadState, formData: FormData): Promise<LeadState>` —
+    единственный экспорт `app/actions/submit-lead.ts`
+
+**Важно:** модуль с `"use server"` может экспортировать только асинхронные
+функции. Константа рядом с действием роняет страницу в рантайме, а не на
+сборке — поэтому тип состояния и его начальное значение живут в `lib/lead.ts`.
 
 - [ ] **Шаг 1: Модуль валидации**
 
@@ -1109,7 +1114,14 @@ export function LeadForm() {
   }, [state]);
 
   return (
-    <form ref={formRef} action={formAction} className="flex flex-col gap-5">
+    // noValidate: иначе `required` включает нативную валидацию, она блокирует
+    // запрос до вызова действия, и серверные сообщения не показываются.
+    <form
+      ref={formRef}
+      action={formAction}
+      noValidate
+      className="flex flex-col gap-5"
+    >
       <div className="grid gap-5 sm:grid-cols-2">
         <TextField
           id="lead-name"

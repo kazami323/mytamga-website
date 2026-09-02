@@ -57,6 +57,21 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
 - A card canvas is an order of magnitude more pixels than a pill button, so the shader mounts only once the panel is near the viewport and stays frozen at speed 0 until the pointer arrives.
 - The heading is set in the body face. Unbounded stays reserved for the hero statement.
 
+## Sections
+
+- The page is one document: hero, capabilities, how it works, calculation,
+  about, contacts, footer. Navigation is anchors, not routes.
+- Every section reads its copy from `lib/content.ts`. Nothing is written
+  inline, so replacing the placeholders with the client's wording is one edit
+  in one file. `TODO(copy)` marks a placeholder, `REVIEW(copy)` marks an
+  industry fact the client still has to confirm.
+- Sections share `SectionHeading` and the `--gutter` inset, so their left edges
+  line up with the hero copy at every width.
+- `Reveal` is the single client boundary for entrance animation; the sections
+  themselves stay server components.
+- The lead form posts to a Server Action and reports honestly that intake is
+  not connected. It never fakes a success.
+
 ## Motion
 
 - Scrolling the hero separates the planes: the copy is the near plane and travels furthest, the scene lags behind it. Transforms only, so the waist crop and the wordmark alignment are untouched — at rest the composition is still pixel-exact.
@@ -67,6 +82,12 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
 ## Known constraints
 
 - `backdrop-filter` must be written with `-webkit-` first and the standard property last. Lightning CSS, which Tailwind v4 runs, collapses the pair and keeps whichever comes last; with the order reversed the standard property never reaches the browser and the blur silently disappears.
+- A `"use server"` module may only export async functions. Putting a constant
+  or an object beside the action throws at runtime, not at build: the lead
+  state type and its initial value live in `lib/lead.ts` for that reason.
+- The lead form is `noValidate` and the server owns every message. Left to the
+  browser, `required` blocks the request before the action runs, and the
+  bubbles it shows cannot be styled and speak the browser's language.
 - The Spline scene must stay behind `SceneBoundary`. A failed fetch from its CDN surfaces as a render-time throw, and without a boundary React tears down the whole tree — header, hero and preloader with it, leaving a blank page and a scroll lock with nothing left running to release it.
 - Layout properties belong in utilities, not in `globals.css`. Rules there load after Tailwind at equal specificity, so a `display` written next to the colours will quietly defeat responsive variants like `md:hidden`.
 

@@ -3,14 +3,12 @@
 import { Menu, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-// Sections that do not exist yet keep an inert href rather than a broken
-// anchor; wire them up as each one lands.
 const NAV_ITEMS = [
   { title: "Главная", href: "#hero" },
   { title: "Услуги", href: "#services" },
-  { title: "Расчёт", href: "#" },
-  { title: "О нас", href: "#" },
-  { title: "Контакты", href: "#" },
+  { title: "Расчёт", href: "#calc" },
+  { title: "О нас", href: "#about" },
+  { title: "Контакты", href: "#contacts" },
 ] as const;
 
 export function SiteHeader() {
@@ -55,7 +53,7 @@ export function SiteHeader() {
             The gutter is the same token the hero copy uses. */}
         <div className="grid h-20 grid-cols-[1fr_auto_1fr] items-center px-[var(--gutter)] lg:h-24">
           <a
-            href="#"
+            href="#hero"
             className="site-brand justify-self-start text-[0.95rem] font-semibold tracking-[-0.02em] sm:text-base"
           >
             MyTamga
