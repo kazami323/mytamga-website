@@ -471,6 +471,20 @@ body {
   box-shadow: var(--panel-shadow-active);
 }
 
+/* The toggle ships both icons and lets the attribute choose. `display` is safe
+   here: neither icon carries a responsive utility it could fight. */
+.theme-toggle-sun {
+  display: none;
+}
+
+:root[data-theme="light"] .theme-toggle-sun {
+  display: block;
+}
+
+:root[data-theme="light"] .theme-toggle-moon {
+  display: none;
+}
+
 .spline-loader {
   width: 2.25rem;
   height: 2.25rem;

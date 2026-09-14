@@ -3,6 +3,8 @@
 import { Menu, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { ThemeToggle } from "@/components/theme-toggle";
+
 const NAV_ITEMS = [
   { title: "Главная", href: "#hero" },
   { title: "Услуги", href: "#services" },
@@ -74,21 +76,24 @@ export function SiteHeader() {
             </ul>
           </nav>
 
-          <button
-            ref={toggleRef}
-            type="button"
-            className="nav-toggle col-start-3 inline-flex h-10 w-10 items-center justify-center justify-self-end md:hidden"
-            aria-expanded={isOpen}
-            aria-controls="site-nav-mobile"
-            aria-label={isOpen ? "Закрыть меню" : "Открыть меню"}
-            onClick={() => setIsOpen((open) => !open)}
-          >
-            {isOpen ? (
-              <X className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
-            ) : (
-              <Menu className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
-            )}
-          </button>
+          <div className="col-start-3 flex items-center gap-2 justify-self-end">
+            <ThemeToggle />
+            <button
+              ref={toggleRef}
+              type="button"
+              className="nav-toggle inline-flex h-10 w-10 items-center justify-center md:hidden"
+              aria-expanded={isOpen}
+              aria-controls="site-nav-mobile"
+              aria-label={isOpen ? "Закрыть меню" : "Открыть меню"}
+              onClick={() => setIsOpen((open) => !open)}
+            >
+              {isOpen ? (
+                <X className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
+              ) : (
+                <Menu className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
+              )}
+            </button>
+          </div>
         </div>
 
         {isOpen && (

@@ -630,6 +630,15 @@ Run: `node toggle.mjs` → `FAIL` (вспышка, переключателя н
 
 - [ ] **Шаг 3: Переключатель** — `components/theme-toggle.tsx`:
 
+> **Поправка при выполнении.** Первая версия ниже держала копию темы в
+> `useState` и вызывала `setState` в `useLayoutEffect`. Линт отклонил её
+> (`react-hooks/set-state-in-effect`) — и был прав: тема живёт во внешней
+> системе, атрибуте на `<html>`. Реализованная версия читает его через
+> `useSyncExternalStore` с `MutationObserver` и не вызывает `setState`
+> вовсе; `useLayoutEffect` остался только для повторного применения
+> атрибута после перемонтирования Strict Mode. Код ниже — исходный план,
+> фактический — в `components/theme-toggle.tsx`.
+
 ```tsx
 "use client";
 
