@@ -1,8 +1,11 @@
 import { LeadForm } from "@/components/lead-form";
 import { SectionHeading } from "@/components/section-heading";
-import { contact } from "@/lib/content";
+import { getCurrentDictionary } from "@/lib/i18n/get-dictionary";
 
-export function Contact() {
+export async function Contact() {
+  const { t } = await getCurrentDictionary();
+  const contact = t.contact;
+
   return (
     <section
       id="contacts"

@@ -1,14 +1,16 @@
-import { footer } from "@/lib/content";
+import { getCurrentDictionary } from "@/lib/i18n/get-dictionary";
 
-const FOOTER_LINKS = [
-  { title: "Главная", href: "#hero" },
-  { title: "Услуги", href: "#services" },
-  { title: "Расчёт", href: "#calc" },
-  { title: "О нас", href: "#about" },
-  { title: "Контакты", href: "#contacts" },
-] as const;
+export async function SiteFooter() {
+  const { t } = await getCurrentDictionary();
+  const footer = t.footer;
+  const links = [
+    { title: t.nav.home, href: "#hero" },
+    { title: t.nav.services, href: "#services" },
+    { title: t.nav.calc, href: "#calc" },
+    { title: t.nav.about, href: "#about" },
+    { title: t.nav.contacts, href: "#contacts" },
+  ];
 
-export function SiteFooter() {
   // Rendered on the server, so the year cannot disagree across hydration.
   const year = new Date().getFullYear();
 
@@ -19,9 +21,9 @@ export function SiteFooter() {
           MyTamga
         </p>
 
-        <nav aria-label="Навигация в подвале">
+        <nav aria-label={t.nav.footer}>
           <ul className="flex flex-wrap gap-x-7 gap-y-3">
-            {FOOTER_LINKS.map((link) => (
+            {links.map((link) => (
               <li key={link.href}>
                 <a href={link.href} className="nav-link text-sm">
                   {link.title}

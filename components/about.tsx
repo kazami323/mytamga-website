@@ -1,8 +1,11 @@
 import { SectionHeading } from "@/components/section-heading";
 import { Reveal } from "@/components/ui/reveal";
-import { about } from "@/lib/content";
+import { getCurrentDictionary } from "@/lib/i18n/get-dictionary";
 
-export function About() {
+export async function About() {
+  const { t } = await getCurrentDictionary();
+  const about = t.about;
+
   return (
     <section
       id="about"

@@ -1,8 +1,11 @@
 import { SectionHeading } from "@/components/section-heading";
 import { Reveal } from "@/components/ui/reveal";
-import { howItWorks } from "@/lib/content";
+import { getCurrentDictionary } from "@/lib/i18n/get-dictionary";
 
-export function HowItWorks() {
+export async function HowItWorks() {
+  const { t } = await getCurrentDictionary();
+  const howItWorks = t.howItWorks;
+
   return (
     <section
       id="how"

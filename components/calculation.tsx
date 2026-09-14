@@ -1,9 +1,12 @@
 import { SectionHeading } from "@/components/section-heading";
 import { LiquidMetalPanel } from "@/components/ui/liquid-metal-panel";
 import { Reveal } from "@/components/ui/reveal";
-import { calculation } from "@/lib/content";
+import { getCurrentDictionary } from "@/lib/i18n/get-dictionary";
 
-export function Calculation() {
+export async function Calculation() {
+  const { t } = await getCurrentDictionary();
+  const calculation = t.calculation;
+
   return (
     <section
       id="calc"
