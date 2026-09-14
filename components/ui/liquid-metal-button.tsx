@@ -6,6 +6,7 @@ import type React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
+import { releaseWebGL } from "@/lib/webgl";
 
 interface LiquidMetalButtonProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
@@ -61,6 +62,7 @@ export function LiquidMetalButton({
   useEffect(() => {
     let isActive = true;
     const activeTimers = timers.current;
+    const host = shaderRef.current;
 
     const loadShader = async () => {
       const { liquidMetalFragmentShader, ShaderMount } = await import(
@@ -101,6 +103,8 @@ export function LiquidMetalButton({
     return () => {
       isActive = false;
       activeTimers.forEach((timer) => window.clearTimeout(timer));
+      // Before dispose(), which removes the canvas: release its context too.
+      releaseWebGL(host?.querySelectorAll("canvas") ?? []);
       shaderMount.current?.dispose();
       shaderMount.current = null;
     };

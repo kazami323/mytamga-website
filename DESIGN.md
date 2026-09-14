@@ -148,6 +148,12 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
   document. Anything in that layout that should run once per visit — the
   preloader — needs state that outlives the remount; a head script only runs
   on a full load.
+- Every WebGL canvas must be released with `releaseWebGL` (`lib/webgl.ts`)
+  when its component unmounts. Paper Shaders' and Spline's `dispose()` free
+  what is inside a context but leave the context to the garbage collector; a
+  language switch remounts the whole page, so eight contexts leaked per switch
+  until the browser hit its limit of sixteen and began killing the oldest.
+  Release before `dispose()` — it removes the canvas.
 - The Spline scene must stay behind `SceneBoundary`. A failed fetch from its CDN surfaces as a render-time throw, and without a boundary React tears down the whole tree — header, hero and preloader with it, leaving a blank page and a scroll lock with nothing left running to release it.
 - Layout properties belong in utilities, not in `globals.css`. Rules there load after Tailwind at equal specificity, so a `display` written next to the colours will quietly defeat responsive variants like `md:hidden`.
 

@@ -1,10 +1,11 @@
 "use client";
 
 import type { Application } from "@splinetool/runtime";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 
 import { SceneBoundary } from "@/components/ui/scene-boundary";
 import { markSceneReady } from "@/lib/scene-ready";
+import { releaseWebGL } from "@/lib/webgl";
 
 const Spline = lazy(() => import("@splinetool/react-spline"));
 
@@ -21,7 +22,15 @@ export function SplineScene({
   interactive = true,
   loadingLabel,
 }: SplineSceneProps) {
+  const hostRef = useRef<HTMLDivElement>(null);
+  // Caught at load: by the time this unmounts, react-spline may already have
+  // taken its canvas out of the DOM, leaving nothing to find.
+  const canvases = useRef<HTMLCanvasElement[]>([]);
+
+  useEffect(() => () => releaseWebGL(canvases.current), []);
+
   const handleLoad = (application: Application) => {
+    canvases.current = [...(hostRef.current?.querySelectorAll("canvas") ?? [])];
     markSceneReady();
 
     const robot = application.findObjectByName("Bot");
@@ -35,7 +44,7 @@ export function SplineScene({
   };
 
   return (
-    <div className={className}>
+    <div ref={hostRef} className={className}>
       {/* A dead CDN must cost the robot, not the page. Reporting the scene as
           ready releases the preloader instead of stranding it. */}
       <SceneBoundary onError={markSceneReady}>

@@ -5,6 +5,7 @@ import type React from "react";
 import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
+import { releaseWebGL } from "@/lib/webgl";
 
 interface LiquidMetalPanelProps {
   children: React.ReactNode;
@@ -90,6 +91,8 @@ export function LiquidMetalPanel({
     return () => {
       isDisposed = true;
       observer.disconnect();
+      // Before dispose(), which removes the canvas: release its context too.
+      releaseWebGL(host.querySelectorAll("canvas"));
       shaderMount.current?.dispose();
       shaderMount.current = null;
     };
