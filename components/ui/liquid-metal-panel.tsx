@@ -132,11 +132,8 @@ export function LiquidMetalPanel({
         aria-hidden="true"
       />
       <span
-        className={cn(
-          "pointer-events-none absolute inset-[1.5px] z-10 rounded-[inherit] bg-[linear-gradient(180deg,#171818_0%,#0a0c0c_58%,#050606_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] transition-[box-shadow,background] duration-300",
-          isActive &&
-            "bg-[linear-gradient(145deg,#241a31_0%,#130e1c_48%,#07060b_100%)] shadow-[inset_0_1px_0_rgba(231,217,255,0.26),inset_0_-10px_30px_rgba(104,68,158,0.2)]",
-        )}
+        className="liquid-metal-face pointer-events-none absolute inset-[1.5px] z-10 rounded-[inherit] transition-[box-shadow,background-image] duration-300"
+        data-active={isActive}
         aria-hidden="true"
       />
       <div className={cn("relative z-20", innerClassName)}>{children}</div>

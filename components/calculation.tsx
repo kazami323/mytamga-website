@@ -27,7 +27,7 @@ export function Calculation() {
                 <h3 className="text-base font-semibold tracking-[-0.01em] text-[var(--ink)]">
                   {input.title}
                 </h3>
-                <p className="mt-3 text-sm leading-6 text-white/50">
+                <p className="mt-3 text-sm leading-6 text-ink-soft">
                   {input.body}
                 </p>
               </LiquidMetalPanel>
@@ -36,7 +36,7 @@ export function Calculation() {
         ))}
       </ul>
 
-      <p className="section-kicker mb-7 mt-20 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/45 sm:text-xs">
+      <p className="section-kicker mb-7 mt-20 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-ink-faint sm:text-xs">
         {calculation.resultKicker}
       </p>
 
@@ -47,7 +47,7 @@ export function Calculation() {
               <h3 className="text-base font-semibold tracking-[-0.01em] text-[var(--ink)]">
                 {result.title}
               </h3>
-              <p className="mt-3 max-w-xs text-sm leading-6 text-white/50">
+              <p className="mt-3 max-w-xs text-sm leading-6 text-ink-soft">
                 {result.body}
               </p>
             </Reveal>

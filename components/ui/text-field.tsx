@@ -44,9 +44,9 @@ export function TextField({
 
   return (
     <div className={cn("flex flex-col gap-2", className)}>
-      <label htmlFor={id} className="text-sm text-white/60">
+      <label htmlFor={id} className="text-sm text-ink-soft">
         {label}
-        {!required && <span className="text-white/30"> — необязательно</span>}
+        {!required && <span className="text-ink-ghost"> — необязательно</span>}
       </label>
 
       {isTextarea ? (

@@ -57,7 +57,7 @@ export function Capabilities() {
       className="section-anchor w-full px-[var(--gutter)] py-24 lg:py-36"
       aria-labelledby="capabilities-title"
     >
-      <p className="hero-kicker mb-7 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/45 sm:text-xs">
+      <p className="hero-kicker mb-7 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-ink-faint sm:text-xs">
         Возможности
       </p>
 
@@ -90,7 +90,7 @@ export function Capabilities() {
               <h3 className="mt-7 text-base font-semibold tracking-[-0.01em] text-[var(--ink)]">
                 {title}
               </h3>
-              <p className="mt-3 text-sm leading-6 text-white/50">{body}</p>
+              <p className="mt-3 text-sm leading-6 text-ink-soft">{body}</p>
             </LiquidMetalPanel>
           </motion.li>
         ))}

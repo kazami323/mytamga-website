@@ -174,7 +174,18 @@ if (mode === 'capture') {
 
 // compare: every difference must be one of the documented white-alpha collapses
 const base = JSON.parse(fs.readFileSync(file, 'utf8'));
-const WHITE = /^rgba\(255, 255, 255, ([0-9.]+)\)$/;
+// Tailwind v4 serialises white-with-alpha as oklab(≈1 ≈0 ≈0 / a); a CSS token
+// serialises as rgba(255, 255, 255, a). Same colour, different spelling.
+const whiteAlpha = (v) => {
+  let m = v.match(/^rgba\(255, 255, 255, ([0-9.]+)\)$/);
+  if (m) return +m[1];
+  m = v.match(/^oklab\(([0-9.]+) (-?[0-9.e-]+) (-?[0-9.e-]+) \/ ([0-9.]+)\)$/);
+  if (m && +m[1] > 0.9999 && Math.abs(+m[2]) < 1e-3 && Math.abs(+m[3]) < 1e-3) return +m[4];
+  return null;
+};
+// Tailwind's shadow utilities prepend four no-op layers; a plain CSS rule doesn't.
+const cleanShadow = (v) => v.split(/,(?![^(]*\))/).map((s) => s.trim())
+  .filter((s) => s !== 'rgba(0, 0, 0, 0) 0px 0px 0px 0px').join(', ') || 'none';
 const fails = [];
 let allowed = 0;
 for (const [key, props] of Object.entries(base)) {
@@ -184,8 +195,12 @@ for (const [key, props] of Object.entries(base)) {
   for (const [p, before] of Object.entries(props)) {
     const after = now[p];
     if (before === after) continue;
-    const a = before.match(WHITE), b = after.match(WHITE);
-    if (a && b && Math.abs(+a[1] - +b[1]) <= 0.051) { allowed++; continue; }
+    if (p === 'box-shadow' && cleanShadow(before) === cleanShadow(after)) continue;
+    const a = whiteAlpha(before), b = whiteAlpha(after);
+    if (a !== null && b !== null) {
+      if (Math.abs(a - b) < 1e-6) continue;
+      if (Math.abs(a - b) <= 0.051) { allowed++; continue; }
+    }
     fails.push(`${key} ${p}: ${before} → ${after}`);
   }
 }

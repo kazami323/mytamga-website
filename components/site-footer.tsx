@@ -14,7 +14,7 @@ export function SiteFooter() {
 
   return (
     <footer className="w-full px-[var(--gutter)] pb-14 pt-20">
-      <div className="flex flex-col gap-10 border-t border-white/[0.07] pt-12 md:flex-row md:items-start md:justify-between">
+      <div className="flex flex-col gap-10 border-t border-line-soft pt-12 md:flex-row md:items-start md:justify-between">
         <p className="site-brand text-base font-semibold tracking-[-0.02em]">
           MyTamga
         </p>
@@ -32,7 +32,7 @@ export function SiteFooter() {
         </nav>
       </div>
 
-      <p className="mt-12 text-xs leading-5 text-white/30">
+      <p className="mt-12 text-xs leading-5 text-ink-ghost">
         © {year} MyTamga. {footer.legal}
       </p>
     </footer>

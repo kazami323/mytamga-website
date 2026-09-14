@@ -39,7 +39,7 @@ export function SplineSceneBasic() {
       {/* Full bleed: no rim, no radius, no shadow. The composition should read
           as the screen itself, not as a card resting on it. */}
       <Card className="hero-card relative min-h-svh w-full rounded-none border-0 bg-transparent shadow-none [overflow:visible_clip]">
-        <Spotlight fill="#c7a7ff" />
+        <Spotlight fill="var(--spotlight)" />
 
         {/* Grid, not flex: the row height is set by the copy column, so the
             scene cell inherits the exact vertical span of the text. */}
@@ -48,18 +48,18 @@ export function SplineSceneBasic() {
             style={{ y: copyY, opacity: copyOpacity }}
             className="pointer-events-none relative z-10 flex flex-col justify-center px-[var(--gutter)]"
           >
-            <p className="hero-kicker mb-7 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/45 sm:text-xs">
+            <p className="hero-kicker mb-7 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-ink-faint sm:text-xs">
               Место под текст
             </p>
             <h1
               id="hero-title"
-              className="max-w-4xl bg-[linear-gradient(145deg,#fff_8%,#d4d4ce_53%,#777b79_100%)] bg-clip-text font-display text-[clamp(1.15rem,6vw,2.65rem)] font-medium leading-[0.98] tracking-[-0.055em] text-transparent lg:text-[clamp(2.35rem,3.75vw,4.7rem)]"
+              className="max-w-4xl bg-[image:var(--hero-title)] bg-clip-text font-display text-[clamp(1.15rem,6vw,2.65rem)] font-medium leading-[0.98] tracking-[-0.055em] text-transparent lg:text-[clamp(2.35rem,3.75vw,4.7rem)]"
             >
               <span className="block whitespace-nowrap">Понятный импорт —</span>
               <span className="block whitespace-nowrap">от товара</span>
               <span className="block whitespace-nowrap">до декларанта.</span>
             </h1>
-            <p className="mt-7 max-w-xl text-base leading-7 text-white/55 sm:text-lg sm:leading-8">
+            <p className="mt-7 max-w-xl text-base leading-7 text-ink-soft sm:text-lg sm:leading-8">
               MyTamga помогает определить код ТН ВЭД, рассчитать таможенные
               платежи, проверить требования к товару и подготовить всё
               необходимое для дальнейшего оформления.

@@ -28,7 +28,7 @@ export function HowItWorks() {
               <h3 className="mt-5 text-base font-semibold tracking-[-0.01em] text-[var(--ink)]">
                 {step.title}
               </h3>
-              <p className="mt-3 max-w-xs text-sm leading-6 text-white/50">
+              <p className="mt-3 max-w-xs text-sm leading-6 text-ink-soft">
                 {step.body}
               </p>
             </Reveal>

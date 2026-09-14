@@ -116,7 +116,7 @@ export function LeadForm() {
       <p
         aria-live="polite"
         data-lead-status={isPending ? "pending" : state.status}
-        className="text-sm leading-6 text-white/50"
+        className="text-sm leading-6 text-ink-soft"
       >
         {isPending && "Отправляем…"}
         {!isPending &&
