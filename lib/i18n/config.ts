@@ -19,7 +19,7 @@ export const HTML_LANG: Record<Locale, string> = {
 // announce. "ZH" means nothing to a Chinese reader, so Chinese shows 中文.
 export const LOCALE_LABEL: Record<Locale, { short: string; name: string }> = {
   ru: { short: "RU", name: "Русский" },
-  uz: { short: "UZ", name: "Oʻzbekcha" },
+  uz: { short: "UZ", name: "O‘zbekcha" },
   en: { short: "EN", name: "English" },
   zh: { short: "中文", name: "中文" },
 };

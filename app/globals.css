@@ -113,8 +113,10 @@
   --color-ink-faint: var(--ink-faint);
   --color-ink-ghost: var(--ink-ghost);
   --color-line-soft: var(--line-soft);
-  --font-sans: "Manrope Variable", sans-serif;
-  --font-display: "Unbounded Variable", sans-serif;
+  /* Neither face carries CJK glyphs, so Chinese falls through to a named
+     system stack; left to the generic, Windows can pick seriffed SimSun. */
+  --font-sans: "Manrope Variable", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --font-display: "Unbounded Variable", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
   --radius-lg: var(--radius);
 }
 
@@ -157,7 +159,7 @@ body {
     radial-gradient(circle at 50% 0%, var(--canvas-glow), transparent 38rem),
     var(--canvas);
   color: var(--ink);
-  font-family: "Manrope Variable", sans-serif;
+  font-family: "Manrope Variable", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
   text-rendering: optimizeLegibility;
 }
 
