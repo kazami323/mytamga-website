@@ -4,6 +4,8 @@ import { Menu, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { CinematicThemeSwitcher } from "@/components/ui/cinematic-theme-switcher";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
+import type { Locale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/dictionaries/ru";
 
 type HeaderStrings = {
@@ -11,7 +13,13 @@ type HeaderStrings = {
   themeLabel: string;
 };
 
-export function SiteHeader({ strings }: { strings: HeaderStrings }) {
+export function SiteHeader({
+  locale,
+  strings,
+}: {
+  locale: Locale;
+  strings: HeaderStrings;
+}) {
   const { nav } = strings;
   const navItems = [
     { title: nav.home, href: "#hero" },
@@ -84,6 +92,12 @@ export function SiteHeader({ strings }: { strings: HeaderStrings }) {
           </nav>
 
           <div className="col-start-3 flex items-center gap-2 justify-self-end">
+            <LanguageSwitcher
+              key={locale}
+              locale={locale}
+              label={nav.language}
+              className="hidden md:inline-flex"
+            />
             <CinematicThemeSwitcher label={strings.themeLabel} />
             <button
               ref={toggleRef}
@@ -97,32 +111,44 @@ export function SiteHeader({ strings }: { strings: HeaderStrings }) {
               {isOpen ? (
                 <X className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
               ) : (
-                <Menu className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
+                <Menu
+                  className="h-5 w-5"
+                  strokeWidth={1.6}
+                  aria-hidden="true"
+                />
               )}
             </button>
           </div>
         </div>
 
         {isOpen && (
-          <nav
-            id="site-nav-mobile"
-            className="nav-panel mx-[var(--gutter)] mb-2 md:hidden"
-            aria-label={nav.primary}
-          >
-            <ul className="flex flex-col">
-              {navItems.map(({ title, href }) => (
-                <li key={title}>
-                  <a
-                    href={href}
-                    className="nav-panel-link"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <div className="mx-[var(--gutter)] mb-2 flex flex-col gap-2 md:hidden">
+            <LanguageSwitcher
+              key={`menu-${locale}`}
+              locale={locale}
+              label={nav.language}
+              stretch
+            />
+            <nav
+              id="site-nav-mobile"
+              className="nav-panel"
+              aria-label={nav.primary}
+            >
+              <ul className="flex flex-col">
+                {navItems.map(({ title, href }) => (
+                  <li key={title}>
+                    <a
+                      href={href}
+                      className="nav-panel-link"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
         )}
       </div>
     </header>

@@ -477,7 +477,8 @@ body {
    Palette follows the site — neutral black and warm paper — while the sun and
    moon keep their amber. `display` on the icons is safe: none of them carries
    a responsive utility it could fight. */
-.cts {
+.cts,
+.lss {
   --cts-travel: 26px;
   border-color: rgba(58, 62, 60, 0.6);
   background: radial-gradient(ellipse at top left, #1b1d1d 0%, #0b0d0d 40%, #030404 100%);
@@ -530,8 +531,8 @@ body {
   color: #fef9c3;
 }
 
-.cts-thumb {
-  transform: translateX(var(--cts-travel));
+.cts-thumb,
+.lss-thumb {
   border-color: rgba(160, 164, 162, 0.3);
   background: linear-gradient(145deg, #6b6e6c 0%, #4a4d4b 50%, #303332 100%);
   box-shadow:
@@ -546,6 +547,36 @@ body {
     transform 460ms cubic-bezier(0.34, 1.56, 0.64, 1),
     border-color 300ms ease,
     box-shadow 300ms ease;
+}
+
+/* Positions stay separate. The theme thumb sits by [data-theme]; the language
+   thumb by index, as a multiple of its own width — a quarter of the track —
+   so the same switch works compact in the header and stretched in the menu.
+   Sharing the light rule's translateX(0) would pin the language thumb to RU. */
+.cts-thumb {
+  transform: translateX(var(--cts-travel));
+}
+
+.lss-thumb {
+  transform: translateX(calc(var(--lss-index) * 100%));
+}
+
+.lss-link {
+  color: var(--ink-muted);
+  transition: color 300ms ease;
+}
+
+.lss-link[data-active="true"] {
+  color: #f1efe9;
+}
+
+:root[data-theme="light"] .lss-link[data-active="true"] {
+  color: var(--ink);
+}
+
+.lss-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .cts-thumb-shine {
@@ -570,7 +601,8 @@ body {
   background: radial-gradient(circle, rgb(199 167 255 / 0.55) 0%, rgb(199 167 255 / 0) 70%);
 }
 
-:root[data-theme="light"] .cts {
+:root[data-theme="light"] .cts,
+:root[data-theme="light"] .lss {
   border-color: rgba(220, 216, 207, 0.6);
   background: radial-gradient(ellipse at top left, #ffffff 0%, #f6f4ef 40%, #d6d2c8 100%);
   box-shadow:
@@ -611,8 +643,8 @@ body {
   color: #57534e;
 }
 
-:root[data-theme="light"] .cts-thumb {
-  transform: translateX(0);
+:root[data-theme="light"] .cts-thumb,
+:root[data-theme="light"] .lss-thumb {
   border-color: rgba(255, 255, 255, 0.9);
   background: linear-gradient(145deg, #ffffff 0%, #fefefd 50%, #f7f5f0 100%);
   box-shadow:
@@ -621,6 +653,10 @@ body {
     inset 0 1px 1px rgba(255, 255, 255, 1),
     0 5px 20px rgba(0, 0, 0, 0.18),
     0 2.5px 7.5px rgba(0, 0, 0, 0.12);
+}
+
+:root[data-theme="light"] .cts-thumb {
+  transform: translateX(0);
 }
 
 :root[data-theme="light"] .cts-thumb-sun {
@@ -632,7 +668,8 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cts-thumb {
+  .cts-thumb,
+  .lss-thumb {
     transition: none;
   }
 }

@@ -14,11 +14,27 @@ const MIN_VISIBLE_MS = 3000;
 const MAX_VISIBLE_MS = 7000;
 const FADE_MS = 500;
 
+// Module state outlives a soft navigation but not a page load. Changing
+// language swaps the [lang] root layout without reloading the document, which
+// remounts this overlay; the flag lets it greet a fresh document once and step
+// aside on every in-app navigation after that. A head script could not do this:
+// it only runs on a full load.
+let hasGreetedThisDocument = false;
+
 export function SitePreloader({ loadingLabel }: { loadingLabel: string }) {
-  const [isDismissed, setIsDismissed] = useState(false);
-  const [isUnmounted, setIsUnmounted] = useState(false);
+  // Read once, at mount: false during hydration (it matches the server), true
+  // on a client-side remount, which renders nothing from its first frame.
+  const [isDismissed, setIsDismissed] = useState(() => hasGreetedThisDocument);
+  const [isUnmounted, setIsUnmounted] = useState(() => hasGreetedThisDocument);
 
   useEffect(() => {
+    // Only read here. Setting it on mount would strand the overlay under
+    // Strict Mode: the dev double-run clears these timers, and the second run
+    // would see the flag and never start them again.
+    if (hasGreetedThisDocument) {
+      return;
+    }
+
     const start = performance.now();
     let dismissTimer = 0;
 
@@ -52,6 +68,9 @@ export function SitePreloader({ loadingLabel }: { loadingLabel: string }) {
     if (!isDismissed) {
       return;
     }
+
+    // The greeting has happened; later remounts in this document skip it.
+    hasGreetedThisDocument = true;
 
     const timer = window.setTimeout(() => setIsUnmounted(true), FADE_MS);
     return () => window.clearTimeout(timer);
