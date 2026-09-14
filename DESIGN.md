@@ -86,6 +86,27 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
   4.64:1 — and keep the dark theme's order of prominence: ink, muted, soft,
   faint.
 
+## Languages
+
+- Russian, Uzbek (Latin), English and Simplified Chinese. The root layout lives
+  under `app/[lang]`; all four prerender statically and anything else is a
+  build-time 404. `<html lang>` carries the full tag: `ru`, `uz-Latn`, `en`,
+  `zh-Hans`.
+- `proxy.ts` — Next 16's name for middleware — sends a bare path to the saved
+  choice, then `Accept-Language`, then Russian. Its matcher skips `_next` and
+  file paths so assets are never redirected.
+- Dictionaries in `lib/i18n/dictionaries` are typed against Russian: a missing
+  or extra key fails the typecheck. Server sections read theirs through
+  `next/root-params`; client components receive strings as props.
+- The hero title is an array of lines, one per span, so each language keeps
+  its own breaks.
+- Terms follow each market: HS code in English, HS 编码 in Chinese, TIF TN in
+  Uzbek. The Uzbek and Chinese dictionaries are drafts marked for review by a
+  native speaker.
+- The language switch is the theme switch at four stops: compact beside it on
+  desktop, full width in the burger menu on phones. Only an explicit choice
+  writes the `NEXT_LOCALE` cookie.
+
 ## Sections
 
 - The page is one document: hero, capabilities, how it works, calculation,
@@ -119,6 +140,14 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
   bubbles it shows cannot be styled and speak the browser's language.
 - The theme script is inline, so a strict Content Security Policy without
   `'unsafe-inline'` would block it. Add a nonce if a CSP is ever introduced.
+- A font's `unicode-range` is not a glyph inventory. Google's subset ranges
+  are uniform across families: Manrope lists U+02BB yet has no glyph for it,
+  and the browser silently drew the Uzbek mark in system Helvetica. Check with
+  `CSS.getPlatformFontsForNode` before trusting coverage.
+- Switching language remounts the `[lang]` root layout without reloading the
+  document. Anything in that layout that should run once per visit — the
+  preloader — needs state that outlives the remount; a head script only runs
+  on a full load.
 - The Spline scene must stay behind `SceneBoundary`. A failed fetch from its CDN surfaces as a render-time throw, and without a boundary React tears down the whole tree — header, hero and preloader with it, leaving a blank page and a scroll lock with nothing left running to release it.
 - Layout properties belong in utilities, not in `globals.css`. Rules there load after Tailwind at equal specificity, so a `display` written next to the colours will quietly defeat responsive variants like `md:hidden`.
 
