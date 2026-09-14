@@ -5,6 +5,17 @@ export type LeadValues = {
   goods: string;
 };
 
+// Validation speaks in codes, not sentences: the form turns a code into the
+// visitor's language, so the rules stay free of any one locale.
+export type LeadErrorCode =
+  | "name.short"
+  | "name.long"
+  | "contact.missing"
+  | "contact.invalid"
+  | "company.long"
+  | "goods.short"
+  | "goods.long";
+
 export type LeadFieldErrors = Partial<Record<keyof LeadValues, string>>;
 
 export const LEAD_LIMITS = {
