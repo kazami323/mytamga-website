@@ -62,7 +62,16 @@ export default async function RootLayout({
   return (
     // The inline script adds data-theme before React hydrates; the attribute
     // is absent from the server markup, so the mismatch is expected.
-    <html lang={HTML_LANG[lang]} suppressHydrationWarning>
+    //
+    // data-scroll-behavior: Next 16 no longer drops the page's smooth scrolling
+    // during route changes, so switching language would animate the scroll.
+    // The attribute restores the override — instant between routes, smooth for
+    // in-page anchors.
+    <html
+      lang={HTML_LANG[lang]}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <head>
         <InlineScript
           html={`(function(){try{if(localStorage.getItem("theme")==="light")document.documentElement.setAttribute("data-theme","light")}catch(e){}})()`}
