@@ -3,7 +3,7 @@
 import { Menu, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { ThemeToggle } from "@/components/theme-toggle";
+import { CinematicThemeSwitcher } from "@/components/ui/cinematic-theme-switcher";
 
 const NAV_ITEMS = [
   { title: "Главная", href: "#hero" },
@@ -77,7 +77,7 @@ export function SiteHeader() {
           </nav>
 
           <div className="col-start-3 flex items-center gap-2 justify-self-end">
-            <ThemeToggle />
+            <CinematicThemeSwitcher />
             <button
               ref={toggleRef}
               type="button"

@@ -66,9 +66,17 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
   before first paint, so a returning light visitor never sees dark first.
   The page stays statically prerendered; a cookie read on the server would
   have given that up.
-- `ThemeToggle` reads the attribute through `useSyncExternalStore` and never
-  mirrors it in state. It re-applies the stored value in a layout effect
-  because Strict Mode's dev remount resets `<html>` attributes.
+- `lib/theme.ts` owns the mechanism: `useIsLightTheme` reads the attribute
+  through `useSyncExternalStore` and never mirrors it in state, and re-applies
+  the stored value in a layout effect because Strict Mode's dev remount
+  resets `<html>` attributes.
+- The switch is `CinematicThemeSwitcher`: a sprung pill thumb with a light
+  burst on toggle, sized to the header's 40px controls. Everything that
+  depends on the theme — colours, shadows, the thumb's position, which icon
+  shows — lives in CSS keyed on `[data-theme]`, so it is drawn in its final
+  position on first paint. React only handles the click and `aria-checked`.
+  The spring is an overshooting CSS curve; reduced motion drops it and the
+  burst.
 - Every colour that differs between themes is a token. Neutral tints use the
   `--fg-rgb` helper, `rgb(var(--fg-rgb) / a)`, which resolves to the exact
   white alpha in dark and to ink alphas in light.
