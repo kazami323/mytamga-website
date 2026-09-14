@@ -11,6 +11,30 @@
   --scrollbar-track: #080a0a;
   --scrollbar-thumb: #414645;
   --scrollbar-thumb-hover: #626866;
+  /* Neutral tint helper: rgb(var(--fg-rgb) / a) resolves to exactly the white
+     alpha used before in the dark theme, and to ink alphas in the light one. */
+  --fg-rgb: 255 255 255;
+  --ink-soft: rgb(255 255 255 / 0.55);
+  --ink-faint: rgb(255 255 255 / 0.45);
+  --ink-ghost: rgb(255 255 255 / 0.3);
+  --line-soft: rgb(255 255 255 / 0.08);
+  --on-accent: #080909;
+  --danger: #fca5a5;
+  --danger-line: #f87171;
+  --hero-title: linear-gradient(145deg, #fff 8%, #d4d4ce 53%, #777b79 100%);
+  --panel-face: linear-gradient(180deg, #171818 0%, #0a0c0c 58%, #050606 100%);
+  --panel-face-active: linear-gradient(145deg, #241a31 0%, #130e1c 48%, #07060b 100%);
+  --panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  --panel-shadow-active: inset 0 1px 0 rgba(231, 217, 255, 0.26), inset 0 -10px 30px rgba(104, 68, 158, 0.2);
+  --canvas-glow: rgba(199, 167, 255, 0.07);
+  --scene-glow: rgba(199, 167, 255, 0.12);
+  --orbit-line: rgba(199, 167, 255, 0.13);
+  --orbit-halo-1: rgba(199, 167, 255, 0.018);
+  --orbit-halo-2: rgba(199, 167, 255, 0.012);
+  --field-bg: rgba(255, 255, 255, 0.03);
+  --field-line: rgba(255, 255, 255, 0.09);
+  --spotlight: #c7a7ff;
+  --shadow-panel: 0 24px 60px rgba(0, 0, 0, 0.72);
   --radius: 1.75rem;
   /* One horizontal inset shared by the header and the hero copy, so the
      wordmark and the headline can never drift apart. */
@@ -42,6 +66,12 @@
   --color-card-foreground: var(--ink);
   --color-border: var(--line);
   --color-muted-foreground: var(--ink-muted);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-ink-ghost: var(--ink-ghost);
+  --color-line-soft: var(--line-soft);
   --font-sans: "Manrope Variable", sans-serif;
   --font-display: "Unbounded Variable", sans-serif;
   --radius-lg: var(--radius);
@@ -83,7 +113,7 @@ body {
   margin: 0;
   overflow-x: clip;
   background:
-    radial-gradient(circle at 50% 0%, rgba(199, 167, 255, 0.07), transparent 38rem),
+    radial-gradient(circle at 50% 0%, var(--canvas-glow), transparent 38rem),
     var(--canvas);
   color: var(--ink);
   font-family: "Manrope Variable", sans-serif;
@@ -92,7 +122,7 @@ body {
 
 ::selection {
   background: var(--accent);
-  color: #080909;
+  color: var(--on-accent);
 }
 
 .hero-card::after {
@@ -102,11 +132,11 @@ body {
   bottom: -45%;
   width: 58rem;
   height: 58rem;
-  border: 1px solid rgba(199, 167, 255, 0.13);
+  border: 1px solid var(--orbit-line);
   border-radius: 50%;
   box-shadow:
-    0 0 0 8rem rgba(199, 167, 255, 0.018),
-    0 0 0 16rem rgba(199, 167, 255, 0.012);
+    0 0 0 8rem var(--orbit-halo-1),
+    0 0 0 16rem var(--orbit-halo-2);
   content: "";
   pointer-events: none;
 }
@@ -131,7 +161,7 @@ body {
   z-index: 1;
   inset: 12% 8% 10%;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(199, 167, 255, 0.12), transparent 66%);
+  background: radial-gradient(circle, var(--scene-glow), transparent 66%);
   filter: blur(28px);
   content: "";
   pointer-events: none;
@@ -172,7 +202,7 @@ body {
 }
 
 .site-header-bar[data-scrolled="true"] {
-  border-bottom-color: rgba(255, 255, 255, 0.07);
+  border-bottom-color: rgb(var(--fg-rgb) / 0.07);
   background: color-mix(in srgb, var(--canvas) 88%, transparent);
   -webkit-backdrop-filter: blur(16px) saturate(140%);
   backdrop-filter: blur(16px) saturate(140%);
@@ -243,9 +273,9 @@ body {
 /* Layout lives in utilities, not here: an equally specific `display` in this
    file would load after Tailwind and defeat `md:hidden`. */
 .nav-toggle {
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid rgb(var(--fg-rgb) / 0.09);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgb(var(--fg-rgb) / 0.04);
   color: var(--ink);
   transition:
     background-color 200ms ease,
@@ -254,23 +284,23 @@ body {
 
 .nav-toggle:hover {
   border-color: color-mix(in srgb, var(--accent) 40%, transparent);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgb(var(--fg-rgb) / 0.08);
 }
 
 /* Opaque on purpose: this panel lands directly on the hero statement, and
    readability of the links outranks the glass effect here. */
 .nav-panel {
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid rgb(var(--fg-rgb) / 0.09);
   border-radius: 1.15rem;
   background: var(--surface-raised);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.72);
+  box-shadow: var(--shadow-panel);
 }
 
 .nav-panel-link {
   display: block;
   padding: 0.85rem 1.15rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgb(var(--fg-rgb) / 0.05);
   color: var(--ink-muted);
   font-size: 0.95rem;
   text-decoration: none;
@@ -285,7 +315,7 @@ body {
 
 .nav-panel-link:hover,
 .nav-panel-link:focus-visible {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgb(var(--fg-rgb) / 0.04);
   color: var(--ink);
 }
 
@@ -293,19 +323,19 @@ body {
    carries the blur and the rim light, the items stay near-invisible until the
    pointer or keyboard reaches them. */
 .dock-panel {
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgb(var(--fg-rgb) / 0.08);
   border-radius: 999px;
   background: color-mix(in srgb, var(--surface-raised) 68%, transparent);
   box-shadow:
     0 18px 50px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    inset 0 1px 0 rgb(var(--fg-rgb) / 0.05);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
   backdrop-filter: blur(20px) saturate(140%);
 }
 
 .dock-item {
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgb(var(--fg-rgb) / 0.06);
+  background: rgb(var(--fg-rgb) / 0.045);
   color: var(--ink-muted);
   transition:
     background-color 200ms ease,
@@ -316,7 +346,7 @@ body {
 .dock-item:hover,
 .dock-item:focus-visible {
   border-color: color-mix(in srgb, var(--accent) 45%, transparent);
-  background: color-mix(in srgb, var(--accent) 14%, rgba(255, 255, 255, 0.05));
+  background: color-mix(in srgb, var(--accent) 14%, rgb(var(--fg-rgb) / 0.05));
   color: var(--ink);
 }
 
@@ -343,7 +373,7 @@ body {
   justify-content: center;
   gap: 2.5rem;
   background:
-    radial-gradient(circle at 50% 40%, rgba(199, 167, 255, 0.06), transparent 32rem),
+    radial-gradient(circle at 50% 40%, var(--canvas-glow), transparent 32rem),
     var(--canvas);
   transition: opacity 500ms ease;
 }
@@ -356,9 +386,9 @@ body {
 /* Only colour and shape here. Layout stays in utilities: rules in this file
    load after Tailwind at equal specificity and would beat its variants. */
 .text-field {
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid var(--field-line);
   border-radius: 0.85rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--field-bg);
   color: var(--ink);
   transition:
     border-color 200ms ease,
@@ -366,32 +396,44 @@ body {
 }
 
 .text-field::placeholder {
-  color: rgba(255, 255, 255, 0.28);
+  color: rgb(var(--fg-rgb) / 0.28);
 }
 
 .text-field:hover {
-  border-color: rgba(255, 255, 255, 0.16);
+  border-color: rgb(var(--fg-rgb) / 0.16);
 }
 
 .text-field:focus-visible {
   border-color: color-mix(in srgb, var(--accent) 55%, transparent);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgb(var(--fg-rgb) / 0.05);
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
 .text-field[aria-invalid="true"] {
-  border-color: #f87171;
+  border-color: var(--danger-line);
 }
 
 .field-error {
-  color: #fca5a5;
+  color: var(--danger);
+}
+
+/* The liquid-metal panel's face. A class rather than utility gradients so the
+   face can follow the theme; the rim shader underneath never changes. */
+.liquid-metal-face {
+  background-image: var(--panel-face);
+  box-shadow: var(--panel-shadow);
+}
+
+.liquid-metal-face[data-active="true"] {
+  background-image: var(--panel-face-active);
+  box-shadow: var(--panel-shadow-active);
 }
 
 .spline-loader {
   width: 2.25rem;
   height: 2.25rem;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid rgb(var(--fg-rgb) / 0.16);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: loader-spin 900ms linear infinite;
