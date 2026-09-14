@@ -4,6 +4,7 @@ import "@fontsource-variable/manrope";
 import "@fontsource-variable/unbounded";
 import "../globals.css";
 
+import { InlineScript } from "@/components/inline-script";
 import { SiteHeader } from "@/components/site-header";
 import { SitePreloader } from "@/components/site-preloader";
 import { HTML_LANG, LOCALES, hasLocale } from "@/lib/i18n/config";
@@ -63,10 +64,8 @@ export default async function RootLayout({
     // is absent from the server markup, so the mismatch is expected.
     <html lang={HTML_LANG[lang]} suppressHydrationWarning>
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{if(localStorage.getItem("theme")==="light")document.documentElement.setAttribute("data-theme","light")}catch(e){}})()`,
-          }}
+        <InlineScript
+          html={`(function(){try{if(localStorage.getItem("theme")==="light")document.documentElement.setAttribute("data-theme","light")}catch(e){}})()`}
         />
       </head>
       <body>
