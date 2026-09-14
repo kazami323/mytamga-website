@@ -7,8 +7,9 @@ import { Card } from "@/components/ui/card";
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
 import { SplineScene } from "@/components/ui/splite";
 import { Spotlight } from "@/components/ui/spotlight";
+import type { Dictionary } from "@/lib/i18n/dictionaries/ru";
 
-export function SplineSceneBasic() {
+export function SplineSceneBasic({ strings }: { strings: Dictionary["hero"] }) {
   const heroRef = useRef<HTMLElement>(null);
   const shouldReduceMotion = useReducedMotion();
 
@@ -49,27 +50,27 @@ export function SplineSceneBasic() {
             className="pointer-events-none relative z-10 flex flex-col justify-center px-[var(--gutter)]"
           >
             <p className="hero-kicker mb-7 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-ink-faint sm:text-xs">
-              Место под текст
+              {strings.kicker}
             </p>
             <h1
               id="hero-title"
               className="max-w-4xl bg-[image:var(--hero-title)] bg-clip-text font-display text-[clamp(1.15rem,6vw,2.65rem)] font-medium leading-[0.98] tracking-[-0.055em] text-transparent lg:text-[clamp(2.35rem,3.75vw,4.7rem)]"
             >
-              <span className="block whitespace-nowrap">Понятный импорт —</span>
-              <span className="block whitespace-nowrap">от товара</span>
-              <span className="block whitespace-nowrap">до декларанта.</span>
+              {strings.title.map((line) => (
+                <span key={line} className="block whitespace-nowrap">
+                  {line}
+                </span>
+              ))}
             </h1>
             <p className="mt-7 max-w-xl text-base leading-7 text-ink-soft sm:text-lg sm:leading-8">
-              MyTamga помогает определить код ТН ВЭД, рассчитать таможенные
-              платежи, проверить требования к товару и подготовить всё
-              необходимое для дальнейшего оформления.
+              {strings.lead}
             </p>
             <div
               className="pointer-events-auto mt-8 flex max-w-xl flex-wrap items-center gap-3 sm:gap-4"
-              aria-label="Основные действия"
+              aria-label={strings.actions}
             >
-              <LiquidMetalButton label="Связаться с нами" />
-              <LiquidMetalButton label="Узнать о нас больше" />
+              <LiquidMetalButton label={strings.contact} />
+              <LiquidMetalButton label={strings.learnMore} />
             </div>
           </motion.div>
 
@@ -82,6 +83,7 @@ export function SplineSceneBasic() {
             <SplineScene
               scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
               className="hero-stage absolute left-1/2 top-[-1.6%] z-[2] h-[219%] w-auto min-w-full -translate-x-1/2 aspect-[8/3]"
+              loadingLabel={strings.sceneLoading}
             />
           </motion.div>
         </div>

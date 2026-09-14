@@ -14,7 +14,7 @@ const MIN_VISIBLE_MS = 3000;
 const MAX_VISIBLE_MS = 7000;
 const FADE_MS = 500;
 
-export function SitePreloader() {
+export function SitePreloader({ loadingLabel }: { loadingLabel: string }) {
   const [isDismissed, setIsDismissed] = useState(false);
   const [isUnmounted, setIsUnmounted] = useState(false);
 
@@ -85,7 +85,7 @@ export function SitePreloader() {
       <p className="site-brand text-base font-semibold tracking-[-0.02em]">
         MyTamga
       </p>
-      <span className="sr-only">Загрузка страницы</span>
+      <span className="sr-only">{loadingLabel}</span>
     </div>
   );
 }

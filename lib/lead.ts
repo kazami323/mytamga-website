@@ -16,7 +16,7 @@ export type LeadErrorCode =
   | "goods.short"
   | "goods.long";
 
-export type LeadFieldErrors = Partial<Record<keyof LeadValues, string>>;
+export type LeadFieldErrors = Partial<Record<keyof LeadValues, LeadErrorCode>>;
 
 export const LEAD_LIMITS = {
   name: { min: 2, max: 80 },
@@ -46,25 +46,25 @@ export function validateLead(values: LeadValues): LeadFieldErrors {
   const errors: LeadFieldErrors = {};
 
   if (values.name.length < LEAD_LIMITS.name.min) {
-    errors.name = "Укажите имя — минимум 2 символа.";
+    errors.name = "name.short";
   } else if (values.name.length > LEAD_LIMITS.name.max) {
-    errors.name = "Слишком длинное имя.";
+    errors.name = "name.long";
   }
 
   if (!values.contact) {
-    errors.contact = "Оставьте телефон или почту.";
+    errors.contact = "contact.missing";
   } else if (!EMAIL.test(values.contact) && !isPhone(values.contact)) {
-    errors.contact = "Не похоже на телефон или почту.";
+    errors.contact = "contact.invalid";
   }
 
   if (values.company.length > LEAD_LIMITS.company.max) {
-    errors.company = "Слишком длинное название.";
+    errors.company = "company.long";
   }
 
   if (values.goods.length < LEAD_LIMITS.goods.min) {
-    errors.goods = "Опишите товар — минимум 10 символов.";
+    errors.goods = "goods.short";
   } else if (values.goods.length > LEAD_LIMITS.goods.max) {
-    errors.goods = "Слишком длинное описание.";
+    errors.goods = "goods.long";
   }
 
   return errors;

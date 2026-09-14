@@ -9,7 +9,9 @@ import { cn } from "@/lib/utils";
 
 interface LiquidMetalButtonProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
-  label?: string;
+  // Required: a default here would be one language's text leaking into every
+  // other locale's page the moment a caller forgot to pass one.
+  label: string;
   viewMode?: "text" | "icon";
 }
 
@@ -22,7 +24,7 @@ type Ripple = {
 export function LiquidMetalButton({
   className,
   disabled,
-  label = "Место под текст",
+  label,
   onBlur,
   onClick,
   onFocus,

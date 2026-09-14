@@ -5,6 +5,7 @@ import { useActionState, useEffect, useRef } from "react";
 import { submitLead } from "@/app/actions/submit-lead";
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
 import { TextField } from "@/components/ui/text-field";
+import type { Dictionary } from "@/lib/i18n/dictionaries/ru";
 import { INITIAL_LEAD_STATE, type LeadState } from "@/lib/lead";
 
 const FIELD_ORDER = ["name", "contact", "company", "goods"] as const;
@@ -17,12 +18,16 @@ function valueFor(state: LeadState, field: (typeof FIELD_ORDER)[number]) {
   return "values" in state ? state.values[field] : undefined;
 }
 
-export function LeadForm() {
+export function LeadForm({ strings }: { strings: Dictionary["form"] }) {
   const [state, formAction, isPending] = useActionState(
     submitLead,
     INITIAL_LEAD_STATE,
   );
   const formRef = useRef<HTMLFormElement>(null);
+
+  // Validation returns codes; the words come from the page's own language.
+  const message = (code: keyof Dictionary["form"]["errors"] | undefined) =>
+    code ? strings.errors[code] : undefined;
 
   // Land the caret on the first broken field instead of leaving the person to
   // hunt for the red one.
@@ -56,19 +61,19 @@ export function LeadForm() {
         <TextField
           id="lead-name"
           name="name"
-          label="Имя"
+          label={strings.name}
           required
           autoComplete="name"
-          error={errorFor(state, "name")}
+          error={message(errorFor(state, "name"))}
           defaultValue={valueFor(state, "name")}
         />
         <TextField
           id="lead-contact"
           name="contact"
-          label="Телефон или почта"
+          label={strings.contact}
           required
           autoComplete="email"
-          error={errorFor(state, "contact")}
+          error={message(errorFor(state, "contact"))}
           defaultValue={valueFor(state, "contact")}
         />
       </div>
@@ -76,20 +81,21 @@ export function LeadForm() {
       <TextField
         id="lead-company"
         name="company"
-        label="Компания"
+        label={strings.company}
+        optionalLabel={strings.optional}
         autoComplete="organization"
-        error={errorFor(state, "company")}
+        error={message(errorFor(state, "company"))}
         defaultValue={valueFor(state, "company")}
       />
 
       <TextField
         id="lead-goods"
         name="goods"
-        label="Что везёте"
+        label={strings.goods}
         rows={5}
         required
-        placeholder="Название, состав, назначение, страна происхождения."
-        error={errorFor(state, "goods")}
+        placeholder={strings.goodsPlaceholder}
+        error={message(errorFor(state, "goods"))}
         defaultValue={valueFor(state, "goods")}
       />
 
@@ -108,7 +114,7 @@ export function LeadForm() {
             so swapping in a "sending" label would make it jump. */}
         <LiquidMetalButton
           type="submit"
-          label="Отправить заявку"
+          label={strings.submit}
           disabled={isPending}
         />
       </div>
@@ -118,13 +124,13 @@ export function LeadForm() {
         data-lead-status={isPending ? "pending" : state.status}
         className="text-sm leading-6 text-ink-soft"
       >
-        {isPending && "Отправляем…"}
+        {isPending && strings.sending}
         {!isPending &&
           state.status === "unavailable" &&
-          "Приём заявок пока не подключён. Свяжитесь с нами по контактам рядом — данные из формы не потеряны."}
+          strings.unavailable}
         {!isPending &&
           state.status === "failed" &&
-          "Не получилось отправить. Попробуйте ещё раз или напишите нам напрямую."}
+          strings.failed}
       </p>
     </form>
   );

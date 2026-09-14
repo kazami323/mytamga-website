@@ -17,7 +17,7 @@ type Burst = { id: number; tone: "sun" | "moon" };
  * final position: no placeholder while mounting, and no thumb sliding across
  * on load for someone who chose light last time.
  */
-export function CinematicThemeSwitcher() {
+export function CinematicThemeSwitcher({ label }: { label: string }) {
   const isLight = useIsLightTheme();
   const shouldReduceMotion = useReducedMotion();
   const [burst, setBurst] = useState<Burst | null>(null);
@@ -45,7 +45,7 @@ export function CinematicThemeSwitcher() {
       type="button"
       role="switch"
       aria-checked={isLight}
-      aria-label="Светлая тема"
+      aria-label={label}
       data-theme-toggle
       onClick={toggle}
       className="cts relative inline-flex h-10 w-[65px] shrink-0 items-center rounded-full border-[1.5px] p-1"

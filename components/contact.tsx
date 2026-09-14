@@ -44,7 +44,7 @@ export async function Contact() {
           </dl>
         </div>
 
-        <LeadForm />
+        <LeadForm strings={t.form} />
       </div>
     </section>
   );

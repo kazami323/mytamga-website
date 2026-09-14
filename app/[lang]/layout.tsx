@@ -56,6 +56,8 @@ export default async function RootLayout({
     notFound();
   }
 
+  const t = getDictionary(lang);
+
   return (
     // The inline script adds data-theme before React hydrates; the attribute
     // is absent from the server markup, so the mismatch is expected.
@@ -68,8 +70,8 @@ export default async function RootLayout({
         />
       </head>
       <body>
-        <SitePreloader />
-        <SiteHeader />
+        <SitePreloader loadingLabel={t.preloader.loading} />
+        <SiteHeader strings={{ nav: t.nav, themeLabel: t.theme.light }} />
         {children}
       </body>
     </html>

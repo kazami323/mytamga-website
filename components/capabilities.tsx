@@ -10,42 +10,18 @@ import {
 } from "lucide-react";
 
 import { LiquidMetalPanel } from "@/components/ui/liquid-metal-panel";
+import type { Dictionary } from "@/lib/i18n/dictionaries/ru";
 
-type Capability = {
-  id: string;
-  title: string;
-  body: string;
-  icon: LucideIcon;
+// Icons are presentation, so they stay here; the words come from the page's
+// dictionary and are matched to an icon by id.
+const ICONS: Record<string, LucideIcon> = {
+  code: ScanBarcode,
+  payments: Calculator,
+  requirements: ShieldCheck,
+  documents: FileCheck2,
 };
 
-const CAPABILITIES: Capability[] = [
-  {
-    id: "code",
-    title: "Код ТН ВЭД",
-    body: "Определяем код товарной номенклатуры по описанию товара, его составу и назначению.",
-    icon: ScanBarcode,
-  },
-  {
-    id: "payments",
-    title: "Расчёт платежей",
-    body: "Считаем таможенные платежи заранее, чтобы стоимость ввоза была известна до подачи декларации.",
-    icon: Calculator,
-  },
-  {
-    id: "requirements",
-    title: "Требования к товару",
-    body: "Проверяем, какие разрешительные документы нужны именно вашему товару.",
-    icon: ShieldCheck,
-  },
-  {
-    id: "documents",
-    title: "Подготовка документов",
-    body: "Собираем пакет, который останется передать декларанту для дальнейшего оформления.",
-    icon: FileCheck2,
-  },
-];
-
-export function Capabilities() {
+export function Capabilities({ strings }: { strings: Dictionary["capabilities"] }) {
   const shouldReduceMotion = useReducedMotion();
 
   // Reduced motion keeps the reveal but drops the travel, so nothing slides.
@@ -58,18 +34,20 @@ export function Capabilities() {
       aria-labelledby="capabilities-title"
     >
       <p className="hero-kicker mb-7 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-ink-faint sm:text-xs">
-        Возможности
+        {strings.kicker}
       </p>
 
       <h2
         id="capabilities-title"
         className="max-w-3xl text-[clamp(1.6rem,4.5vw,2.1rem)] font-semibold leading-[1.12] tracking-[-0.035em] text-[var(--ink)] lg:text-[clamp(2rem,2.6vw,3rem)]"
       >
-        Всё, что нужно до подачи декларации
+        {strings.title}
       </h2>
 
       <ul className="mt-14 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {CAPABILITIES.map(({ id, title, body, icon: Icon }, index) => (
+        {strings.items.map(({ id, title, body }, index) => {
+          const Icon = ICONS[id] ?? ScanBarcode;
+          return (
           <motion.li
             key={id}
             className="flex"
@@ -93,7 +71,8 @@ export function Capabilities() {
               <p className="mt-3 text-sm leading-6 text-ink-soft">{body}</p>
             </LiquidMetalPanel>
           </motion.li>
-        ))}
+          );
+        })}
       </ul>
     </section>
   );

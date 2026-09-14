@@ -12,12 +12,14 @@ interface SplineSceneProps {
   scene: string;
   className?: string;
   interactive?: boolean;
+  loadingLabel: string;
 }
 
 export function SplineScene({
   scene,
   className,
   interactive = true,
+  loadingLabel,
 }: SplineSceneProps) {
   const handleLoad = (application: Application) => {
     markSceneReady();
@@ -42,7 +44,7 @@ export function SplineScene({
             <div
               className="flex h-full w-full items-center justify-center"
               role="status"
-              aria-label="Место под текст"
+              aria-label={loadingLabel}
             >
               <span className="spline-loader" aria-hidden="true" />
             </div>

@@ -4,16 +4,23 @@ import { Menu, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { CinematicThemeSwitcher } from "@/components/ui/cinematic-theme-switcher";
+import type { Dictionary } from "@/lib/i18n/dictionaries/ru";
 
-const NAV_ITEMS = [
-  { title: "Главная", href: "#hero" },
-  { title: "Услуги", href: "#services" },
-  { title: "Расчёт", href: "#calc" },
-  { title: "О нас", href: "#about" },
-  { title: "Контакты", href: "#contacts" },
-] as const;
+type HeaderStrings = {
+  nav: Dictionary["nav"];
+  themeLabel: string;
+};
 
-export function SiteHeader() {
+export function SiteHeader({ strings }: { strings: HeaderStrings }) {
+  const { nav } = strings;
+  const navItems = [
+    { title: nav.home, href: "#hero" },
+    { title: nav.services, href: "#services" },
+    { title: nav.calc, href: "#calc" },
+    { title: nav.about, href: "#about" },
+    { title: nav.contacts, href: "#contacts" },
+  ];
+
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -63,10 +70,10 @@ export function SiteHeader() {
 
           <nav
             className="col-start-2 hidden justify-self-center md:block"
-            aria-label="Основная навигация"
+            aria-label={nav.primary}
           >
             <ul className="flex items-center gap-7 lg:gap-9">
-              {NAV_ITEMS.map(({ title, href }) => (
+              {navItems.map(({ title, href }) => (
                 <li key={title}>
                   <a href={href} className="nav-link text-sm">
                     {title}
@@ -77,14 +84,14 @@ export function SiteHeader() {
           </nav>
 
           <div className="col-start-3 flex items-center gap-2 justify-self-end">
-            <CinematicThemeSwitcher />
+            <CinematicThemeSwitcher label={strings.themeLabel} />
             <button
               ref={toggleRef}
               type="button"
               className="nav-toggle inline-flex h-10 w-10 items-center justify-center md:hidden"
               aria-expanded={isOpen}
               aria-controls="site-nav-mobile"
-              aria-label={isOpen ? "Закрыть меню" : "Открыть меню"}
+              aria-label={isOpen ? nav.closeMenu : nav.openMenu}
               onClick={() => setIsOpen((open) => !open)}
             >
               {isOpen ? (
@@ -100,10 +107,10 @@ export function SiteHeader() {
           <nav
             id="site-nav-mobile"
             className="nav-panel mx-[var(--gutter)] mb-2 md:hidden"
-            aria-label="Основная навигация"
+            aria-label={nav.primary}
           >
             <ul className="flex flex-col">
-              {NAV_ITEMS.map(({ title, href }) => (
+              {navItems.map(({ title, href }) => (
                 <li key={title}>
                   <a
                     href={href}

@@ -11,6 +11,7 @@ interface TextFieldProps {
   defaultValue?: string;
   autoComplete?: string;
   placeholder?: string;
+  optionalLabel?: string;
   className?: string;
 }
 
@@ -25,6 +26,7 @@ export function TextField({
   defaultValue,
   autoComplete,
   placeholder,
+  optionalLabel,
   className,
 }: TextFieldProps) {
   const errorId = `${id}-error`;
@@ -46,7 +48,9 @@ export function TextField({
     <div className={cn("flex flex-col gap-2", className)}>
       <label htmlFor={id} className="text-sm text-ink-soft">
         {label}
-        {!required && <span className="text-ink-ghost"> — необязательно</span>}
+        {!required && optionalLabel && (
+          <span className="text-ink-ghost"> — {optionalLabel}</span>
+        )}
       </label>
 
       {isTextarea ? (
