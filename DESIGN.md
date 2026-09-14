@@ -57,6 +57,27 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
 - A card canvas is an order of magnitude more pixels than a pill button, so the shader mounts only once the panel is near the viewport and stays frozen at speed 0 until the pointer arrives.
 - The heading is set in the body face. Unbounded stays reserved for the hero statement.
 
+## Themes
+
+- Dark is the default and the absence of `data-theme` on `<html>`. Light is
+  `:root[data-theme="light"]` — "gallery white", warm paper, the same
+  exhibition concept in daylight.
+- A synchronous script in `<head>` sets the attribute from `localStorage`
+  before first paint, so a returning light visitor never sees dark first.
+  The page stays statically prerendered; a cookie read on the server would
+  have given that up.
+- `ThemeToggle` reads the attribute through `useSyncExternalStore` and never
+  mirrors it in state. It re-applies the stored value in a layout effect
+  because Strict Mode's dev remount resets `<html>` attributes.
+- Every colour that differs between themes is a token. Neutral tints use the
+  `--fg-rgb` helper, `rgb(var(--fg-rgb) / a)`, which resolves to the exact
+  white alpha in dark and to ink alphas in light.
+- The robot, the liquid-metal buttons and the preloader rainbow are the same
+  in both themes. Cards keep their shader rim and swap only the face.
+- Light text tokens clear 4.5:1 on canvas and surface — the faintest is
+  4.64:1 — and keep the dark theme's order of prominence: ink, muted, soft,
+  faint.
+
 ## Sections
 
 - The page is one document: hero, capabilities, how it works, calculation,
@@ -88,6 +109,8 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
 - The lead form is `noValidate` and the server owns every message. Left to the
   browser, `required` blocks the request before the action runs, and the
   bubbles it shows cannot be styled and speak the browser's language.
+- The theme script is inline, so a strict Content Security Policy without
+  `'unsafe-inline'` would block it. Add a nonce if a CSP is ever introduced.
 - The Spline scene must stay behind `SceneBoundary`. A failed fetch from its CDN surfaces as a render-time throw, and without a boundary React tears down the whole tree — header, hero and preloader with it, leaving a blank page and a scroll lock with nothing left running to release it.
 - Layout properties belong in utilities, not in `globals.css`. Rules there load after Tailwind at equal specificity, so a `display` written next to the colours will quietly defeat responsive variants like `md:hidden`.
 
