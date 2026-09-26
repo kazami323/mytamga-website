@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { usePricing } from "@/components/pricing/pricing-provider";
 import { LiquidMetalPanel } from "@/components/ui/liquid-metal-panel";
@@ -41,19 +41,39 @@ export function CheckoutPanel({ strings, locale, providers }: CheckoutPanelProps
   // приложения, и молчать об этом значит вести человека в тупик.
   const needsUzNotice = locale === "en" || locale === "zh";
 
-  function applySubscription(result: ApiResult<{ subscription: SubscriptionView }>) {
-    if (result.ok) {
-      setSubscription(result.subscription);
-      setSession("signed");
-      return;
-    }
+  /**
+   * `signed` — подписка прочитана. `signedOut` — сессии нет. `failed` — сервер
+   * не ответил, но куки могут быть живы: решает вызывающий, потому что после
+   * успешного входа выбрасывать человека на ввод номера нельзя.
+   */
+  const applySubscription = useCallback(
+    (
+      result: ApiResult<{ subscription: SubscriptionView }>,
+    ): "signed" | "signedOut" | "failed" => {
+      if (result.ok) {
+        setSubscription(result.subscription);
+        setSession("signed");
+        return "signed";
+      }
 
-    setSubscription(null);
-    setSession("anonymous");
-  }
+      if (result.code === "signedOut" || result.code === "noOrganization") {
+        setSubscription(null);
+        setSession("anonymous");
+        return "signedOut";
+      }
+
+      setSubscription(null);
+      setError(messageFor(result.code, result.retryAfter, strings.errors));
+      return "failed";
+    },
+    // Словарь приходит из серверного компонента и по ссылке не меняется.
+    [strings.errors],
+  );
 
   async function loadSubscription() {
-    applySubscription(await getJson<{ subscription: SubscriptionView }>("/api/subscription"));
+    return applySubscription(
+      await getJson<{ subscription: SubscriptionView }>("/api/subscription"),
+    );
   }
 
   // Человек мог войти раньше: куки живут дольше страницы. Состояние ставится из
@@ -64,15 +84,21 @@ export function CheckoutPanel({ strings, locale, providers }: CheckoutPanelProps
     let alive = true;
 
     void getJson<{ subscription: SubscriptionView }>("/api/subscription").then((result) => {
-      if (alive) {
-        applySubscription(result);
+      if (!alive) {
+        return;
+      }
+
+      // На монтировании неизвестно, вошёл ли человек: показываем ввод номера,
+      // но с объяснением, а не молча.
+      if (applySubscription(result) === "failed") {
+        setSession("anonymous");
       }
     });
 
     return () => {
       alive = false;
     };
-  }, []);
+  }, [applySubscription]);
 
   async function act(action: () => Promise<void>) {
     setBusy(true);
@@ -107,7 +133,12 @@ export function CheckoutPanel({ strings, locale, providers }: CheckoutPanelProps
       }
 
       setCode("");
-      await loadSubscription();
+
+      // Вход только что удался, куки выставлены. Если подписка не прочиталась,
+      // человек всё равно вошёл — возвращать его к вводу номера неправильно.
+      if ((await loadSubscription()) === "failed") {
+        setSession("signed");
+      }
     });
 
   const pay = () =>

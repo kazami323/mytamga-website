@@ -6,8 +6,8 @@ const MAX_NAMEABLE_SECONDS = 600;
  * Секунды до повторной попытки из тела ответа 429 (`{ error, retryAfterMs }`).
  * Заголовка `Retry-After` API не присылает.
  *
- * `null` — задержка есть, но называть её числом не стоит: страница скажет
- * «попробуйте позже».
+ * `null` — числа нет или называть его не стоит: страница скажет «попробуйте
+ * позже». Это обычный случай, а не исключение.
  */
 export function retryAfterSeconds(body: unknown): number | null {
   const raw =
@@ -16,8 +16,13 @@ export function retryAfterSeconds(body: unknown): number | null {
       : undefined;
 
   if (typeof raw !== "number" || !Number.isFinite(raw) || raw <= 0) {
-    // Сервер отказал — значит подождать надо, даже если не сказал сколько.
-    return 1;
+    // Числа нет — и выдумывать его нельзя. API на самом деле его не присылает:
+    // guard кладёт `retryAfterMs` в тело, а глобальный фильтр исключений
+    // (`apps/api/src/common/filters/api-exception.filter.ts`) переписывает тело
+    // в `{ error, requestId }` и задержку теряет. Заголовка `Retry-After` тоже
+    // нет. Сказать «повторите через 1 с», когда окно — минута в продакшене и
+    // пятнадцать минут локально, значит соврать человеку на входе.
+    return null;
   }
 
   const seconds = Math.ceil(raw / 1000);

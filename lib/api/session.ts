@@ -67,12 +67,12 @@ export function failure(code: BillingErrorCode, extra?: Record<string, unknown>)
  * всегда 200: код ошибки лежит в теле, и клиенту не нужно разбирать два
  * разных языка отказов.
  */
-export function failureFrom(error: unknown) {
+export function failureFrom(error: unknown, badRequestCode?: BillingErrorCode) {
   if (!(error instanceof ApiError)) {
     return failure("network");
   }
 
-  const code = errorCodeFor(error.status);
+  const code = errorCodeFor(error.status, badRequestCode);
 
   if (code === "rate") {
     return failure(code, { retryAfter: retryAfterSeconds(error.body) });

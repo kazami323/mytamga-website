@@ -29,8 +29,20 @@ export class ApiError extends Error {
 /**
  * Русский текст ошибки от сервера на китайскую страницу не попадает: он уходит
  * в лог, а человек видит перевод по коду.
+ *
+ * `badRequestCode` — что значит 400 на этой конкретной ручке. API отвечает 400
+ * и на неверный SMS-код, и на тариф, который через кассу не продаётся: один
+ * общий перевод сказал бы опечатавшемуся человеку «этот тариф оформляется по
+ * заявке».
  */
-export function errorCodeFor(status: number): BillingErrorCode {
+export function errorCodeFor(
+  status: number,
+  badRequestCode: BillingErrorCode = "requestOnly",
+): BillingErrorCode {
+  if (status === 400) {
+    return badRequestCode;
+  }
+
   switch (status) {
     case 429:
       return "rate";
@@ -40,8 +52,6 @@ export function errorCodeFor(status: number): BillingErrorCode {
       return "store";
     case 503:
       return "unavailable";
-    case 400:
-      return "requestOnly";
     case 404:
       return "noOrganization";
     case 401:

@@ -23,9 +23,24 @@ test("401 — это не отказ в правах, а истёкшая сес
   assert.equal(errorCodeFor(401), "signedOut");
 });
 
+test("смысл 400 задаёт вызывающий: на разных ручках он разный", () => {
+  // API отвечает 400 и на неверный SMS-код, и на непродаваемый тариф. Один
+  // общий перевод сказал бы человеку, опечатавшемуся в коде, «этот тариф
+  // оформляется по заявке» — неправду на самом входе.
+  assert.equal(errorCodeFor(400), "requestOnly");
+  assert.equal(errorCodeFor(400, "codeInvalid"), "codeInvalid");
+  assert.equal(errorCodeFor(400, "phoneInvalid"), "phoneInvalid");
+  // Переопределение касается только 400.
+  assert.equal(errorCodeFor(409, "codeInvalid"), "store");
+  assert.equal(errorCodeFor(429, "codeInvalid"), "rate");
+});
+
 test("наши собственные коды из ответа API не выводятся", () => {
   // phoneInvalid, codeInvalid и pricesPending ставим мы сами, до запроса.
-  const fromApi = [400, 401, 403, 404, 409, 429, 500, 503].map(errorCodeFor);
+  // Без стрелки map передал бы вторым аргументом индекс — то есть смысл 400.
+  const fromApi = [400, 401, 403, 404, 409, 429, 500, 503].map((status) =>
+    errorCodeFor(status),
+  );
   assert.equal(fromApi.includes("phoneInvalid"), false);
   assert.equal(fromApi.includes("codeInvalid"), false);
   assert.equal(fromApi.includes("pricesPending"), false);
@@ -43,16 +58,20 @@ test("секунды до повтора округляются вверх", () 
   assert.equal(retryAfterSeconds({ retryAfterMs: 30000 }), 30);
 });
 
-test("отсутствующее, нулевое и отрицательное значение дают одну секунду", () => {
-  assert.equal(retryAfterSeconds({}), 1);
-  assert.equal(retryAfterSeconds({ retryAfterMs: 0 }), 1);
-  assert.equal(retryAfterSeconds({ retryAfterMs: -5000 }), 1);
+test("без задержки в ответе число не выдумывается", () => {
+  // API на самом деле её не присылает: глобальный фильтр исключений оставляет
+  // в теле только { error, requestId }. Сказать «повторите через 1 с», когда
+  // ждать пятнадцать минут, — соврать человеку на входе.
+  assert.equal(retryAfterSeconds({}), null);
+  assert.equal(retryAfterSeconds({ retryAfterMs: 0 }), null);
+  assert.equal(retryAfterSeconds({ retryAfterMs: -5000 }), null);
 });
 
-test("нечитаемое тело не ломает подсчёт", () => {
-  assert.equal(retryAfterSeconds(null), 1);
-  assert.equal(retryAfterSeconds("слишком часто"), 1);
-  assert.equal(retryAfterSeconds({ retryAfterMs: "минуту" }), 1);
+test("нечитаемое тело тоже не даёт числа", () => {
+  assert.equal(retryAfterSeconds(null), null);
+  assert.equal(retryAfterSeconds("слишком часто"), null);
+  assert.equal(retryAfterSeconds({ retryAfterMs: "минуту" }), null);
+  assert.equal(retryAfterSeconds({ error: "Too many attempts", requestId: "x" }), null);
 });
 
 test("неправдоподобно большая задержка не называется в секундах", () => {

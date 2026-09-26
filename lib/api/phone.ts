@@ -22,3 +22,14 @@ export function toUzPhone(input: string): string | null {
 
   return digits;
 }
+
+/**
+ * Код из SMS. API требует ровно шесть цифр (`verify-phone-code.dto.ts`), поэтому
+ * пятизначный до него не доводим: иначе вернулся бы 400, а человек увидел бы
+ * сообщение не про код.
+ */
+export function toVerificationCode(input: string): string | null {
+  const digits = String(input ?? "").replace(/\D/g, "");
+
+  return digits.length === 6 ? digits : null;
+}

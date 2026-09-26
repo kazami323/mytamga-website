@@ -39,6 +39,6 @@ export async function POST(request: NextRequest) {
     return attachSession(NextResponse.json({ ok: true }), tokens);
   } catch (error) {
     // Refresh-токен мёртв — держать его в куке незачем.
-    return clearSession(failureFrom(error));
+    return clearSession(failureFrom(error, "signedOut"));
   }
 }

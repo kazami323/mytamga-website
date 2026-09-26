@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       userAgent: context.userAgent,
     });
   } catch (error) {
-    return attachDevice(failureFrom(error), context);
+    return attachDevice(failureFrom(error, "phoneInvalid"), context);
   }
 
   return attachDevice(NextResponse.json({ ok: true }), context);

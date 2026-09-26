@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { isSameOrigin } from "@/lib/api/origin";
-import { toUzPhone } from "@/lib/api/phone";
+import { toUzPhone, toVerificationCode } from "@/lib/api/phone";
 import { callApi } from "@/lib/api/server";
 import {
   attachDevice,
@@ -22,13 +22,15 @@ export async function POST(request: NextRequest) {
     | null;
 
   const phone = toUzPhone(String(body?.phone ?? ""));
-  const code = String(body?.code ?? "").replace(/\D/g, "");
+  const code = toVerificationCode(String(body?.code ?? ""));
 
   if (!phone) {
     return failure("phoneInvalid");
   }
 
-  if (code.length < 4) {
+  // API требует ровно шесть цифр: отправив пять, мы получили бы 400 и
+  // показали человеку сообщение не про код.
+  if (!code) {
     return failure("codeInvalid");
   }
 
@@ -54,6 +56,6 @@ export async function POST(request: NextRequest) {
       context,
     );
   } catch (error) {
-    return attachDevice(failureFrom(error), context);
+    return attachDevice(failureFrom(error, "codeInvalid"), context);
   }
 }
