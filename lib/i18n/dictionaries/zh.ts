@@ -186,6 +186,15 @@ export const zh: Dictionary = {
       codeInvalid: "短信验证码为六位数字。",
       pricesPending: "付款尚未开通。",
     },
+    pay: {
+      title: "付款",
+      waiting: "正在核对付款…",
+      success: "已付款。打开 MyTamga 应用，套餐已生效。",
+      timeout: "付款正在处理中。如果十分钟内套餐仍未出现，请联系客服。",
+      transaction: "付款编号：{id}",
+      signIn: "请重新登录以核对付款。",
+      backToPricing: "返回价格页",
+    },
   },
   footer: {
     legal: P,

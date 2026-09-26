@@ -214,6 +214,16 @@ export const uz: Dictionary = {
       codeInvalid: "SMS dagi kod — olti raqam.",
       pricesPending: "To‘lov hozircha ochilmagan.",
     },
+    pay: {
+      title: "To‘lov",
+      waiting: "To‘lovni tekshiryapmiz…",
+      success: "To‘landi. MyTamga ilovasini ochingiz — tarif allaqachon ulangan.",
+      timeout:
+        "To‘lov qayta ishlanmoqda. Agar tarif o‘n daqiqa ichida paydo bo‘lmasa, qo‘llab-quvvatlashga yozing.",
+      transaction: "To‘lov raqami: {id}",
+      signIn: "To‘lovni tekshirish uchun qaytadan kiring.",
+      backToPricing: "Tariflarga",
+    },
   },
   footer: {
     legal: P,

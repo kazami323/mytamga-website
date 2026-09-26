@@ -205,6 +205,16 @@ export const en: Dictionary = {
       codeInvalid: "The code from the SMS is six digits.",
       pricesPending: "Payment is not open yet.",
     },
+    pay: {
+      title: "Payment",
+      waiting: "Checking the payment…",
+      success: "Paid. Open the MyTamga app — the plan is already active.",
+      timeout:
+        "The payment is being processed. If the plan does not appear within ten minutes, write to support.",
+      transaction: "Payment number: {id}",
+      signIn: "Sign in again to check the payment.",
+      backToPricing: "Back to pricing",
+    },
   },
   footer: {
     legal: P,

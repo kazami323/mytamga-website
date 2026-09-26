@@ -221,6 +221,16 @@ export const ru = {
       codeInvalid: "Код из SMS — шесть цифр.",
       pricesPending: "Оплата пока не открыта.",
     },
+    pay: {
+      title: "Оплата",
+      waiting: "Проверяем оплату…",
+      success: "Оплачено. Откройте приложение MyTamga — тариф уже подключён.",
+      timeout:
+        "Платёж обрабатывается. Если тариф не появится в течение десяти минут, напишите в поддержку.",
+      transaction: "Номер платежа: {id}",
+      signIn: "Чтобы проверить оплату, войдите заново.",
+      backToPricing: "К тарифам",
+    },
   },
   footer: {
     legal: P, // TODO(copy): legal entity, registration number, address.
