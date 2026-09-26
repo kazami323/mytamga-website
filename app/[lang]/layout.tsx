@@ -79,7 +79,14 @@ export default async function RootLayout({
       </head>
       <body>
         <SitePreloader loadingLabel={t.preloader.loading} />
-        <SiteHeader locale={lang} strings={{ nav: t.nav, themeLabel: t.theme.light }} />
+        <SiteHeader
+          locale={lang}
+          strings={{
+            nav: t.nav,
+            themeLabel: t.theme.light,
+            pricingLabel: t.billing.nav,
+          }}
+        />
         {children}
       </body>
     </html>

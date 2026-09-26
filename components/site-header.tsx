@@ -11,6 +11,7 @@ import type { Dictionary } from "@/lib/i18n/dictionaries/ru";
 type HeaderStrings = {
   nav: Dictionary["nav"];
   themeLabel: string;
+  pricingLabel: string;
 };
 
 export function SiteHeader({
@@ -21,12 +22,15 @@ export function SiteHeader({
   strings: HeaderStrings;
 }) {
   const { nav } = strings;
+  // Абсолютные адреса, а не якоря: со страницы тарифов «#services» ведёт в
+  // никуда. На главной браузер всё так же плавно прокручивает.
   const navItems = [
-    { title: nav.home, href: "#hero" },
-    { title: nav.services, href: "#services" },
-    { title: nav.calc, href: "#calc" },
-    { title: nav.about, href: "#about" },
-    { title: nav.contacts, href: "#contacts" },
+    { title: nav.home, href: `/${locale}#hero` },
+    { title: nav.services, href: `/${locale}#services` },
+    { title: strings.pricingLabel, href: `/${locale}/pricing` },
+    { title: nav.calc, href: `/${locale}#calc` },
+    { title: nav.about, href: `/${locale}#about` },
+    { title: nav.contacts, href: `/${locale}#contacts` },
   ];
 
   const [isOpen, setIsOpen] = useState(false);
@@ -70,7 +74,7 @@ export function SiteHeader({
             The gutter is the same token the hero copy uses. */}
         <div className="grid h-20 grid-cols-[1fr_auto_1fr] items-center px-[var(--gutter)] lg:h-24">
           <a
-            href="#hero"
+            href={`/${locale}#hero`}
             className="site-brand justify-self-start text-[0.95rem] font-semibold tracking-[-0.02em] sm:text-base"
           >
             MyTamga

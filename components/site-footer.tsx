@@ -1,14 +1,25 @@
 import { getCurrentDictionary } from "@/lib/i18n/get-dictionary";
 
 export async function SiteFooter() {
-  const { t } = await getCurrentDictionary();
+  const { locale, t } = await getCurrentDictionary();
   const footer = t.footer;
   const links = [
-    { title: t.nav.home, href: "#hero" },
-    { title: t.nav.services, href: "#services" },
-    { title: t.nav.calc, href: "#calc" },
-    { title: t.nav.about, href: "#about" },
-    { title: t.nav.contacts, href: "#contacts" },
+    { title: t.nav.home, href: `/${locale}#hero` },
+    { title: t.nav.services, href: `/${locale}#services` },
+    { title: t.billing.nav, href: `/${locale}/pricing` },
+    { title: t.nav.calc, href: `/${locale}#calc` },
+    { title: t.nav.about, href: `/${locale}#about` },
+    { title: t.nav.contacts, href: `/${locale}#contacts` },
+  ];
+
+  // Оферта, политика и условия обязаны быть доступны с любой страницы: их
+  // проверяет Click при подключении мерчанта, а на политику и условия
+  // ссылается конфигурация приложения.
+  const legalLinks = [
+    { title: t.billing.legal.offer, href: `/${locale}/offer` },
+    { title: t.billing.legal.privacy, href: `/${locale}/privacy` },
+    { title: t.billing.legal.terms, href: `/${locale}/terms` },
+    { title: t.billing.legal.support, href: `/${locale}/support` },
   ];
 
   // Rendered on the server, so the year cannot disagree across hydration.
@@ -33,6 +44,18 @@ export async function SiteFooter() {
           </ul>
         </nav>
       </div>
+
+      <nav aria-label={t.billing.legal.offer} className="mt-10">
+        <ul className="flex flex-wrap gap-x-6 gap-y-2">
+          {legalLinks.map((link) => (
+            <li key={link.href}>
+              <a href={link.href} className="nav-link text-xs">
+                {link.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
       <p className="mt-12 text-xs leading-5 text-ink-ghost">
         © {year} MyTamga. {footer.legal}
