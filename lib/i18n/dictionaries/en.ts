@@ -215,6 +215,21 @@ export const en: Dictionary = {
       signIn: "Sign in again to check the payment.",
       backToPricing: "Back to pricing",
     },
+    legal: {
+      offer: "Public offer",
+      privacy: "Privacy policy",
+      terms: "Terms of use",
+      support: "Support",
+      updated: "Updated: {date}",
+      draftNotice: "A draft. It has not been reviewed by a lawyer and is not in force.",
+      contractLanguage:
+        "The contract is concluded in Russian. Please open the Russian version of the document.",
+      detailsMissing: "The provider's registration details will be published before payments open.",
+      detailsTitle: "Registration details",
+      supportTitle: "Support",
+      supportBody: "Write to us — we reply on working days.",
+      openRussian: "Open in Russian",
+    },
   },
   footer: {
     legal: P,

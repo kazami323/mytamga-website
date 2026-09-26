@@ -224,6 +224,22 @@ export const uz: Dictionary = {
       signIn: "To‘lovni tekshirish uchun qaytadan kiring.",
       backToPricing: "Tariflarga",
     },
+    legal: {
+      offer: "Ommaviy oferta",
+      privacy: "Maxfiylik siyosati",
+      terms: "Foydalanish shartlari",
+      support: "Qo‘llab-quvvatlash",
+      updated: "Yangilangan sana: {date}",
+      draftNotice: "Hujjat loyihasi. U hali yurist tomonidan tekshirilmagan va kuchga kirmagan.",
+      contractLanguage:
+        "Shartnoma rus tilida tuziladi. Hujjatning rus tilidagi versiyasini oching.",
+      detailsMissing:
+        "Ijrochining rekvizitlari to‘lovlar qabul qilinishidan oldin e’lon qilinadi.",
+      detailsTitle: "Rekvizitlar",
+      supportTitle: "Qo‘llab-quvvatlash",
+      supportBody: "Bizga yozing — ish kunlari javob beramiz.",
+      openRussian: "Rus tilida ochish",
+    },
   },
   footer: {
     legal: P,

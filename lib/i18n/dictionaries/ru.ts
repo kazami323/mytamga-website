@@ -231,6 +231,23 @@ export const ru = {
       signIn: "Чтобы проверить оплату, войдите заново.",
       backToPricing: "К тарифам",
     },
+    legal: {
+      offer: "Публичная оферта",
+      privacy: "Политика конфиденциальности",
+      terms: "Условия использования",
+      support: "Поддержка",
+      updated: "Дата обновления: {date}",
+      draftNotice:
+        "Проект документа. Он ещё не проверен юристом и не вступил в силу.",
+      contractLanguage:
+        "Договор заключается на русском языке. Откройте русскую версию документа.",
+      detailsMissing:
+        "Реквизиты исполнителя будут опубликованы до начала приёма платежей.",
+      detailsTitle: "Реквизиты",
+      supportTitle: "Поддержка",
+      supportBody: "Напишите нам — отвечаем по рабочим дням.",
+      openRussian: "Открыть на русском",
+    },
   },
   footer: {
     legal: P, // TODO(copy): legal entity, registration number, address.
