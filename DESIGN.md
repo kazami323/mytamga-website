@@ -156,6 +156,21 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
   Release before `dispose()` — it removes the canvas.
 - The Spline scene must stay behind `SceneBoundary`. A failed fetch from its CDN surfaces as a render-time throw, and without a boundary React tears down the whole tree — header, hero and preloader with it, leaving a blank page and a scroll lock with nothing left running to release it.
 - Layout properties belong in utilities, not in `globals.css`. Rules there load after Tailwind at equal specificity, so a `display` written next to the colours will quietly defeat responsive variants like `md:hidden`.
+- The site must run where the application's API trusts it as a proxy. The API
+  derives the rate-limit key from `request.ip` and allows three sign-in requests
+  a minute per address; it honours `X-Forwarded-For` only from the proxies in
+  `TRUST_PROXY`, which by default covers loopback and private ranges. On the
+  same machine as the API this works with no configuration. On a host with
+  rotating addresses — Vercel and the like — the real client address cannot be
+  forwarded, every visitor shares one counter, and the fourth person in a minute
+  is refused sign-in through no fault of their own.
+- Tests run on Node's built-in runner over TypeScript directly, so modules they
+  cover import siblings **with** the `.ts` extension and never through the `@/`
+  alias, which Node cannot resolve. `allowImportingTsExtensions` in
+  `tsconfig.json` is what keeps TypeScript content with that.
+- `next/server` cannot be loaded by the plain Node test runner. Logic worth
+  testing therefore lives outside modules that import it — see
+  `lib/api/authorized-call.ts` beside `lib/api/session.ts`.
 
 ## Layout and behavior
 
@@ -171,3 +186,82 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
 - Stacked, the copy takes its natural height and the scene takes whatever is left, so the hero fills exactly one screen at any phone height.
 - Pointer spotlight is enhancement only; content does not depend on hover.
 - Motion respects `prefers-reduced-motion` and all owned scrollbars remain visible.
+
+## Billing
+
+- Prices, plan names, feature and limit labels come from `GET /api/billing/plans`
+  on the application's API. Nothing is written into this repository. A stale
+  price would disagree with what the provider charges, which is worse than no
+  price at all. `npm run check:catalog` compares the rendered page against the
+  catalogue in all four languages; while prices are unannounced it checks the
+  opposite, that no amount appears.
+- `lib/billing/flags.ts` holds the stage. `PRICES_PUBLISHED` is `false` until the
+  owner announces prices **and** the catalogue amount matches what the provider
+  charges (`CLICK_PLAN_PRO_AMOUNT_UZS` in the application repository). The flag
+  lives in code, not in an environment variable, so turning the checkout on is
+  visible in a diff and passes review. `tests/flags.test.ts` fails when it flips,
+  on purpose.
+- "Under discussion" appears only where an amount exists and has not been
+  announced — Pro and Business. Basic is labelled free forever, not a trial, and
+  VIP as arranged on request: telling a visitor that a free plan's price is under
+  discussion says it may one day cost money.
+- The browser never talks to the application's API. Route handlers under
+  `app/api/` do, and they keep tokens in `HttpOnly` cookies. Page scripts —
+  Spline and the shaders, both from a CDN — cannot read them.
+- Cookies use `SameSite=Lax`, never `Strict`: the visitor comes back from the
+  payment provider's site, a cross-site navigation, and `Strict` would drop the
+  session exactly when the return page needs it.
+- Feature and limit labels are translated by their stable catalogue keys in
+  `lib/billing/label-maps.ts`. Russian has no map: the catalogue is Russian
+  already. An unknown key falls back to the catalogue's Russian label rather
+  than rendering an empty line.
+- The checkout reads the subscription before showing a pay button, so "only the
+  owner can pay" (403) and "bought in an app store" (409) are explained up
+  front instead of arriving after the click. `lib/billing/checkout-state.ts`
+  makes that decision and is covered by tests, because getting it wrong leads a
+  person into a refusal.
+- **Paying and asking are different rights.** An organisation owner has
+  `canManageSubscription` but not `canRequestUpgrade` — there is nobody to ask —
+  and the upgrade-request endpoint answers 403. The request button appears only
+  for whoever actually holds the right, normally an admin who cannot pay.
+- Payment providers come from `GET /api/billing/payment-providers`. Only those
+  reported `online` are offered. Click is implemented on the server; Payme and
+  Uzum are stubs there, and Stripe cannot work for an Uzbek entity, so it is
+  absent from the interface.
+- Only Uzbek phone numbers can sign in: `normalizePhone` on the server takes
+  twelve digits starting with 998. The English and Chinese pages say so.
+- Amounts are grouped with U+202F, a narrow no-break space. Any script that
+  compares rendered text must not collapse it: `\s` matches it in both
+  JavaScript and Python, and collapsing it breaks every price comparison.
+
+## Legal pages
+
+- The privacy policy and terms of use are **not written here**. They already
+  exist and are in force in the application's monorepo
+  (`apps/api/public/legal/*/index.html`) and are carried over verbatim; two
+  different documents under one name are worse than one.
+  `npm run check:legal` reports drift when the application's text changes.
+- Only the public offer is new, and it is marked a draft until a lawyer reads
+  it. Click requires it, along with company details, to connect a merchant.
+- Company details in `lib/legal/company.ts` are `null` until the owner supplies
+  them, so the gap is detectable by a script rather than by re-reading a file.
+  The support address `support@mytamga.uz` is real — it appears in both
+  documents in the application.
+- Legal text exists in Russian only. `uz`, `en` and `zh` state that the contract
+  is concluded in Russian and link to it: an unreviewed translation of a contract
+  is worse than no translation. The mechanism takes other languages the moment
+  the text exists.
+
+## Environment
+
+`.env*` is gitignored, so the variables are documented here.
+
+| Variable | Used by | Notes |
+| --- | --- | --- |
+| `MYTAMGA_API_URL` | route handlers, catalogue loading | The application's API, e.g. `http://localhost:3001` locally and `https://api.mytamga.uz` in production. Server-side only — no `NEXT_PUBLIC_` prefix, because the browser never calls the API. |
+| `NEXT_PUBLIC_SITE_URL` | `generateMetadata` | Absolute base for canonical and hreflang links. |
+| `MYTAMGA_REPO` | `npm run check:legal` | Path to the application's monorepo for the legal-text comparison. Defaults to `../MyTamga`. |
+
+Local development needs both servers: `npm run dev` here (port 3000) and
+`npm run dev:api` in the application's monorepo (port 3001). The dev SMS
+provider prints the sign-in code to the API console.
