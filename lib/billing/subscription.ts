@@ -8,6 +8,12 @@ export type SubscriptionView = {
   isStoreManaged: boolean;
   nextBillingAt: string | null;
   canManageSubscription: boolean;
+  /**
+   * Право попросить тариф у владельца. Это НЕ то же, что право оплатить: у
+   * владельца организации оплата есть, а заявка — нет, потому что просить не у
+   * кого. Предложить ему «Запросить» значит привести к 403.
+   */
+  canRequestUpgrade: boolean;
   organizationName: string | null;
   seatsPurchased: number | null;
   seatsUsed: number | null;
@@ -55,6 +61,7 @@ export function parseSubscription(input: unknown): SubscriptionView | null {
         ? input.nextBillingAt
         : null,
     canManageSubscription: permissions.canManageSubscription === true,
+    canRequestUpgrade: permissions.canRequestUpgrade === true,
     organizationName: typeof organization.name === "string" ? organization.name : null,
     seatsPurchased: typeof input.seatsPurchased === "number" ? input.seatsPurchased : null,
     seatsUsed: typeof input.seatsUsed === "number" ? input.seatsUsed : null,

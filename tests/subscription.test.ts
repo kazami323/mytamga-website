@@ -9,7 +9,7 @@ const summary = {
   status: "active",
   stripeStatus: "click_paid",
   nextBillingAt: "2026-10-26T00:00:00.000Z",
-  billingPermissions: { canManageSubscription: true },
+  billingPermissions: { canManageSubscription: true, canRequestUpgrade: false },
   seatsPurchased: 1,
   seatsUsed: 1,
   organization: { id: "org-1", name: "ООО Ромашка", secret: "не наше дело" },
@@ -46,9 +46,26 @@ test("подписка из магазина видна отдельным пр�
   );
 });
 
+test("право оплатить и право попросить — разные, и оба видны странице", () => {
+  // У владельца организации canManageSubscription true, а canRequestUpgrade
+  // false: заявку оформляет админ, который платить не может. Предложить
+  // владельцу «Запросить» значит привести его к 403.
+  const owner = parseSubscription(summary);
+  assert.equal(owner?.canManageSubscription, true);
+  assert.equal(owner?.canRequestUpgrade, false);
+
+  const admin = parseSubscription({
+    ...summary,
+    billingPermissions: { canManageSubscription: false, canRequestUpgrade: true },
+  });
+  assert.equal(admin?.canManageSubscription, false);
+  assert.equal(admin?.canRequestUpgrade, true);
+});
+
 test("отсутствие прав на оплату — не то же, что их наличие", () => {
   const view = parseSubscription({ ...summary, billingPermissions: {} });
   assert.equal(view?.canManageSubscription, false);
+  assert.equal(view?.canRequestUpgrade, false);
 });
 
 test("чужой ответ даёт null", () => {

@@ -197,7 +197,7 @@ export const uz: Dictionary = {
       uzPhoneOnly:
         "Saytda to‘lov O‘zbekiston raqami bilan mumkin. So‘rov yuboring — boshqa usulni taklif qilamiz.",
       pricesPending:
-        "Narxlar hali muhokama qilinmoqda. So‘rov yuboring — to‘lov ochilganda xabar beramiz.",
+        "Narxlar hali muhokama qilinmoqda. To‘lov ochilganda xabar beramiz.",
     },
     errors: {
       rate: "Juda tez. {seconds} s dan keyin qayta urinib ko‘ring.",

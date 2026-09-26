@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { PlanGrid } from "@/components/pricing/plan-grid";
+import { CheckoutPanel } from "@/components/pricing/checkout-panel";
 import { PeriodToggle } from "@/components/pricing/period-toggle";
 import { PricingProvider } from "@/components/pricing/pricing-provider";
 import { SectionHeading } from "@/components/section-heading";
 import { SiteFooter } from "@/components/site-footer";
 import { AUTORENEW_AVAILABLE, PRICES_PUBLISHED } from "@/lib/billing/flags";
-import { loadPlans } from "@/lib/billing/plans.server";
+import { loadPlans, loadProviders } from "@/lib/billing/plans.server";
 import { HTML_LANG, LOCALES, hasLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 
@@ -43,7 +44,7 @@ export default async function PricingPage({ params }: PageProps<"/[lang]/pricing
   }
 
   const t = getDictionary(lang);
-  const plans = await loadPlans();
+  const [plans, providers] = await Promise.all([loadPlans(), loadProviders()]);
 
   return (
     <>
@@ -88,6 +89,12 @@ export default async function PricingPage({ params }: PageProps<"/[lang]/pricing
               <p className="mt-10 text-xs leading-5 text-ink-faint">
                 {AUTORENEW_AVAILABLE ? t.billing.renewAuto : t.billing.renewManual}
               </p>
+
+              <CheckoutPanel
+                strings={t.billing}
+                locale={lang}
+                providers={providers ?? []}
+              />
             </PricingProvider>
           )}
         </section>

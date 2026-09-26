@@ -170,7 +170,7 @@ export const zh: Dictionary = {
       storeManaged: "该订阅在应用商店开通，请在商店中管理。",
       uzPhoneOnly:
         "在网站付款需要乌兹别克斯坦手机号。请提交申请，我们会提供其他方式。",
-      pricesPending: "价格仍在商议中。请提交申请，开通付款后我们会通知您。",
+      pricesPending: "价格仍在商议中。开通付款后我们会通知您。",
     },
     errors: {
       rate: "操作过于频繁，请在 {seconds} 秒后重试。",

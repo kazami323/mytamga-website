@@ -189,7 +189,7 @@ export const en: Dictionary = {
       uzPhoneOnly:
         "Paying on the site needs an Uzbek phone number. Send a request and we will offer another way.",
       pricesPending:
-        "Prices are still under discussion. Send a request and we will tell you when payment opens.",
+        "Prices are still under discussion. We will let you know when payment opens.",
     },
     errors: {
       rate: "Too often. Try again in {seconds} s.",

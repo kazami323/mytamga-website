@@ -1,3 +1,5 @@
+import type React from "react";
+
 import { cn } from "@/lib/utils";
 
 interface TextFieldProps {
@@ -13,6 +15,10 @@ interface TextFieldProps {
   placeholder?: string;
   optionalLabel?: string;
   className?: string;
+  // Управляемое значение нужно кассе; форма заявки на главной его не передаёт
+  // и продолжает работать неуправляемой.
+  value?: string;
+  onValueChange?: (value: string) => void;
 }
 
 export function TextField({
@@ -28,6 +34,8 @@ export function TextField({
   placeholder,
   optionalLabel,
   className,
+  value,
+  onValueChange,
 }: TextFieldProps) {
   const errorId = `${id}-error`;
   const isTextarea = typeof rows === "number";
@@ -39,6 +47,11 @@ export function TextField({
     placeholder,
     autoComplete,
     required,
+    value,
+    onChange: onValueChange
+      ? (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+          onValueChange(event.target.value)
+      : undefined,
     "aria-invalid": error ? (true as const) : undefined,
     "aria-describedby": error ? errorId : undefined,
     className: "text-field w-full px-4 py-3 text-sm",
