@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { PlanGrid } from "@/components/pricing/plan-grid";
+import { PeriodToggle } from "@/components/pricing/period-toggle";
 import { PricingProvider } from "@/components/pricing/pricing-provider";
 import { SectionHeading } from "@/components/section-heading";
 import { SiteFooter } from "@/components/site-footer";
-import { AUTORENEW_AVAILABLE } from "@/lib/billing/flags";
+import { AUTORENEW_AVAILABLE, PRICES_PUBLISHED } from "@/lib/billing/flags";
 import { loadPlans } from "@/lib/billing/plans.server";
 import { HTML_LANG, LOCALES, hasLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
@@ -75,6 +76,13 @@ export default async function PricingPage({ params }: PageProps<"/[lang]/pricing
 
           {plans !== null && (
             <PricingProvider>
+              {/* Пока цены не объявлены, сравнивать нечего. */}
+              {PRICES_PUBLISHED && (
+                <div className="mt-10">
+                  <PeriodToggle strings={t.billing.period} />
+                </div>
+              )}
+
               <PlanGrid plans={plans} strings={t.billing} locale={lang} />
 
               <p className="mt-10 text-xs leading-5 text-ink-faint">
