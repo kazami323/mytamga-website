@@ -131,3 +131,32 @@ test("ошибка не 401 пробрасывается без попытки �
   );
   assert.equal(calls.length, 1);
 });
+
+test("одновременные запросы обновляют токен один раз на двоих", async () => {
+  // Сервер меняет refresh-токен при каждом обновлении: два параллельных
+  // обновления одним токеном дали бы проигравшему 401 по живой сессии.
+  let refreshes = 0;
+  const impl = async <R,>(call: ApiCall): Promise<R> => {
+    if (call.path === "/api/auth/refresh") {
+      refreshes += 1;
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      return { accessToken: "access-2", refreshToken: "refresh-2" } as R;
+    }
+    if (call.accessToken === "access-1") {
+      throw new ApiError(401, { error: "expired" });
+    }
+    return { ok: true } as R;
+  };
+
+  const ctx = { ...context, refreshToken: "shared-token" };
+  const [a, b] = await Promise.all([
+    authorizedCall<{ ok: boolean }>(ctx, { path: "/a" }, impl),
+    authorizedCall<{ ok: boolean }>(ctx, { path: "/b" }, impl),
+  ]);
+
+  assert.equal(refreshes, 1);
+  assert.deepEqual(a.data, { ok: true });
+  assert.deepEqual(b.data, { ok: true });
+  assert.deepEqual(a.tokens, { accessToken: "access-2", refreshToken: "refresh-2" });
+  assert.deepEqual(b.tokens, { accessToken: "access-2", refreshToken: "refresh-2" });
+});

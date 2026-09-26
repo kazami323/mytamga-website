@@ -61,6 +61,9 @@ export async function POST(request: NextRequest) {
       // Провайдер вернёт человека без наших параметров, а номер платежа нужен
       // странице возврата и письму в поддержку.
       response.cookies.set(COOKIE.transaction, transactionId, cookieOptions(MAX_AGE.transaction));
+      // И какой тариф оплачен: иначе страница возврата ждала бы «pro» и на
+      // успешной оплате Business отчитывалась бы «платёж обрабатывается».
+      response.cookies.set(COOKIE.transactionPlan, planKey, cookieOptions(MAX_AGE.transaction));
     }
 
     return tokens ? attachSession(response, tokens) : response;

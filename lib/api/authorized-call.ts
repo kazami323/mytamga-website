@@ -1,5 +1,6 @@
 import { ApiError } from "./errors.ts";
 import { callApi, type ApiCall } from "./server.ts";
+import { createSingleFlight } from "./single-flight.ts";
 
 export type SessionTokens = { accessToken: string; refreshToken: string };
 
@@ -15,6 +16,43 @@ export type CallerContext = {
 export type Caller = <R>(call: ApiCall) => Promise<R>;
 
 const liveCaller: Caller = (call) => callApi(call);
+
+/**
+ * Одно обновление на refresh-токен в один момент. Сервер меняет токен при
+ * каждом обновлении, поэтому два параллельных обновления одним и тем же токеном
+ * означают 401 проигравшему по совершенно живой сессии — а ручка обновления на
+ * таком 401 снесла бы куки, которые победитель только что выдал.
+ */
+const refreshFlight = createSingleFlight<SessionTokens>();
+
+/** Обновление сессии. Общее место для ручки обновления и для повтора запроса. */
+export function refreshSession(
+  context: CallerContext,
+  callImpl: Caller = liveCaller,
+): Promise<SessionTokens> {
+  const refreshToken = context.refreshToken;
+
+  if (!refreshToken) {
+    return Promise.reject(new ApiError(401, { error: "no refresh token" }));
+  }
+
+  return refreshFlight(refreshToken, async () => {
+    const tokens = await callImpl<SessionTokens>({
+      path: "/api/auth/refresh",
+      method: "POST",
+      body: { refreshToken },
+      deviceId: context.deviceId,
+      clientIp: context.clientIp,
+      userAgent: context.userAgent,
+    });
+
+    if (!tokens?.accessToken) {
+      throw new ApiError(401, { error: "refresh failed" });
+    }
+
+    return tokens;
+  });
+}
 
 /**
  * Запрос от имени человека. Access-токен живёт пятнадцать минут, поэтому на 401
@@ -53,20 +91,7 @@ export async function authorizedCall<T>(
     }
   }
 
-  if (!context.refreshToken) {
-    throw new ApiError(401, { error: "no refresh token" });
-  }
-
-  const refreshed = await callImpl<SessionTokens>({
-    ...base,
-    path: "/api/auth/refresh",
-    method: "POST",
-    body: { refreshToken: context.refreshToken },
-  });
-
-  if (!refreshed?.accessToken) {
-    throw new ApiError(401, { error: "refresh failed" });
-  }
+  const refreshed = await refreshSession(context, callImpl);
 
   const data = await callImpl<T>({ ...base, accessToken: refreshed.accessToken });
 

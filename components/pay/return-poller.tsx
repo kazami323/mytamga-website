@@ -8,6 +8,7 @@ import { getJson } from "@/lib/api/client";
 import { POLL_INTERVAL_MS, pollOutcome, type PollOutcome } from "@/lib/billing/poll";
 import type { SubscriptionView } from "@/lib/billing/subscription";
 import type { Dictionary } from "@/lib/i18n/dictionaries/ru";
+import { COMPANY } from "@/lib/legal/company";
 import { fill } from "@/lib/i18n/interpolate";
 
 interface ReturnPollerProps {
@@ -84,6 +85,16 @@ export function ReturnPoller({
           {fill(strings.pay.transaction, { id: transactionId })}
         </p>
       )}
+
+      {/* Текст просит написать в поддержку — значит адрес должен быть здесь же. */}
+      {outcome !== "success" && outcome !== "pending" && (
+        <p data-support className="text-sm leading-6">
+          <a href={`mailto:${COMPANY.supportEmail}`} className="nav-link">
+            {COMPANY.supportEmail}
+          </a>
+        </p>
+      )}
+
     </div>
   );
 }

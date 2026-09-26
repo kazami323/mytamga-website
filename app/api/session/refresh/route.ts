@@ -1,14 +1,13 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { isSameOrigin } from "@/lib/api/origin";
-import { callApi } from "@/lib/api/server";
+import { refreshSession } from "@/lib/api/authorized-call";
 import {
   attachSession,
   clearSession,
   failure,
   failureFrom,
   readContext,
-  type SessionTokens,
 } from "@/lib/api/session";
 
 export async function POST(request: NextRequest) {
@@ -23,18 +22,10 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const tokens = await callApi<SessionTokens>({
-      path: "/api/auth/refresh",
-      method: "POST",
-      body: { refreshToken: context.refreshToken },
-      deviceId: context.deviceId,
-      clientIp: context.clientIp,
-      userAgent: context.userAgent,
-    });
-
-    if (!tokens?.accessToken) {
-      return clearSession(failure("signedOut"));
-    }
+    // Единичное обновление на процесс: два параллельных обновления одним
+    // токеном дали бы проигравшему 401 по живой сессии, и этот же обработчик
+    // снёс бы куки, которые победитель только что выдал.
+    const tokens = await refreshSession(context);
 
     return attachSession(NextResponse.json({ ok: true }), tokens);
   } catch (error) {

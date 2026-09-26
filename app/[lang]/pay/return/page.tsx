@@ -26,6 +26,7 @@ export default async function PayReturnPage({
   const t = getDictionary(lang);
   const jar = await cookies();
   const transactionId = jar.get(COOKIE.transaction)?.value ?? null;
+  const paidPlanKey = jar.get(COOKIE.transactionPlan)?.value ?? null;
 
   return (
     <>
@@ -43,9 +44,10 @@ export default async function PayReturnPage({
           <ReturnPoller
             strings={t.billing}
             transactionId={transactionId}
-            // Куку платежа мог съесть час или другое устройство: тогда успехом
-            // считается любой платный активный тариф.
-            expectedPlanKey={transactionId ? "pro" : null}
+            // Тариф берётся из куки платежа, а не предполагается: её могло не
+            // остаться — человек вернулся через час или с другого устройства — и
+            // тогда успехом считается любой платный активный тариф.
+            expectedPlanKey={paidPlanKey}
           />
 
           <a href={`/${lang}/pricing`} className="nav-link mt-10 inline-block text-sm">

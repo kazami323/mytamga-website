@@ -1,7 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { parsePlans, parseProviders } from "../lib/billing/catalog.ts";
+import { isCatalogUsable, offerableProviders, parsePlans, parseProviders } from "../lib/billing/catalog.ts";
+import { PROVIDERS_HIDDEN_FROM_UI } from "../lib/billing/flags.ts";
 
 const plan = {
   key: "pro",
@@ -69,4 +70,41 @@ test("разбирает провайдеров и их доступность",
 
 test("чужой ответ провайдеров даёт null", () => {
   assert.equal(parseProviders({ providers: {} }), null);
+});
+
+test("каталог годен только когда в нём есть хотя бы один тариф", () => {
+  // Пустая сетка без объяснения — ровно то, что запрещено: страница обязана
+  // сказать, что цен нет, а не молча отрисовать пустой список.
+  assert.equal(isCatalogUsable(null), false);
+  assert.equal(isCatalogUsable([]), false);
+  assert.equal(isCatalogUsable(parsePlans({ plans: [plan] })), true);
+  assert.equal(isCatalogUsable(parsePlans({ plans: [{ foo: 1 }, "x", null] })), false);
+});
+
+test("Stripe до интерфейса не доходит, даже если реестр объявил его подключённым", () => {
+  // Он списывает цену из своей настройки, которой в каталоге нет вовсе, и для
+  // узбекского юрлица не работает. Реестр включает его от одних ключей в
+  // окружении — этого достаточно, чтобы он всплыл на странице.
+  const providers = parseProviders({
+    providers: [
+      { key: "click", label: "Click", status: "active", online: true },
+      { key: "stripe", label: "Stripe", status: "active", online: true },
+      { key: "payme", label: "Payme", status: "not_connected", online: false },
+    ],
+  });
+
+  const offered = offerableProviders(providers ?? [], PROVIDERS_HIDDEN_FROM_UI);
+
+  assert.deepEqual(offered.map((p) => p.key), ["click"]);
+});
+
+test("скрытый список — это именно Stripe и ничего больше", () => {
+  assert.deepEqual([...PROVIDERS_HIDDEN_FROM_UI], ["stripe"]);
+});
+
+test("неподключённый провайдер не предлагается, но и не скрывается из списка", () => {
+  const providers = parseProviders({
+    providers: [{ key: "payme", label: "Payme", status: "not_connected", online: false }],
+  });
+  assert.deepEqual(offerableProviders(providers ?? [], PROVIDERS_HIDDEN_FROM_UI), []);
 });

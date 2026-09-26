@@ -8,6 +8,7 @@ import { PricingProvider } from "@/components/pricing/pricing-provider";
 import { SectionHeading } from "@/components/section-heading";
 import { SiteFooter } from "@/components/site-footer";
 import { AUTORENEW_AVAILABLE, PRICES_PUBLISHED } from "@/lib/billing/flags";
+import { isCatalogUsable } from "@/lib/billing/catalog";
 import { loadPlans, loadProviders } from "@/lib/billing/plans.server";
 import { HTML_LANG, LOCALES, hasLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
@@ -66,7 +67,7 @@ export default async function PricingPage({ params }: PageProps<"/[lang]/pricing
 
           {/* Каталог недоступен — говорим прямо. Цены из кода не берём: устаревшая
               цена разошлась бы со списанием, а это хуже её отсутствия. */}
-          {plans === null && (
+          {!isCatalogUsable(plans) && (
             <p
               data-catalog="unavailable"
               className="mt-14 max-w-xl text-sm leading-6 text-ink-soft"
@@ -75,7 +76,7 @@ export default async function PricingPage({ params }: PageProps<"/[lang]/pricing
             </p>
           )}
 
-          {plans !== null && (
+          {isCatalogUsable(plans) && plans !== null && (
             <PricingProvider>
               {/* Пока цены не объявлены, сравнивать нечего. */}
               {PRICES_PUBLISHED && (
@@ -94,6 +95,7 @@ export default async function PricingPage({ params }: PageProps<"/[lang]/pricing
                 strings={t.billing}
                 locale={lang}
                 providers={providers ?? []}
+                plans={plans}
               />
             </PricingProvider>
           )}

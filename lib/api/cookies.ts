@@ -8,6 +8,8 @@ export const COOKIE = {
   refresh: "mt_rt",
   device: "mt_did",
   transaction: "mt_tx",
+  /** Тариф этого платежа: страница возврата ждёт именно его, а не любой платный. */
+  transactionPlan: "mt_txp",
 } as const;
 
 export const MAX_AGE = {

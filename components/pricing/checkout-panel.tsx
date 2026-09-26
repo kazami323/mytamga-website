@@ -6,12 +6,18 @@ import { usePricing } from "@/components/pricing/pricing-provider";
 import { LiquidMetalPanel } from "@/components/ui/liquid-metal-panel";
 import { TextField } from "@/components/ui/text-field";
 import { getJson, postJson, type ApiResult } from "@/lib/api/client";
-import type { BillingProvider } from "@/lib/billing/catalog";
+import { offerableProviders } from "@/lib/billing/catalog";
+import type { BillingPlan, BillingProvider } from "@/lib/billing/catalog";
 import { checkoutActions, type CheckoutBlock } from "@/lib/billing/checkout-state";
-import { PRICES_PUBLISHED } from "@/lib/billing/flags";
+import {
+  CHECKOUT_SELLABLE_PLAN_KEYS,
+  PRICES_PUBLISHED,
+  PROVIDERS_HIDDEN_FROM_UI,
+} from "@/lib/billing/flags";
 import { messageFor } from "@/lib/billing/messages";
 import type { SubscriptionView } from "@/lib/billing/subscription";
 import { HTML_LANG, type Locale } from "@/lib/i18n/config";
+import { COMPANY } from "@/lib/legal/company";
 import type { Dictionary } from "@/lib/i18n/dictionaries/ru";
 import { fill } from "@/lib/i18n/interpolate";
 
@@ -19,11 +25,13 @@ interface CheckoutPanelProps {
   strings: Dictionary["billing"];
   locale: Locale;
   providers: BillingProvider[];
+  /** Каталог нужен целиком: по выбранному ключу касса смотрит, что это за тариф. */
+  plans: BillingPlan[];
 }
 
 type Session = "unknown" | "anonymous" | "signed";
 
-export function CheckoutPanel({ strings, locale, providers }: CheckoutPanelProps) {
+export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPanelProps) {
   const { selected } = usePricing();
   const [session, setSession] = useState<Session>("unknown");
   const [subscription, setSubscription] = useState<SubscriptionView | null>(null);
@@ -34,7 +42,7 @@ export function CheckoutPanel({ strings, locale, providers }: CheckoutPanelProps
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
-  const online = providers.filter((provider) => provider.online);
+  const online = offerableProviders(providers, PROVIDERS_HIDDEN_FROM_UI);
   const [provider, setProvider] = useState(online[0]?.key ?? "");
 
   // На en и zh оплата всё равно требует узбекского номера: так устроен сервер
@@ -184,15 +192,25 @@ export function CheckoutPanel({ strings, locale, providers }: CheckoutPanelProps
 
   // Что предлагаем и почему — решает проверенная функция, а не цепочка
   // тернарников в разметке: привести человека в тупик здесь слишком легко.
+  const selectedPlan = plans.find((entry) => entry.key === selected) ?? null;
+
   const { block, canPay, canRequest } = checkoutActions({
     pricesPublished: PRICES_PUBLISHED,
     subscription,
     onlineProviders: online.length,
+    plan: selectedPlan && {
+      key: selectedPlan.key,
+      isRequestOnly: selectedPlan.isRequestOnly,
+      priceMonthly: selectedPlan.priceMonthly,
+    },
+    sellablePlanKeys: CHECKOUT_SELLABLE_PLAN_KEYS,
   });
 
   const BLOCK_TEXT: Record<Exclude<CheckoutBlock, null>, string> = {
     storeManaged: strings.checkout.storeManaged,
     ownerOnly: strings.checkout.ownerOnly,
+    freePlan: strings.cta.included,
+    requestOnly: strings.errors.requestOnly,
     pricesPending: strings.checkout.pricesPending,
     noProvider: strings.errors.unavailable,
   };
@@ -350,6 +368,16 @@ export function CheckoutPanel({ strings, locale, providers }: CheckoutPanelProps
         <p aria-live="polite" data-checkout-status className="text-sm leading-6 text-ink-soft">
           {error ?? notice}
         </p>
+
+        {/* «Напишите нам» без адреса — тупик. Он настоящий и тот же, что в
+            политике и условиях приложения. */}
+        {(blocked !== null || error !== null) && (
+          <p data-support className="text-sm leading-6">
+            <a href={`mailto:${COMPANY.supportEmail}`} className="nav-link">
+              {COMPANY.supportEmail}
+            </a>
+          </p>
+        )}
       </LiquidMetalPanel>
     </section>
   );

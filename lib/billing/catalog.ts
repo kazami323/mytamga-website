@@ -150,3 +150,23 @@ export function parseProviders(input: unknown): BillingProvider[] | null {
     ];
   });
 }
+
+/**
+ * Есть ли что показывать. `null` — ответ не наш, пустой список — в каталоге
+ * ничего публичного: для страницы это одно и то же состояние, потому что пустая
+ * сетка без объяснения выглядит как поломка вёрстки.
+ */
+export function isCatalogUsable(plans: BillingPlan[] | null): boolean {
+  return plans !== null && plans.length > 0;
+}
+
+/**
+ * Что показывать в кассе: подключённое и не скрытое. Реестру мы верим в том,
+ * подключён ли провайдер, но не в том, годится ли он нам.
+ */
+export function offerableProviders(
+  providers: BillingProvider[],
+  hidden: readonly string[],
+): BillingProvider[] {
+  return providers.filter((provider) => provider.online && !hidden.includes(provider.key));
+}

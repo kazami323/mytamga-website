@@ -84,9 +84,15 @@ for (const locale of LOCALES) {
     }
 
     // 2. Цены.
-    const amounts = [plan.priceMonthly, plan.priceYearly].filter(
-      (value) => typeof value === "number" && value > 0,
-    );
+    // Все четыре суммы, которые карточка умеет показать. Без двух последних
+    // утечка цены VIP «от» или доплаты за место прошла бы мимо проверки,
+    // существующей ровно для этого.
+    const amounts = [
+      plan.priceMonthly,
+      plan.priceYearly,
+      plan.priceMonthlyFrom,
+      plan.extraSeatPriceMonthly,
+    ].filter((value) => typeof value === "number" && value > 0);
 
     for (const amount of amounts) {
       const rendered = groupDigits(amount);

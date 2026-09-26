@@ -150,8 +150,8 @@ export const en: Dictionary = {
       monthly: "Monthly",
       yearly: "Yearly",
     },
-    yearlyAs: "A year costs as much as {months} months",
-    seatsIncluded: "{count} team seats",
+    yearlyAs: "A year: {months} of 12 months",
+    seatsIncluded: "Team seats: {count}",
     extraSeat: "{amount} UZS per extra seat",
     unlimited: "Unlimited",
     catalogUnavailable:

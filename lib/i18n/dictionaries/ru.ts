@@ -165,8 +165,10 @@ export const ru = {
       monthly: "Месяц",
       yearly: "Год",
     },
-    yearlyAs: "Год стоит как {months} месяцев",
-    seatsIncluded: "{count} мест в команде",
+    // «{months} из 12 месяцев»: существительное согласовано с 12, которое
+    // постоянно, поэтому число платежей может быть любым без «2 месяцев».
+    yearlyAs: "Год: {months} из 12 месяцев",
+    seatsIncluded: "Мест в команде: {count}",
     extraSeat: "{amount} сум за место сверх",
     unlimited: "Без ограничений",
     catalogUnavailable:
