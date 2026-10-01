@@ -172,6 +172,22 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
   testing therefore lives outside modules that import it — see
   `lib/api/authorized-call.ts` beside `lib/api/session.ts`.
 
+- No page may read as a destination the app sends people to for payment. The
+  app does not link to the site — App Store rule 3.1.3 forbids it outside the
+  US and EU storefronts — so copy such as "return to the app" or "you came from
+  the app" is wrong here. Saying the plan opens in the app after paying is fine.
+- framer-motion moves scroll-linked opacity onto the browser's `ViewTimeline`.
+  After the last explicit keyframe WAAPI interpolates back to the element's
+  inline value, which for a reveal is 0. Every `useTransform` range that drives
+  opacity must therefore end at 1; a range ending at 0.95 fades in and straight
+  back out.
+- Reduced motion is applied in CSS, not by branching on `useReducedMotion()` in
+  render. On the server that hook does not know the setting, so a branch renders
+  the moving state, the browser keeps those inline styles, and hydration warns.
+  The footer uses `.footer-reveal` with `!important`, which beats both the
+  inline style and the `ViewTimeline` animation. `components/capabilities.tsx`
+  still branches and still warns under reduced motion.
+
 ## Layout and behavior
 
 - Desktop: two unequal grid columns, copy on the left and the scene on the right. The row height is set by the copy column, so the scene cell inherits the exact vertical span of the text; stacked composition remains active through tablet widths so the statement never collapses into a cramped column.
@@ -265,3 +281,41 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
 Local development needs both servers: `npm run dev` here (port 3000) and
 `npm run dev:api` in the application's monorepo (port 3001). The dev SMS
 provider prints the sign-in code to the API console.
+
+## Footer
+
+- A curtain reveal: the wrapper sits in flow and is clipped with `clip-path`,
+  the footer is fixed underneath it. Unlike `overflow`, `clip-path` clips fixed
+  descendants, so the footer shows only within the wrapper and opens as the
+  page scrolls. It is one full screen tall (`100svh`) on every page.
+- Adapted from a 21st.dev component. Kept: the reveal, the outlined giant name,
+  the tilted marquee, glass pills that follow the cursor, back to top. Changed:
+  `gsap` replaced by framer-motion, which the site already ships; Plus Jakarta
+  Sans dropped for the site's own faces; shadcn tokens mapped onto `--ink`,
+  `--canvas`, `--accent`, so both themes work without extra rules.
+- Content is the site's own: the heading is the hero statement, set in the
+  display face with `--hero-title`, which is the one place that face is
+  allowed; the marquee lists the four capabilities from the dictionary. The
+  template's credit badge and sobriety-app copy are gone.
+- No App Store or Google Play buttons until the app is published: a link to
+  nowhere is worse than none.
+- The company line is not animated and sits in the bottom bar on every page:
+  Click checks it when connecting a merchant. The legal links have their own
+  `nav`, labelled with `nav.footer`.
+- The centred block is padded with its own `px`, not `--gutter`: it does not
+  align with the page grid, and on wide screens the gutter pushed the fourth
+  legal pill onto its own row.
+
+## Company details and reference figures
+
+- `lib/legal/company.ts` is the only place company details are written. Legal
+  pages, the contact section and the footer line all read from it, so a
+  correction after checking the registration certificate is made once.
+- Chinese pages show the English registration form: an unofficial Chinese
+  rendering of legal identifiers is worse than the one the owner supplied.
+- Uzbek text uses U+2018 instead of U+02BB here too. Manrope has no U+02BB
+  glyph. The Google Maps link keeps U+02BB percent-encoded, because it is a
+  query, never drawn.
+- The reference figures in "About" live in `lib/reference-counts.ts` with the
+  date they were taken. No build script derives them from the reference data
+  yet, and a stale figure on the trust section is worse than none.
