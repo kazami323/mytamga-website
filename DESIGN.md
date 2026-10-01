@@ -297,8 +297,15 @@ provider prints the sign-in code to the API console.
   display face with `--hero-title`, which is the one place that face is
   allowed; the marquee lists the four capabilities from the dictionary. The
   template's credit badge and sobriety-app copy are gone.
-- No App Store or Google Play buttons until the app is published: a link to
-  nowhere is worse than none.
+- App Store and Google Play buttons sit where the template had its download
+  pills. The addresses live in `lib/app-links.ts`; while one is `null` the
+  button reads "Coming soon to App Store" and is not a link — not `#`, and not
+  the unpublished listing, which answers 404. Filling the address turns it into
+  a link with the store's own caption. `isStoreUrl` checks the host and, for
+  Google Play, the package `uz.tamga.navigator`, so a look-alike host fails.
+- When the app is published, check Apple's App Store marketing guidelines: they
+  ask for the official "Download on the App Store" badge artwork, and the
+  current button is a pill with the logo instead.
 - The company line is not animated and sits in the bottom bar on every page:
   Click checks it when connecting a merchant. The legal links have their own
   `nav`, labelled with `nav.footer`.

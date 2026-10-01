@@ -217,5 +217,10 @@ export const zh: Dictionary = {
     // Год ставит сам подвал; юрлицо, ИНН и адрес — из lib/legal/company.ts.
     legal: companyLine("zh"),
     backToTop: "返回顶部",
+    // Подпись над названием магазина, как на официальных значках. Пока
+    // адреса в lib/app-links.ts нет, вместо неё — «скоро».
+    appStoreCaption: "下载于",
+    googlePlayCaption: "下载于",
+    comingSoon: "即将登陆",
   },
 };

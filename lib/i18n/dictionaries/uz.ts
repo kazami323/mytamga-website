@@ -248,5 +248,10 @@ export const uz: Dictionary = {
     // Год ставит сам подвал; юрлицо, ИНН и адрес — из lib/legal/company.ts.
     legal: companyLine("uz"),
     backToTop: "Yuqoriga",
+    // Подпись над названием магазина, как на официальных значках. Пока
+    // адреса в lib/app-links.ts нет, вместо неё — «скоро».
+    appStoreCaption: "Yuklab oling",
+    googlePlayCaption: "Yuklab oling",
+    comingSoon: "Tez kunda",
   },
 };

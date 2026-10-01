@@ -238,5 +238,10 @@ export const en: Dictionary = {
     // Год ставит сам подвал; юрлицо, ИНН и адрес — из lib/legal/company.ts.
     legal: companyLine("en"),
     backToTop: "Back to top",
+    // Подпись над названием магазина, как на официальных значках. Пока
+    // адреса в lib/app-links.ts нет, вместо неё — «скоро».
+    appStoreCaption: "Download on the",
+    googlePlayCaption: "Get it on",
+    comingSoon: "Coming soon to",
   },
 };

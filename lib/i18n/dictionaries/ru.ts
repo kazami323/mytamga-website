@@ -254,6 +254,11 @@ export const ru = {
     // Год ставит сам подвал; юрлицо, ИНН и адрес — из lib/legal/company.ts.
     legal: companyLine("ru"),
     backToTop: "Наверх",
+    // Подпись над названием магазина, как на официальных значках. Пока
+    // адреса в lib/app-links.ts нет, вместо неё — «скоро».
+    appStoreCaption: "Загрузите в",
+    googlePlayCaption: "Доступно в",
+    comingSoon: "Скоро в",
   },
 };
 
