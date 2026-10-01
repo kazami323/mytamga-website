@@ -44,7 +44,7 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
 ## Preloader
 
 - A full-bleed overlay on the canvas: the liquid loader over the wordmark, which is the placeholder for the logo once it exists.
-- It waits on the Spline scene, the one genuinely slow asset, not on a fixed timer. A 700ms floor keeps it from flashing on a warm cache; a 7s ceiling means a dead CDN cannot hold the page hostage.
+- It waits on the Spline scene, the one genuinely slow asset, not on a fixed timer — but never long. A 0.8s floor keeps it from flashing on a warm cache; a 1s ceiling plus a 250ms fade means the page is open within 1.5s of navigation at most, as the owner asked — the timers start only once scripts have loaded, so the budget has to leave room for that. When the scene is slower than that, the hero shows its own "loading scene" state while the copy and buttons are already usable.
 - Scroll is locked while it is up and restored when it leaves.
 - The loader keeps the source component's rainbow, which is deliberate and the only place on the site where the single-accent rule is set aside.
 - Frames are driven by rAF straight into the nodes. State-per-frame would re-render every layer thirty times a second and compete for the main thread with the very scene the overlay is waiting for.

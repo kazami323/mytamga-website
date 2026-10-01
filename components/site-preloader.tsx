@@ -6,13 +6,16 @@ import { LiquidLoading } from "@/components/ui/liquid-loader";
 import { cn } from "@/lib/utils";
 import { isSceneReady, subscribeSceneReady } from "@/lib/scene-ready";
 
-// A deliberate hold: the overlay stays for a full three seconds even when the
-// scene resolves sooner.
-const MIN_VISIBLE_MS = 3000;
-// The scene is fetched from a third party and may never arrive; nothing gets to
-// hold the page hostage.
-const MAX_VISIBLE_MS = 7000;
-const FADE_MS = 500;
+// Порог чуть меньше секунды: на тёплом кэше сцена готова почти сразу, и без него
+// оверлей мигнул бы, не успев показать загрузку.
+const MIN_VISIBLE_MS = 800;
+// Потолок: сцена приходит со стороннего CDN и бывает долгой. Таймеры стартуют
+// после загрузки скриптов, поэтому от открытия страницы до полностью
+// открытого экрана — не больше полутора секунд — если робот не успел, первый
+// экран сам показывает «Загрузка сцены», а текст и кнопки уже доступны.
+const MAX_VISIBLE_MS = 1000;
+// Должно совпадать с transition у .site-preloader в globals.css.
+const FADE_MS = 250;
 
 // Module state outlives a soft navigation but not a page load. Changing
 // language swaps the [lang] root layout without reloading the document, which

@@ -418,7 +418,8 @@ body {
   background:
     radial-gradient(circle at 50% 40%, var(--canvas-glow), transparent 32rem),
     var(--canvas);
-  transition: opacity 500ms ease;
+  /* Совпадает с FADE_MS в site-preloader.tsx. */
+  transition: opacity 250ms ease;
 }
 
 .site-preloader--done {
