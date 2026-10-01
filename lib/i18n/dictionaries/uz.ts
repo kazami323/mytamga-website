@@ -7,8 +7,11 @@
 // Uzbek text online already uses. Never the plain apostrophe.
 // To revert: swap ‘→ʻ and ’→ʼ in this file.
 import type { Dictionary } from "./ru";
+import { groupDigits } from "../../billing/format.ts";
+import { companyFor, companyLine } from "../../legal/company.ts";
+import { REFERENCE_COUNTS } from "../../reference-counts.ts";
 
-const P = "Matn uchun joy";
+const company = companyFor("uz");
 
 export const uz: Dictionary = {
   meta: {
@@ -16,7 +19,6 @@ export const uz: Dictionary = {
     description:
       "MyTamga TIF TN kodini aniqlash, bojxona to‘lovlarini hisoblash, tovarga qo‘yiladigan talablarni tekshirish va keyingi rasmiylashtirish uchun zarur bo‘lgan hamma narsani tayyorlashga yordam beradi.",
   },
-  placeholder: P,
   nav: {
     home: "Bosh sahifa",
     services: "Xizmatlar",
@@ -36,7 +38,7 @@ export const uz: Dictionary = {
     loading: "Sahifa yuklanmoqda",
   },
   hero: {
-    kicker: P,
+    kicker: "O‘zbekiston importchilari va bojxona brokerlari uchun",
     title: ["Tushunarli import —", "tovardan", "deklarantgacha."],
     lead: "MyTamga TIF TN kodini aniqlash, bojxona to‘lovlarini hisoblash, tovarga qo‘yiladigan talablarni tekshirish va keyingi rasmiylashtirish uchun zarur bo‘lgan hamma narsani tayyorlashga yordam beradi.",
     actions: "Asosiy harakatlar",
@@ -90,20 +92,21 @@ export const uz: Dictionary = {
     ],
     resultKicker: "Siz nimaga ega bo‘lasiz",
     results: [
-      { id: "result-1", title: P, body: P },
-      { id: "result-2", title: P, body: P },
-      { id: "result-3", title: P, body: P },
+      { id: "result-1", title: "Moddalar bo‘yicha to‘lovlar", body: "Boj to‘lovi, QQS, aksiz va bojxona yig‘imlari — har biri alohida va jami, so‘mda." },
+      { id: "result-2", title: "Ruxsat beruvchi hujjatlar", body: "Aynan shu tovar uchun kerak bo‘lgan sertifikatlar, litsenziyalar va ruxsatnomalar." },
+      { id: "result-3", title: "Har bir raqamning asosi", body: "Stavka va u qo‘llangan qonun normasi — lex.uz havolasi bilan." },
     ],
     cta: "Ariza qoldirish",
   },
   about: {
     kicker: "Biz haqimizda",
-    title: P,
-    body: P,
+    title: "Taxminsiz import",
+    body: "MyTamga — O‘zbekistonga tovar olib kiruvchilar uchun xizmat. Bojxona rasmiylashtiruvi narxi odatda qarorni o‘zgartirishga kech bo‘lganda ma’lum bo‘ladi. Biz uni oldindan hisoblaymiz — lex.uz saytida e’lon qilingan qonun va qarorlardan yig‘ilgan ma’lumotnoma asosida. Mijoz va deklarant bitta ishda ishlaydi: hujjatlar, hisob-kitob va yozishmalar — bir joyda.",
+    // Цифры — из lib/reference-counts.ts: одно место на четыре языка.
     facts: [
-      { id: "fact-1", label: P, value: P },
-      { id: "fact-2", label: P, value: P },
-      { id: "fact-3", label: P, value: P },
+      { id: "fact-1", label: "ma’lumotnomadagi TIF TN pozitsiyalari", value: groupDigits(REFERENCE_COUNTS.tnvedPositions) },
+      { id: "fact-2", label: "bojxona boji qoidalari", value: groupDigits(REFERENCE_COUNTS.dutyRules) },
+      { id: "fact-3", label: "notarif qoidalar", value: groupDigits(REFERENCE_COUNTS.nonTariffRules) },
     ],
   },
   contact: {
@@ -111,9 +114,9 @@ export const uz: Dictionary = {
     title: "Tovaringiz haqida aytib bering",
     body: "Nima olib kelayotganingizni tasvirlab bering. TIF TN kodi va to‘lovlar hisobi bilan javob beramiz.",
     channels: [
-      { id: "phone", label: "Telefon", value: P, href: null },
-      { id: "email", label: "Elektron pochta", value: P, href: null },
-      { id: "place", label: "Manzil", value: P, href: null },
+      { id: "phone", label: "Telefon", value: company.phone, href: company.phoneHref },
+      { id: "email", label: "Elektron pochta", value: company.supportEmail, href: `mailto:${company.supportEmail}` },
+      { id: "place", label: "Manzil", value: company.shortAddress, href: company.mapsUrl },
     ],
   },
   form: {
@@ -195,7 +198,7 @@ export const uz: Dictionary = {
       storeManaged:
         "Obuna ilovalar do‘konida rasmiylashtirilgan. Uni o‘sha yerda boshqarish mumkin.",
       uzPhoneOnly:
-        "Saytda to‘lov O‘zbekiston raqami bilan mumkin. So‘rov yuboring — boshqa usulni taklif qilamiz.",
+        `Saytda to‘lov O‘zbekiston raqami bilan mumkin. Boshqa raqam bilan ${company.supportEmail} manziliga yozing — boshqa usulni taklif qilamiz.`,
       pricesPending:
         "Narxlar hali muhokama qilinmoqda. To‘lov ochilganda xabar beramiz.",
     },
@@ -242,6 +245,8 @@ export const uz: Dictionary = {
     },
   },
   footer: {
-    legal: P,
+    // Год ставит сам подвал; юрлицо, ИНН и адрес — из lib/legal/company.ts.
+    legal: companyLine("uz"),
+    backToTop: "Yuqoriga",
   },
 };

@@ -1,6 +1,9 @@
 import type { Dictionary } from "./ru";
+import { groupDigits } from "../../billing/format.ts";
+import { companyFor, companyLine } from "../../legal/company.ts";
+import { REFERENCE_COUNTS } from "../../reference-counts.ts";
 
-const P = "Placeholder text";
+const company = companyFor("en");
 
 export const en: Dictionary = {
   meta: {
@@ -8,7 +11,6 @@ export const en: Dictionary = {
     description:
       "MyTamga helps you find the HS code, calculate customs payments, check the requirements for your goods and prepare everything needed for clearance.",
   },
-  placeholder: P,
   nav: {
     home: "Home",
     services: "Services",
@@ -28,7 +30,7 @@ export const en: Dictionary = {
     loading: "Loading page",
   },
   hero: {
-    kicker: P,
+    kicker: "For importers and customs brokers in Uzbekistan",
     title: ["Clear imports —", "from goods", "to declarant."],
     lead: "MyTamga helps you find the HS code, calculate customs payments, check the requirements for your goods and prepare everything needed for clearance.",
     actions: "Main actions",
@@ -82,20 +84,21 @@ export const en: Dictionary = {
     ],
     resultKicker: "What you get",
     results: [
-      { id: "result-1", title: P, body: P },
-      { id: "result-2", title: P, body: P },
-      { id: "result-3", title: P, body: P },
+      { id: "result-1", title: "Payments by item", body: "Duty, VAT, excise and customs fees — each separately and in total, in UZS." },
+      { id: "result-2", title: "Permits and certificates", body: "The certificates, licences and permits this particular product requires." },
+      { id: "result-3", title: "The basis for every figure", body: "The rate and the legal provision it was applied under, with a link to lex.uz." },
     ],
     cta: "Submit a request",
   },
   about: {
     kicker: "About",
-    title: P,
-    body: P,
+    title: "Importing without guesswork",
+    body: "MyTamga is a service for anyone bringing goods into Uzbekistan. The cost of customs clearance usually becomes clear when it is too late to change the decision. We calculate it in advance, using a reference database compiled from the laws and resolutions published on lex.uz. The client and the declarant work in one case: documents, calculation and correspondence in one place.",
+    // Цифры — из lib/reference-counts.ts: одно место на четыре языка.
     facts: [
-      { id: "fact-1", label: P, value: P },
-      { id: "fact-2", label: P, value: P },
-      { id: "fact-3", label: P, value: P },
+      { id: "fact-1", label: "HS positions in the database", value: groupDigits(REFERENCE_COUNTS.tnvedPositions) },
+      { id: "fact-2", label: "customs duty rules", value: groupDigits(REFERENCE_COUNTS.dutyRules) },
+      { id: "fact-3", label: "non-tariff rules", value: groupDigits(REFERENCE_COUNTS.nonTariffRules) },
     ],
   },
   contact: {
@@ -103,9 +106,9 @@ export const en: Dictionary = {
     title: "Tell us about your goods",
     body: "Describe what you're shipping. We'll reply with the HS code and a payment estimate.",
     channels: [
-      { id: "phone", label: "Phone", value: P, href: null },
-      { id: "email", label: "Email", value: P, href: null },
-      { id: "place", label: "Address", value: P, href: null },
+      { id: "phone", label: "Phone", value: company.phone, href: company.phoneHref },
+      { id: "email", label: "Email", value: company.supportEmail, href: `mailto:${company.supportEmail}` },
+      { id: "place", label: "Address", value: company.shortAddress, href: company.mapsUrl },
     ],
   },
   form: {
@@ -187,7 +190,7 @@ export const en: Dictionary = {
       storeManaged:
         "This subscription was bought in an app store. Manage it there.",
       uzPhoneOnly:
-        "Paying on the site needs an Uzbek phone number. Send a request and we will offer another way.",
+        `Paying on the site needs an Uzbek phone number. With another number, write to ${company.supportEmail} and we will offer another way.`,
       pricesPending:
         "Prices are still under discussion. We will let you know when payment opens.",
     },
@@ -232,6 +235,8 @@ export const en: Dictionary = {
     },
   },
   footer: {
-    legal: P,
+    // Год ставит сам подвал; юрлицо, ИНН и адрес — из lib/legal/company.ts.
+    legal: companyLine("en"),
+    backToTop: "Back to top",
   },
 };

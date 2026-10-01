@@ -1,15 +1,17 @@
 // REVIEW(translation): draft — must be checked by a native speaker before launch.
 // Simplified Chinese, as used on the mainland.
 import type { Dictionary } from "./ru";
+import { groupDigits } from "../../billing/format.ts";
+import { companyFor, companyLine } from "../../legal/company.ts";
+import { REFERENCE_COUNTS } from "../../reference-counts.ts";
 
-const P = "占位文本";
+const company = companyFor("zh");
 
 export const zh: Dictionary = {
   meta: {
     title: "MyTamga — 从货物到报关员，进口清晰明了",
     description: "MyTamga 帮助您确定 HS 编码、计算海关税费、核查商品要求，并为后续清关准备好所需的一切。",
   },
-  placeholder: P,
   nav: {
     home: "首页",
     services: "服务",
@@ -29,7 +31,7 @@ export const zh: Dictionary = {
     loading: "页面加载中",
   },
   hero: {
-    kicker: P,
+    kicker: "面向乌兹别克斯坦的进口商与报关行",
     title: ["进口，清晰明了——", "从货物", "到报关员。"],
     lead: "MyTamga 帮助您确定 HS 编码、计算海关税费、核查商品要求，并为后续清关准备好所需的一切。",
     actions: "主要操作",
@@ -67,20 +69,21 @@ export const zh: Dictionary = {
     ],
     resultKicker: "您将获得",
     results: [
-      { id: "result-1", title: P, body: P },
-      { id: "result-2", title: P, body: P },
-      { id: "result-3", title: P, body: P },
+      { id: "result-1", title: "分项税费", body: "关税、增值税、消费税和海关规费——逐项列出并给出合计，以苏姆计。" },
+      { id: "result-2", title: "许可文件", body: "该商品所需的证书、许可证和批准文件。" },
+      { id: "result-3", title: "每个数字的依据", body: "所适用的税率及其法律条款，并附 lex.uz 链接。" },
     ],
     cta: "提交申请",
   },
   about: {
     kicker: "关于我们",
-    title: P,
-    body: P,
+    title: "进口，不靠猜测",
+    body: "MyTamga 是为向乌兹别克斯坦进口商品的企业和个人提供的服务。清关费用通常要到无法再改变决定时才能知道。我们提前计算——依据由 lex.uz 上公布的法律和决议整理而成的参考数据库。客户与报关员在同一个案件中协作：文件、计算和沟通都在一处。",
+    // Цифры — из lib/reference-counts.ts: одно место на четыре языка.
     facts: [
-      { id: "fact-1", label: P, value: P },
-      { id: "fact-2", label: P, value: P },
-      { id: "fact-3", label: P, value: P },
+      { id: "fact-1", label: "数据库中的商品编码条目", value: groupDigits(REFERENCE_COUNTS.tnvedPositions) },
+      { id: "fact-2", label: "关税规则", value: groupDigits(REFERENCE_COUNTS.dutyRules) },
+      { id: "fact-3", label: "非关税规则", value: groupDigits(REFERENCE_COUNTS.nonTariffRules) },
     ],
   },
   contact: {
@@ -88,9 +91,9 @@ export const zh: Dictionary = {
     title: "告诉我们您的商品",
     body: "请描述您要运输的货物。我们将回复 HS 编码和税费计算。",
     channels: [
-      { id: "phone", label: "电话", value: P, href: null },
-      { id: "email", label: "电子邮箱", value: P, href: null },
-      { id: "place", label: "地址", value: P, href: null },
+      { id: "phone", label: "电话", value: company.phone, href: company.phoneHref },
+      { id: "email", label: "电子邮箱", value: company.supportEmail, href: `mailto:${company.supportEmail}` },
+      { id: "place", label: "地址", value: company.shortAddress, href: company.mapsUrl },
     ],
   },
   form: {
@@ -169,7 +172,7 @@ export const zh: Dictionary = {
       ownerOnly: "只有组织所有者可以付款。",
       storeManaged: "该订阅在应用商店开通，请在商店中管理。",
       uzPhoneOnly:
-        "在网站付款需要乌兹别克斯坦手机号。请提交申请，我们会提供其他方式。",
+        `在网站付款需要乌兹别克斯坦手机号。如使用其他号码，请发邮件至 ${company.supportEmail}，我们会为您提供其他方式。`,
       pricesPending: "价格仍在商议中。开通付款后我们会通知您。",
     },
     errors: {
@@ -211,6 +214,8 @@ export const zh: Dictionary = {
     },
   },
   footer: {
-    legal: P,
+    // Год ставит сам подвал; юрлицо, ИНН и адрес — из lib/legal/company.ts.
+    legal: companyLine("zh"),
+    backToTop: "返回顶部",
   },
 };

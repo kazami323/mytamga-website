@@ -1,5 +1,5 @@
 import { SectionHeading } from "@/components/section-heading";
-import { COMPANY, missingCompanyFields } from "@/lib/legal/company";
+import { COMPANY, companyFor, missingCompanyFields } from "@/lib/legal/company";
 import { DOCUMENTS, type LegalSlug } from "@/lib/legal/documents";
 import type { Locale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/dictionaries/ru";
@@ -14,6 +14,7 @@ interface LegalDocumentViewProps {
 export function LegalDocumentView({ slug, locale, strings }: LegalDocumentViewProps) {
   const document = DOCUMENTS[locale]?.[slug];
   const missing = missingCompanyFields();
+  const company = companyFor(locale);
 
   return (
     <section
@@ -98,10 +99,16 @@ export function LegalDocumentView({ slug, locale, strings }: LegalDocumentViewPr
               </p>
             ) : (
               <dl className="mt-3 flex flex-col gap-1 text-sm leading-6 text-ink-soft">
-                <div>{COMPANY.legalName}</div>
-                <div>{COMPANY.taxId}</div>
-                <div>{COMPANY.address}</div>
-                <div>{COMPANY.phone}</div>
+                <div>{company.legalName}</div>
+                <div>
+                  {company.taxLabel} {company.taxId}
+                </div>
+                <div>{company.address}</div>
+                <div>
+                  <a href={company.phoneHref} className="nav-link">
+                    {company.phone}
+                  </a>
+                </div>
               </dl>
             )}
             <p className="mt-3 text-sm leading-6 text-ink-soft">

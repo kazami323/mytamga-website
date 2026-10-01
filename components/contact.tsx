@@ -32,7 +32,16 @@ export async function Contact() {
                 </dt>
                 <dd className="mt-2 text-base text-[var(--ink)]">
                   {channel.href ? (
-                    <a href={channel.href} className="nav-link">
+                    // Карта — чужой сайт: открываем рядом, а не вместо страницы.
+                    // Звонок и письмо уходят в приложения устройства и вкладку
+                    // не трогают.
+                    <a
+                      href={channel.href}
+                      className="nav-link"
+                      {...(channel.href.startsWith("http")
+                        ? { target: "_blank", rel: "noopener noreferrer" }
+                        : {})}
+                    >
                       {channel.value}
                     </a>
                   ) : (
