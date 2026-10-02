@@ -170,7 +170,7 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
 - The site's own reading of the visitor's address takes the rightmost
   `X-Forwarded-For` entry — the one ahost's front server appends. Confirm it on
   the live host by requesting codes from two networks and checking the API log
-  shows two addresses (`docs/DEPLOY_AHOST_RU.md`, verification step 6).
+  shows two addresses (`docs/DEPLOY_RU.md`, verification step 6).
 - Tests run on Node's built-in runner over TypeScript directly, so modules they
   cover import siblings **with** the `.ts` extension and never through the `@/`
   alias, which Node cannot resolve. `allowImportingTsExtensions` in
@@ -371,4 +371,4 @@ provider prints the sign-in code to the API console.
   localhost even with `NEXT_PUBLIC_SITE_URL` set — found by test-running the
   built package. Next serves it at `/-/opengraph-image.png`, which the locale
   redirect leaves alone because the path has a dot.
-- Step-by-step upload to cPanel: `docs/DEPLOY_AHOST_RU.md`.
+- Step-by-step upload to cPanel: `docs/DEPLOY_RU.md`.

@@ -84,6 +84,6 @@ const count = (dir) =>
 console.log(`
 ✓ Готово: dist/mytamga-site.zip — ${(statSync(zip).size / 1024 / 1024).toFixed(1)} МБ, ${count(out)} файлов.
 
-Дальше — по шагам из docs/DEPLOY_AHOST_RU.md: загрузить архив в cPanel,
+Дальше — по шагам из docs/DEPLOY_RU.md: загрузить архив в cPanel,
 распаковать в папку приложения и запустить server.js в «Setup Node.js App».
 `);
