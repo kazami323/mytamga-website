@@ -1,6 +1,7 @@
 "use client";
 
 import { Menu, X } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { CinematicThemeSwitcher } from "@/components/ui/cinematic-theme-switcher";
@@ -77,6 +78,17 @@ export function SiteHeader({
             href={`/${locale}#hero`}
             className="site-brand justify-self-start text-[0.95rem] font-semibold tracking-[-0.02em] sm:text-base"
           >
+            {/* Знак, а не полный логотип: серебряное «TAMGA» из полного
+                логотипа пропадает на светлой теме, а подпись под ним на этой
+                высоте не читается. Название остаётся текстом рядом. */}
+            <Image
+              src="/brand/tamga-symbol.png"
+              alt=""
+              width={219}
+              height={192}
+              loading="eager"
+              className="h-7 w-auto sm:h-8"
+            />
             MyTamga
           </a>
 

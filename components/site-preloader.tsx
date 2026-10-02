@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import { LiquidLoading } from "@/components/ui/liquid-loader";
@@ -103,8 +104,16 @@ export function SitePreloader({ loadingLabel }: { loadingLabel: string }) {
       aria-live="polite"
     >
       <LiquidLoading />
-      {/* Placeholder for the logo once it exists. */}
+      {/* Знак из приложения рядом с названием — то же сочетание, что в шапке. */}
       <p className="site-brand text-base font-semibold tracking-[-0.02em]">
+        <Image
+          src="/brand/tamga-symbol.png"
+          alt=""
+          width={219}
+          height={192}
+          loading="eager"
+          className="h-9 w-auto"
+        />
         MyTamga
       </p>
       <span className="sr-only">{loadingLabel}</span>

@@ -43,7 +43,7 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
 
 ## Preloader
 
-- A full-bleed overlay on the canvas: the liquid loader over the wordmark, which is the placeholder for the logo once it exists.
+- A full-bleed overlay on the canvas: the liquid loader over the brand lockup — the app's gold symbol beside the name, the same lockup as the header.
 - It waits on the Spline scene, the one genuinely slow asset, not on a fixed timer — but never long. A 0.8s floor keeps it from flashing on a warm cache; a 1s ceiling plus a 250ms fade means the page is open within 1.5s of navigation at most, as the owner asked — the timers start only once scripts have loaded, so the budget has to leave room for that. When the scene is slower than that, the hero shows its own "loading scene" state while the copy and buttons are already usable.
 - Scroll is locked while it is up and restored when it leaves.
 - The loader keeps the source component's rainbow, which is deliberate and the only place on the site where the single-accent rule is set aside.
@@ -326,3 +326,24 @@ provider prints the sign-in code to the API console.
 - The reference figures in "About" live in `lib/reference-counts.ts` with the
   date they were taken. No build script derives them from the reference data
   yet, and a stale figure on the trust section is worse than none.
+
+## Brand assets
+
+- Sources are the app's own files in `apps/mobile/assets/` of the application
+  repository; nothing was redrawn. They are raster PNGs — a transparent SVG of
+  the logo still does not exist and would be better everywhere below.
+- The site uses the gold symbol (`tamga-symbol.png`) beside the name set in
+  text, in the header and the preloader. Not the full horizontal logo: its
+  silver "TAMGA" with a light halo all but disappears on the light theme, and
+  its tagline is unreadable at header height. The name stays real text, so it
+  is crisp, translatable to screen readers and searchable.
+- `public/brand/tamga-symbol.png` is trimmed and resized to 192px tall for a
+  mark shown at 28–36px — 46 KB instead of the 648 KB source.
+- The full logo appears only in the link preview (`app/opengraph-image.png`),
+  set on the dark canvas where it reads as designed.
+- The browser tab icon (`app/icon.png`, `app/favicon.ico`) is the gold symbol
+  on transparency, legible on light and dark tab bars. The iPhone home screen
+  icon (`app/apple-icon.png`) is the app's own square icon, because iOS needs
+  an opaque square and a visitor should see the same icon as the app.
+- The preview's absolute URL is built from `NEXT_PUBLIC_SITE_URL`; without it
+  in production the preview points at localhost.
