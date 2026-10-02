@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Calculator,
   FileCheck2,
@@ -22,11 +22,6 @@ const ICONS: Record<string, LucideIcon> = {
 };
 
 export function Capabilities({ strings }: { strings: Dictionary["capabilities"] }) {
-  const shouldReduceMotion = useReducedMotion();
-
-  // Reduced motion keeps the reveal but drops the travel, so nothing slides.
-  const rise = shouldReduceMotion ? 0 : 28;
-
   return (
     <section
       id="services"
@@ -50,8 +45,10 @@ export function Capabilities({ strings }: { strings: Dictionary["capabilities"] 
           return (
           <motion.li
             key={id}
-            className="flex"
-            initial={{ opacity: 0, y: rise }}
+            // Reduced motion keeps the fade but drops the travel — in CSS, so
+            // the server and client render the same starting frame.
+            className="motion-reveal flex"
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.5, delay: index * 0.08, ease: "easeOut" }}

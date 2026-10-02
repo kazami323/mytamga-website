@@ -4,8 +4,7 @@ import { About } from "@/components/about";
 import { Calculation } from "@/components/calculation";
 import { Capabilities } from "@/components/capabilities";
 import { Contact } from "@/components/contact";
-import { SplineSceneBasic } from "@/components/demo";
-import { HowItWorks } from "@/components/how-it-works";
+import { HeroPortal } from "@/components/hero-portal";
 import { SiteFooter } from "@/components/site-footer";
 import { hasLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
@@ -22,9 +21,8 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
   return (
     <>
       <main>
-        <SplineSceneBasic strings={t.hero} />
+        <HeroPortal strings={t.hero} steps={t.howItWorks} />
         <Capabilities strings={t.capabilities} />
-        <HowItWorks />
         <Calculation />
         <About />
         <Contact />

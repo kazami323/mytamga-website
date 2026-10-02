@@ -1,3 +1,4 @@
+import { ContactRobot } from "@/components/contact-robot";
 import { LeadForm } from "@/components/lead-form";
 import { SectionHeading } from "@/components/section-heading";
 import { getCurrentDictionary } from "@/lib/i18n/get-dictionary";
@@ -51,6 +52,8 @@ export async function Contact() {
               </div>
             ))}
           </dl>
+
+          <ContactRobot loadingLabel={t.hero.sceneLoading} logoAlt="MyTamga" />
         </div>
 
         <LeadForm strings={t.form} />

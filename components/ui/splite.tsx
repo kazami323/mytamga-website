@@ -14,6 +14,10 @@ interface SplineSceneProps {
   className?: string;
   interactive?: boolean;
   loadingLabel: string;
+  /** Где стоит робот внутри сцены: масштаб и подъём от исходной точки. */
+  bot?: { scale: number; y: number };
+  /** Сцена загружена — её можно ставить на паузу и подстраивать. */
+  onApplication?: (application: Application) => void;
 }
 
 export function SplineScene({
@@ -21,6 +25,8 @@ export function SplineScene({
   className,
   interactive = true,
   loadingLabel,
+  bot = { scale: 0.62, y: 140 },
+  onApplication,
 }: SplineSceneProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   // Caught at load: by the time this unmounts, react-spline may already have
@@ -36,11 +42,13 @@ export function SplineScene({
     const robot = application.findObjectByName("Bot");
 
     if (robot) {
-      robot.scale.x = 0.62;
-      robot.scale.y = 0.62;
-      robot.scale.z = 0.62;
-      robot.position.y = 140;
+      robot.scale.x = bot.scale;
+      robot.scale.y = bot.scale;
+      robot.scale.z = bot.scale;
+      robot.position.y = bot.y;
     }
+
+    onApplication?.(application);
   };
 
   return (
