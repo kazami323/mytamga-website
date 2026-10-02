@@ -15,7 +15,14 @@ export type ApiCall = {
 // в списке своих входов. Целый User-Agent там не нужен.
 const MAX_DEVICE_NAME = 120;
 
-export function buildHeaders(call: ApiCall): Record<string, string> {
+/**
+ * `proxyKey` — секрет, общий у сайта и API. Нужен, когда сайт стоит не на одной
+ * машине с API, а на общем хостинге: тогда API видит адрес хостинга, общий с
+ * чужими сайтами, и `X-Forwarded-For` от него принимать нельзя — соседи
+ * подделали бы адрес посетителя и обошли лимит входа. С ключом сайт ручается за
+ * адрес отдельным заголовком, и API верит ему только при совпадении ключа.
+ */
+export function buildHeaders(call: ApiCall, proxyKey?: string): Record<string, string> {
   const headers: Record<string, string> = {
     accept: "application/json",
     "x-platform": "web",
@@ -35,6 +42,11 @@ export function buildHeaders(call: ApiCall): Record<string, string> {
 
   if (call.clientIp) {
     headers["x-forwarded-for"] = call.clientIp;
+
+    if (proxyKey) {
+      headers["x-site-proxy-key"] = proxyKey;
+      headers["x-site-client-ip"] = call.clientIp;
+    }
   }
 
   const deviceName = String(call.userAgent ?? "").trim();
@@ -66,7 +78,9 @@ export async function callApi<T>(
   try {
     response = await fetchImpl(url, {
       method: call.method ?? "GET",
-      headers: buildHeaders(call),
+      // Ключ читается на каждом запросе и только на сервере: в сборку он не
+      // попадает, а меняется в настройках хостинга без пересборки.
+      headers: buildHeaders(call, process.env.MYTAMGA_API_PROXY_KEY?.trim() || undefined),
       body: call.body === undefined ? undefined : JSON.stringify(call.body),
       cache: "no-store",
     });

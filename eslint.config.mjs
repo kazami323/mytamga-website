@@ -5,5 +5,6 @@ import nextTypeScript from "eslint-config-next/typescript";
 export default defineConfig([
   ...nextVitals,
   ...nextTypeScript,
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
+  // dist/ — собранный пакет для хостинга (npm run package:ahost), не исходники.
+  globalIgnores([".next/**", "out/**", "build/**", "dist/**", "next-env.d.ts"]),
 ]);

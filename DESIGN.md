@@ -156,14 +156,21 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
   Release before `dispose()` — it removes the canvas.
 - The Spline scene must stay behind `SceneBoundary`. A failed fetch from its CDN surfaces as a render-time throw, and without a boundary React tears down the whole tree — header, hero and preloader with it, leaving a blank page and a scroll lock with nothing left running to release it.
 - Layout properties belong in utilities, not in `globals.css`. Rules there load after Tailwind at equal specificity, so a `display` written next to the colours will quietly defeat responsive variants like `md:hidden`.
-- The site must run where the application's API trusts it as a proxy. The API
-  derives the rate-limit key from `request.ip` and allows three sign-in requests
-  a minute per address; it honours `X-Forwarded-For` only from the proxies in
-  `TRUST_PROXY`, which by default covers loopback and private ranges. On the
-  same machine as the API this works with no configuration. On a host with
-  rotating addresses — Vercel and the like — the real client address cannot be
-  forwarded, every visitor shares one counter, and the fourth person in a minute
-  is refused sign-in through no fault of their own.
+- Deployment, decided 2026-10-02: the site runs on ahost shared hosting
+  ("Micro", cPanel, Node.js), the application's API on a VPS at eskiz.uz. The
+  API therefore sees the ahost server's address, shared with other customers'
+  sites, for every visitor. Its sign-in limit is keyed by address (three a
+  minute), so without help every visitor would share one counter. Trusting the
+  ahost address in `TRUST_PROXY` is not an option: any neighbouring site could
+  then forge a visitor's address. Instead the site vouches for the visitor's
+  address in `x-site-client-ip` together with `x-site-proxy-key`, a secret
+  known only to the site (`MYTAMGA_API_PROXY_KEY`) and the API
+  (`SITE_PROXY_KEY`). The API's side is specified in
+  `docs/API_SITE_PROXY_KEY_RU.md`; until it lands, sign-in shares one counter.
+- The site's own reading of the visitor's address takes the rightmost
+  `X-Forwarded-For` entry — the one ahost's front server appends. Confirm it on
+  the live host by requesting codes from two networks and checking the API log
+  shows two addresses (`docs/DEPLOY_AHOST_RU.md`, verification step 6).
 - Tests run on Node's built-in runner over TypeScript directly, so modules they
   cover import siblings **with** the `.ts` extension and never through the `@/`
   alias, which Node cannot resolve. `allowImportingTsExtensions` in
@@ -276,6 +283,7 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
 | --- | --- | --- |
 | `MYTAMGA_API_URL` | route handlers, catalogue loading | The application's API, e.g. `http://localhost:3001` locally and `https://api.mytamga.uz` in production. Server-side only — no `NEXT_PUBLIC_` prefix, because the browser never calls the API. |
 | `NEXT_PUBLIC_SITE_URL` | `generateMetadata` | Absolute base for canonical and hreflang links. |
+| `MYTAMGA_API_PROXY_KEY` | `lib/api/server.ts` | Secret shared with the API (`SITE_PROXY_KEY` there). With it the site vouches for the visitor's address; see the deployment constraint above. Runtime only, never in the build. |
 | `MYTAMGA_REPO` | `npm run check:legal` | Path to the application's monorepo for the legal-text comparison. Defaults to `../MyTamga`. |
 
 Local development needs both servers: `npm run dev` here (port 3000) and
@@ -347,3 +355,20 @@ provider prints the sign-in code to the API console.
   an opaque square and a visitor should see the same icon as the app.
 - The preview's absolute URL is built from `NEXT_PUBLIC_SITE_URL`; without it
   in production the preview points at localhost.
+
+## Deployment package
+
+- `output: "standalone"` in `next.config.ts`: the build copies only the files
+  the server needs into `.next/standalone` — about 66 MB and 1,600 files
+  against 519 MB and 26,000 in `node_modules`. The ahost "Micro" plan has 1 GB
+  of disk and a 50,000-file limit.
+- `npm run package:ahost` builds and zips it into `dist/mytamga-site.zip`. It
+  refuses to run without `NEXT_PUBLIC_SITE_URL` and `MYTAMGA_API_URL`, or with
+  localhost in either: the site address is baked into canonical, hreflang and
+  the preview image URL at build time.
+- The link preview lives in `app/[lang]/`, not `app/`. From the app root it
+  ignored the `metadataBase` set by the locale layout and kept pointing at
+  localhost even with `NEXT_PUBLIC_SITE_URL` set — found by test-running the
+  built package. Next serves it at `/-/opengraph-image.png`, which the locale
+  redirect leaves alone because the path has a dot.
+- Step-by-step upload to cPanel: `docs/DEPLOY_AHOST_RU.md`.

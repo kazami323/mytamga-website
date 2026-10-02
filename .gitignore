@@ -26,3 +26,6 @@ yarn-error.log*
 
 # brainstorming mockups (superpowers visual companion)
 .superpowers/
+
+# deployment package for shared hosting (npm run package:ahost)
+/dist

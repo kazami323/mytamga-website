@@ -89,3 +89,37 @@ test("без адреса API запрос не уходит, а честно о
     },
   );
 });
+
+test("с ключом сайт ручается за адрес посетителя отдельными заголовками", () => {
+  // Сайт на общем хостинге, API на другом сервере: API видит адрес хостинга,
+  // общий с чужими сайтами. Верить ему нельзя — соседи подделали бы адрес.
+  // Поэтому адрес посетителя едет вместе с секретом, известным только нам и API.
+  const headers = buildHeaders({ path: "/x", clientIp: "203.0.113.7" }, "s".repeat(48));
+  assert.equal(headers["x-site-proxy-key"], "s".repeat(48));
+  assert.equal(headers["x-site-client-ip"], "203.0.113.7");
+});
+
+test("без адреса посетителя ключ не отправляется — ручаться не за что", () => {
+  const headers = buildHeaders({ path: "/x" }, "s".repeat(48));
+  assert.equal("x-site-proxy-key" in headers, false);
+  assert.equal("x-site-client-ip" in headers, false);
+});
+
+test("без ключа заголовков ручательства нет — схема на одной машине не меняется", () => {
+  const headers = buildHeaders({ path: "/x", clientIp: "203.0.113.7" });
+  assert.equal("x-site-proxy-key" in headers, false);
+  assert.equal(headers["x-forwarded-for"], "203.0.113.7");
+});
+
+test("callApi берёт ключ из окружения сервера", async () => {
+  process.env.MYTAMGA_API_URL = "https://api.test";
+  process.env.MYTAMGA_API_PROXY_KEY = "k".repeat(48);
+  let sent: Record<string, string> = {};
+  await callApi({ path: "/x", clientIp: "203.0.113.7" }, async (_url, init) => {
+    sent = init?.headers as Record<string, string>;
+    return new Response("{}", { status: 200 });
+  });
+  delete process.env.MYTAMGA_API_PROXY_KEY;
+  assert.equal(sent["x-site-proxy-key"], "k".repeat(48));
+  assert.equal(sent["x-site-client-ip"], "203.0.113.7");
+});
