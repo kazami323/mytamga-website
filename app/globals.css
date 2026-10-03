@@ -978,7 +978,28 @@ body {
 }
 
 .hero-portal [data-gp-content] {
-  padding: 7rem var(--gutter) 6rem;
+  padding: 7rem var(--gutter) 14rem;
+}
+
+/* Поле внизу растворяется в фоне страницы — без жёсткой границы со
+   следующим разделом. */
+.hero-portal [data-gp-content]::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 16rem;
+  background: linear-gradient(to bottom, transparent, var(--canvas));
+  content: "";
+  pointer-events: none;
+}
+
+.portal-word-tint {
+  background: #f1efe9;
+  opacity: 0;
+  pointer-events: none;
+}
+
+:root:not([data-theme="light"]) .portal-word-tint {
+  opacity: var(--gp-caption, 1);
 }
 
 .portal-copy {

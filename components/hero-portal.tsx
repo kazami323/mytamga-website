@@ -13,14 +13,19 @@ const PORTAL_WEIGHT = 800;
 // Поле, которое открывается внутри буквы: глубокий фиолетовый в акценте сайта.
 // Одинаковое в обеих темах — внутри портала всегда тёмно и светлый текст.
 const FIELD = (
-  <div
-    className="absolute inset-0"
-    style={{
-      transform: "scale(var(--gp-field-scale,1))",
-      background:
-        "radial-gradient(circle at 18% 8%, rgba(199,167,255,.55), transparent 34%), radial-gradient(circle at 82% 20%, rgba(241,239,233,.10), transparent 28%), radial-gradient(circle at 48% 78%, rgba(60,30,110,.6), transparent 44%), linear-gradient(135deg,#24144a 0%,#3d2775 48%,#150c2a 100%)",
-    }}
-  />
+  <>
+    <div
+      className="absolute inset-0"
+      style={{
+        transform: "scale(var(--gp-field-scale,1))",
+        background:
+          "radial-gradient(circle at 18% 8%, rgba(199,167,255,.55), transparent 34%), radial-gradient(circle at 82% 20%, rgba(241,239,233,.10), transparent 28%), radial-gradient(circle at 48% 78%, rgba(60,30,110,.6), transparent 44%), linear-gradient(135deg,#24144a 0%,#3d2775 48%,#150c2a 100%)",
+      }}
+    />
+    {/* В тёмной теме слово в покое белое; с первым шагом камеры заливка
+        уходит, и за буквами открывается фиолетовое поле. */}
+    <div className="portal-word-tint absolute inset-0" />
+  </>
 );
 
 function scrollToSection(id: string) {
