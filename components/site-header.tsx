@@ -85,7 +85,7 @@ export function SiteHeader({
               src="/brand/tamga-symbol.png"
               alt=""
               width={219}
-              height={192}
+              height={177}
               loading="eager"
               className="h-7 w-auto sm:h-8"
             />

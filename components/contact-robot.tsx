@@ -152,7 +152,7 @@ export function ContactRobot({ loadingLabel, logoAlt }: ContactRobotProps) {
         src="/brand/tamga-symbol.png"
         alt={logoAlt}
         width={219}
-        height={192}
+        height={177}
         className="contact-robot-logo"
       />
     </div>

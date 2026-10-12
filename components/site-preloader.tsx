@@ -110,7 +110,7 @@ export function SitePreloader({ loadingLabel }: { loadingLabel: string }) {
           src="/brand/tamga-symbol.png"
           alt=""
           width={219}
-          height={192}
+          height={177}
           loading="eager"
           className="h-9 w-auto"
         />
