@@ -17,10 +17,15 @@ type RegistrationLocale = "ru" | "uz" | "en";
 
 type Localized = Record<RegistrationLocale, string>;
 
+// Юридическое название и адрес — буква в букву как в записи D-U-N-S 933907274
+// (Apple сверяет организацию с сайтом). Рядом допустим перевод формы для читателя.
+export const DUNS_LEGAL_NAME = "MY TAMGA APP, MCHJ";
+export const DUNS_ADDRESS = "Daryoboyi MFY, Daryoboyi 7-tor kochasi 18a, Tashkent, Tashkent City 100155";
+
 const LEGAL_NAME: Localized = {
-  ru: "ООО «MY TAMGA APP»",
-  uz: '"MY TAMGA APP" MChJ',
-  en: "MY TAMGA APP LLC",
+  ru: `${DUNS_LEGAL_NAME} (ООО)`,
+  uz: DUNS_LEGAL_NAME,
+  en: `${DUNS_LEGAL_NAME} (LLC)`,
 };
 
 const TAX_LABEL: Localized = {
@@ -29,20 +34,15 @@ const TAX_LABEL: Localized = {
   en: "TIN",
 };
 
-// Узбекский — через U+2018, а не U+02BB: в Manrope нет глифа для U+02BB, и
-// браузер рисовал бы знак системным шрифтом. Так же, как во всех словарях.
+// Адрес одинаков во всех языках: топонимы не переводим, чтобы строка совпадала с D-U-N-S.
 const ADDRESS: Localized = {
-  ru: "Республика Узбекистан, г. Ташкент, Сергелийский район, МСГ «Дарёбуйи», 7-й тупик Дарёбуйи, дом 18А",
-  uz: "O‘zbekiston Respublikasi, Toshkent sh., Sergeli tumani, Daryobo‘yi MFY, Daryobo‘yi 7-tor ko‘chasi, 18A-uy",
-  en: "18A, 7th Daryobo'yi Lane, Daryobo'yi Mahalla, Sergeli District, Tashkent, Uzbekistan",
+  ru: DUNS_ADDRESS,
+  uz: DUNS_ADDRESS,
+  en: DUNS_ADDRESS,
 };
 
-/** Короткая форма — для контактов на главной и строки в подвале. */
-const SHORT_ADDRESS: Localized = {
-  ru: "Ташкент, Сергелийский район, Дарёбуйи, 7-й тупик, 18А",
-  uz: "Toshkent, Sergeli tumani, Daryobo‘yi 7-tor ko‘chasi, 18A",
-  en: "18A, 7th Daryobo'yi Lane, Sergeli District, Tashkent",
-};
+/** Короткая форма совпадает с полной: другой записи адреса на сайте быть не должно. */
+const SHORT_ADDRESS: Localized = ADDRESS;
 
 export const COMPANY = {
   legalName: LEGAL_NAME,

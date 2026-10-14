@@ -38,7 +38,7 @@
 - `billing.legal.privacy` — Политика конфиденциальности
 - `billing.legal.terms` — Условия использования
 - `billing.legal.support` — Поддержка
-- `footer.legal` — ООО «MY TAMGA APP» · ИНН 313333116 · Ташкент, Сергелийский район, Дарёбуйи, 7-й тупик, 18А
+- `footer.legal` — MY TAMGA APP, MCHJ (ООО) · ИНН 313333116 · Daryoboyi MFY, Daryoboyi 7-tor kochasi 18a, Tashkent, Tashkent City 100155
 - `footer.backToTop` — Наверх
 - `footer.appStoreCaption` — Загрузите в
 - `footer.googlePlayCaption` — Доступно в
@@ -135,7 +135,7 @@
 - `contact.channels[1].value` — support@mytamga.uz
 - `contact.channels[1].href` — mailto:support@mytamga.uz
 - `contact.channels[2].label` — Адрес
-- `contact.channels[2].value` — Ташкент, Сергелийский район, Дарёбуйи, 7-й тупик, 18А
+- `contact.channels[2].value` — Daryoboyi MFY, Daryoboyi 7-tor kochasi 18a, Tashkent, Tashkent City 100155
 - `contact.channels[2].href` — https://www.google.com/maps/search/?api=1&query=Toshkent+Sergeli+Daryobo%CA%BByi+7-tor+ko%CA%BBchasi+18A
 
 ### Форма заявки
@@ -378,17 +378,11 @@ MyTamga помогает вести таможенные дела, обмени�
 Записаны в одном месте — `lib/legal/company.ts`. Поправка после сверки со
 свидетельством о регистрации делается там и больше нигде.
 
-**ru** — ООО «MY TAMGA APP» · ИНН 313333116
-- полный адрес: Республика Узбекистан, г. Ташкент, Сергелийский район, МСГ «Дарёбуйи», 7-й тупик Дарёбуйи, дом 18А
-- короткий: Ташкент, Сергелийский район, Дарёбуйи, 7-й тупик, 18А
+**ru** — MY TAMGA APP, MCHJ (ООО) · ИНН 313333116
+**uz** — MY TAMGA APP, MCHJ · STIR 313333116
+**en** — MY TAMGA APP, MCHJ (LLC) · TIN 313333116
 
-**uz** — "MY TAMGA APP" MChJ · STIR 313333116
-- полный адрес: O‘zbekiston Respublikasi, Toshkent sh., Sergeli tumani, Daryobo‘yi MFY, Daryobo‘yi 7-tor ko‘chasi, 18A-uy
-- короткий: Toshkent, Sergeli tumani, Daryobo‘yi 7-tor ko‘chasi, 18A
-
-**en** — MY TAMGA APP LLC · TIN 313333116
-- полный адрес: 18A, 7th Daryobo'yi Lane, Daryobo'yi Mahalla, Sergeli District, Tashkent, Uzbekistan
-- короткий: 18A, 7th Daryobo'yi Lane, Sergeli District, Tashkent
+Адрес (полный и короткий, во всех языках одинаково, как в D-U-N-S 933907274): Daryoboyi MFY, Daryoboyi 7-tor kochasi 18a, Tashkent, Tashkent City 100155
 
 Китайская страница показывает английскую форму. Телефон: +998 91 572 05 09. Почта: support@mytamga.uz.
 
