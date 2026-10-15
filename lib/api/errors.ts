@@ -14,7 +14,10 @@ export type BillingErrorCode =
   | "codeInvalid"
   | "pricesPending"
   // 409 на оплате: бессрочный тариф или уже оплачен другой отложенный.
-  | "checkoutConflict";
+  | "checkoutConflict"
+  // Три разных 409 кассы: сервер объясняет каждый своим текстом.
+  | "checkoutPerpetual"
+  | "checkoutScheduled";
 
 export class ApiError extends Error {
   readonly status: number;
@@ -62,4 +65,43 @@ export function errorCodeFor(
     default:
       return "network";
   }
+}
+
+/**
+ * Три разных 409 на оплате. Сервер объясняет каждый своим русским текстом, но
+ * показывать его как есть нельзя: страница бывает на uz, en и zh. Поэтому
+ * известный текст опознаётся и заменяется переводом, а неизвестный (сервер мог
+ * измениться) получает общее объяснение.
+ *
+ * `detail` — название уже оплаченного отложенного тарифа. Это слово из
+ * каталога сервера; пропускаем только короткие буквы и цифры.
+ */
+export function checkoutConflictFrom(body: unknown): {
+  code: BillingErrorCode;
+  detail: string | null;
+} {
+  const message =
+    typeof body === "object" && body !== null && "message" in body
+      ? (body as { message: unknown }).message
+      : null;
+  const text = (Array.isArray(message) ? message.join(" ") : String(message ?? "")).trim();
+
+  if (text.startsWith("Подписка организации оформлена через App Store")) {
+    return { code: "store", detail: null };
+  }
+
+  if (text.startsWith("Тариф организации действует бессрочно")) {
+    return { code: "checkoutPerpetual", detail: null };
+  }
+
+  const scheduled = /^После текущего тарифа уже оплачен тариф ([^.]{1,40})\. /u.exec(text);
+
+  if (scheduled) {
+    const label = scheduled[1].trim();
+    return /^[\p{L}\p{N} ]+$/u.test(label)
+      ? { code: "checkoutScheduled", detail: label }
+      : { code: "checkoutScheduled", detail: null };
+  }
+
+  return { code: "checkoutConflict", detail: null };
 }

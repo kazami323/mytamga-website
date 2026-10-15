@@ -16,6 +16,7 @@ const strings = {
   phoneInvalid: "Проверьте номер.",
   codeInvalid: "Код из SMS — шесть цифр.",
   pricesPending: "Оплата пока не открыта.",
+  checkoutScheduled: "После текущего уже оплачен другой тариф ({plan}).",
   checkoutConflict: "Этот тариф сейчас оплатить нельзя.",
 };
 
@@ -41,4 +42,9 @@ test("неизвестный код не оставляет человека б�
     messageFor("что-то новое" as never, null, strings),
     strings.network,
   );
+});
+
+test("название отложенного тарифа подставляется, а без него фраза остаётся целой", () => {
+  assert.equal(messageFor("checkoutScheduled", null, strings, "Business"), "После текущего уже оплачен другой тариф (Business).");
+  assert.equal(messageFor("checkoutScheduled", null, strings, null), "После текущего уже оплачен другой тариф.");
 });

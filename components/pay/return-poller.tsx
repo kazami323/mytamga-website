@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { getJson } from "@/lib/api/client";
 // Срок опроса компонент не знает и знать не должен: его держит pollOutcome,
 // поэтому поведение во времени проверено тестом, а не наблюдением.
-import { POLL_INTERVAL_MS, pollOutcome, type PollOutcome } from "@/lib/billing/poll";
+import { POLL_INTERVAL_MS, pollOutcome, type PollBaseline, type PollOutcome } from "@/lib/billing/poll";
 import type { SubscriptionView } from "@/lib/billing/subscription";
 import type { Dictionary } from "@/lib/i18n/dictionaries/ru";
 import { COMPANY } from "@/lib/legal/company";
@@ -15,12 +15,14 @@ interface ReturnPollerProps {
   strings: Dictionary["billing"];
   transactionId: string | null;
   expectedPlanKey: string | null;
+  baseline: PollBaseline | null;
 }
 
 export function ReturnPoller({
   strings,
   transactionId,
   expectedPlanKey,
+  baseline,
 }: ReturnPollerProps) {
   const [outcome, setOutcome] = useState<PollOutcome>("pending");
 
@@ -38,6 +40,7 @@ export function ReturnPoller({
         code: result.ok ? null : result.code,
         elapsedMs,
         expectedPlanKey,
+        baseline,
       });
 
       if (stopped) {
@@ -57,7 +60,7 @@ export function ReturnPoller({
       stopped = true;
       window.clearTimeout(timer);
     };
-  }, [expectedPlanKey]);
+  }, [expectedPlanKey, baseline]);
 
   const message =
     outcome === "success"

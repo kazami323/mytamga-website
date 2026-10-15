@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { ApiError, errorCodeFor } from "../lib/api/errors.ts";
+import { ApiError, checkoutConflictFrom, errorCodeFor } from "../lib/api/errors.ts";
 import { retryAfterSeconds } from "../lib/api/retry.ts";
 
 test("код ответа превращается в код сообщения", () => {
@@ -81,4 +81,28 @@ test("неправдоподобно большая задержка не наз
   assert.equal(retryAfterSeconds({ retryAfterMs: 600_000 }), 600);
   assert.equal(retryAfterSeconds({ retryAfterMs: 600_001 }), null);
   assert.equal(retryAfterSeconds({ retryAfterMs: 10_800_000 }), null);
+});
+
+test("три 409 кассы опознаются по тексту сервера", () => {
+  assert.deepEqual(
+    checkoutConflictFrom({ message: "Подписка организации оформлена через App Store или Google Play. Управлять ею можно в настройках магазина." }),
+    { code: "store", detail: null },
+  );
+  assert.deepEqual(
+    checkoutConflictFrom({ message: "Тариф организации действует бессрочно: оплатить можно только более широкий тариф." }),
+    { code: "checkoutPerpetual", detail: null },
+  );
+  assert.deepEqual(
+    checkoutConflictFrom({ message: "После текущего тарифа уже оплачен тариф Business. Оплатить можно его же или более широкий." }),
+    { code: "checkoutScheduled", detail: "Business" },
+  );
+});
+
+test("неизвестный или небезопасный текст 409 не показывается как есть", () => {
+  assert.deepEqual(checkoutConflictFrom({ message: "Что-то новое" }), { code: "checkoutConflict", detail: null });
+  assert.deepEqual(checkoutConflictFrom(null), { code: "checkoutConflict", detail: null });
+  assert.deepEqual(
+    checkoutConflictFrom({ message: "После текущего тарифа уже оплачен тариф <b>x</b>. Оплатить можно" }),
+    { code: "checkoutScheduled", detail: null },
+  );
 });

@@ -6,6 +6,7 @@ import { ReturnPoller } from "@/components/pay/return-poller";
 import { SectionHeading } from "@/components/section-heading";
 import { SiteFooter } from "@/components/site-footer";
 import { COOKIE } from "@/lib/api/cookies";
+import { BASELINE_COOKIE, parseBaseline } from "@/lib/billing/poll";
 import { hasLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 
@@ -28,6 +29,10 @@ export default async function PayReturnPage({
   const transactionId = jar.get(COOKIE.transaction)?.value ?? null;
   const paidPlanKey = jar.get(COOKIE.transactionPlan)?.value ?? null;
 
+  // Состояние до оплаты оставила страница тарифов; оно нужно, чтобы продление
+  // не засчиталось оплаченным ещё до ответа Click.
+  const baseline = parseBaseline(jar.get(BASELINE_COOKIE)?.value);
+
   return (
     <>
       <main>
@@ -48,6 +53,7 @@ export default async function PayReturnPage({
             // остаться — человек вернулся через час или с другого устройства — и
             // тогда успехом считается любой платный активный тариф.
             expectedPlanKey={paidPlanKey}
+            baseline={baseline}
           />
 
           <a href={`/${lang}/pricing`} className="nav-link mt-10 inline-block text-sm">

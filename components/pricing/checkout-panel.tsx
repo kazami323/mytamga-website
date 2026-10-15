@@ -21,6 +21,7 @@ import {
   PRICES_PUBLISHED,
   PROVIDERS_HIDDEN_FROM_UI,
 } from "@/lib/billing/flags";
+import { BASELINE_COOKIE, baselineFor, serializeBaseline } from "@/lib/billing/poll";
 import { messageFor } from "@/lib/billing/messages";
 import type { SubscriptionView } from "@/lib/billing/subscription";
 import { HTML_LANG, type Locale } from "@/lib/i18n/config";
@@ -159,6 +160,20 @@ export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPan
       }
     });
 
+  // Перед уходом в Click запоминаем срок и очередь: по возвращении оплата
+  // узнаётся по их изменению, а не по тарифу, который при продлении тот же.
+  function goToClick(offer: CheckoutOffer) {
+    const baseline = selected ? baselineFor(offer.effect, selected, subscription) : null;
+
+    // Без исходного состояния старая запись стёрта: чужая оплата не должна
+    // менять правило ожидания этой.
+    document.cookie = baseline
+      ? `${BASELINE_COOKIE}=${serializeBaseline(baseline)}; path=/; max-age=3600; secure; samesite=lax`
+      : `${BASELINE_COOKIE}=; path=/; max-age=0; secure; samesite=lax`;
+
+    window.location.assign(offer.url);
+  }
+
   const pay = () =>
     act(async () => {
       const result = await postJson<{ url: string }>("/api/checkout", {
@@ -168,7 +183,7 @@ export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPan
       });
 
       if (!result.ok) {
-        setError(messageFor(result.code, result.retryAfter, strings.errors));
+        setError(messageFor(result.code, result.retryAfter, strings.errors, result.detail));
         return;
       }
 
@@ -186,7 +201,7 @@ export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPan
         return;
       }
 
-      window.location.assign(offer.url);
+      goToClick(offer);
     });
 
   const confirmedOffer = pending && pending.key === `${selected}:${period}` ? pending.offer : null;
@@ -393,7 +408,7 @@ export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPan
               <button
                 type="button"
                 data-action="continue-to-click"
-                onClick={() => window.location.assign(confirmedOffer.url)}
+                onClick={() => goToClick(confirmedOffer)}
                 className="liquid-metal-trigger inline-flex h-11 items-center justify-center rounded-full border border-line px-6 text-sm font-semibold text-[var(--ink)]"
               >
                 {strings.checkout.continueToClick}

@@ -10,6 +10,7 @@ export function messageFor(
   code: BillingErrorCode,
   retryAfter: number | null | undefined,
   strings: ErrorStrings,
+  detail?: string | null,
 ): string {
   if (code === "rate") {
     // Задержку длиннее десяти минут не называют в секундах.
@@ -18,5 +19,10 @@ export function messageFor(
       : strings.rateLater;
   }
 
-  return strings[code] ?? strings.network;
+  const text = strings[code] ?? strings.network;
+
+  // ({plan}) — название тарифа из ответа сервера; без него фраза читается и так.
+  return detail
+    ? text.replace(/\{plan\}/g, detail)
+    : text.replace(/\s*[(（]\{plan\}[)）]/g, "");
 }

@@ -1,7 +1,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { POLL_DEADLINE_MS, POLL_INTERVAL_MS, pollOutcome } from "../lib/billing/poll.ts";
+import {
+  POLL_DEADLINE_MS,
+  POLL_INTERVAL_MS,
+  baselineFor,
+  parseBaseline,
+  pollOutcome,
+  serializeBaseline,
+} from "../lib/billing/poll.ts";
 
 const active = {
   planKey: "pro",
@@ -83,4 +90,49 @@ test("отложенный тариф: оплата видна по scheduledPla
     pollOutcome({ subscription: active, elapsedMs: 3000, expectedPlanKey: "business" }),
     "pending",
   );
+});
+
+test("продление того же тарифа: пока срок не сдвинулся, оплаты нет", () => {
+  const baseline = { effect: "extend" as const, planKey: "pro", endsAt: active.nextBillingAt, scheduledKey: null, scheduledUntil: null };
+  assert.equal(pollOutcome({ subscription: active, elapsedMs: 3000, expectedPlanKey: "pro", baseline }), "pending");
+  assert.equal(pollOutcome({ subscription: active, elapsedMs: 60_000, expectedPlanKey: "pro", baseline }), "timeout");
+  const extended = { ...active, nextBillingAt: "2026-11-25T00:00:00.000Z" };
+  assert.equal(pollOutcome({ subscription: extended, elapsedMs: 3000, expectedPlanKey: "pro", baseline }), "success");
+});
+
+test("продление без исходного срока ждёт подтверждения, а не угадывает", () => {
+  const baseline = { effect: "extend" as const, planKey: "pro", endsAt: null, scheduledKey: null, scheduledUntil: null };
+  assert.equal(pollOutcome({ subscription: active, elapsedMs: 3000, expectedPlanKey: "pro", baseline }), "pending");
+});
+
+test("отложенный тариф: повтор ждёт, пока сдвинется срок очереди", () => {
+  const queued = { key: "business", label: "Business", startsAt: "2026-10-26T00:00:00.000Z", until: "2026-11-25T00:00:00.000Z" };
+  const baseline = { effect: "defer" as const, planKey: "business", endsAt: active.nextBillingAt, scheduledKey: "business", scheduledUntil: queued.until };
+  const same = { ...active, scheduledPlan: queued };
+  assert.equal(pollOutcome({ subscription: same, elapsedMs: 3000, expectedPlanKey: "business", baseline }), "pending");
+  const moved = { ...active, scheduledPlan: { ...queued, until: "2026-12-25T00:00:00.000Z" } };
+  assert.equal(pollOutcome({ subscription: moved, elapsedMs: 3000, expectedPlanKey: "business", baseline }), "success");
+});
+
+test("отложенный тариф впервые: успех, когда он появился в очереди", () => {
+  const baseline = { effect: "defer" as const, planKey: "business", endsAt: active.nextBillingAt, scheduledKey: null, scheduledUntil: null };
+  const queued = { key: "business", label: "Business", startsAt: null, until: null };
+  assert.equal(pollOutcome({ subscription: active, elapsedMs: 3000, expectedPlanKey: "business", baseline }), "pending");
+  assert.equal(pollOutcome({ subscription: { ...active, scheduledPlan: queued }, elapsedMs: 3000, expectedPlanKey: "business", baseline }), "success");
+});
+
+test("исходное состояние чужого тарифа правило не меняет", () => {
+  const baseline = { effect: "extend" as const, planKey: "start", endsAt: active.nextBillingAt, scheduledKey: null, scheduledUntil: null };
+  assert.equal(pollOutcome({ subscription: active, elapsedMs: 3000, expectedPlanKey: "pro", baseline }), "success");
+});
+
+test("исходное состояние переживает куку и отбрасывает мусор", () => {
+  const baseline = baselineFor("extend", "pro", active);
+  assert.ok(baseline);
+  assert.deepEqual(parseBaseline(serializeBaseline(baseline)), baseline);
+  assert.equal(baselineFor("new", "pro", active), null);
+  assert.equal(baselineFor("extend", "pro", null), null);
+  assert.equal(parseBaseline("%7Bbroken"), null);
+  assert.equal(parseBaseline(encodeURIComponent('{"effect":"upgrade","planKey":"pro"}')), null);
+  assert.equal(parseBaseline(undefined), null);
 });

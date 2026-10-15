@@ -232,6 +232,8 @@ export const uz: Dictionary = {
       signedOut: "Sessiya tugadi. Qaytadan kiring.",
       network: "Server bilan bog‘lanib bo‘lmadi. Yana urinib ko‘ring.",
       checkoutConflict: "Bu tarifni hozir to‘lab bo‘lmaydi: u muddatsiz berilgan yoki joriy tarifdan keyin boshqa tarif allaqachon to‘langan. Bizga yozing — hal qilamiz.",
+      checkoutPerpetual: "Bu tarifni to‘lab bo‘lmaydi: u muddatsiz berilgan, faqat kengroq tarifni to‘lash mumkin.",
+      checkoutScheduled: "Joriy tarifdan keyin boshqa tarif ({plan}) allaqachon to‘langan. Uni yoki kengroq tarifni to‘lash mumkin.",
       phoneInvalid:
         "Raqamni tekshiring: O‘zbekiston raqami kerak, masalan +998 90 123 45 67.",
       codeInvalid: "SMS dagi kod — olti raqam.",

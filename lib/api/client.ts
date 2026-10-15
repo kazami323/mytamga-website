@@ -2,7 +2,7 @@ import type { BillingErrorCode } from "./errors";
 
 export type ApiResult<T> =
   | ({ ok: true } & T)
-  | { ok: false; code: BillingErrorCode; retryAfter?: number | null };
+  | { ok: false; code: BillingErrorCode; retryAfter?: number | null; detail?: string | null };
 
 /**
  * Браузер обращается только к нашему домену. Наши ручки всегда отвечают 200:

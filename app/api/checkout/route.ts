@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { COOKIE, MAX_AGE, cookieOptions } from "@/lib/api/cookies";
 import { isSameOrigin } from "@/lib/api/origin";
+import { ApiError, checkoutConflictFrom } from "@/lib/api/errors";
 import { attachSession, callWithSession, failure, failureFrom, readContext } from "@/lib/api/session";
 import { normalizePeriod, parseCheckout } from "@/lib/billing/checkout-effect";
 import { PRICES_PUBLISHED } from "@/lib/billing/flags";
@@ -79,6 +80,11 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     // 409 здесь — не только «оплачено в магазине»: тариф может быть выдан
     // бессрочно или после текущего уже оплачен другой.
+    if (error instanceof ApiError && error.status === 409) {
+      const { code, detail } = checkoutConflictFrom(error.body);
+      return failure(code, { detail });
+    }
+
     return failureFrom(error, undefined, "checkoutConflict");
   }
 }

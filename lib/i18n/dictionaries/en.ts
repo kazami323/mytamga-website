@@ -224,6 +224,8 @@ export const en: Dictionary = {
       signedOut: "The session has expired. Please sign in again.",
       network: "Could not reach the server. Please try again.",
       checkoutConflict: "This plan cannot be paid for right now: it was granted without an end date, or another plan is already paid for after the current one. Write to us and we will sort it out.",
+      checkoutPerpetual: "This plan cannot be paid for: it was granted without an end date, so only a broader plan can be paid for.",
+      checkoutScheduled: "Another plan ({plan}) is already paid for after the current one. You can pay for that same plan or a broader one.",
       phoneInvalid: "Check the number: an Uzbek one is needed, for example +998 90 123 45 67.",
       codeInvalid: "The code from the SMS is six digits.",
       pricesPending: "Payment is not open yet.",

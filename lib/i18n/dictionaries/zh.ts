@@ -205,6 +205,8 @@ export const zh: Dictionary = {
       signedOut: "会话已过期，请重新登录。",
       network: "无法连接服务器，请重试。",
       checkoutConflict: "此套餐目前无法付款：它被无限期授予，或当前套餐之后已付费购买了其他套餐。请联系我们，我们来处理。",
+      checkoutPerpetual: "无法为此套餐付款：它被无限期授予，只能购买更高级的套餐。",
+      checkoutScheduled: "当前套餐之后已付费购买了其他套餐（{plan}）。您可以再次购买同一套餐或更高级的套餐。",
       phoneInvalid: "请检查号码：需要乌兹别克斯坦号码，例如 +998 90 123 45 67。",
       codeInvalid: "短信验证码为六位数字。",
       pricesPending: "付款尚未开通。",
