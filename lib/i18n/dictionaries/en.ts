@@ -36,7 +36,6 @@ export const en: Dictionary = {
     actions: "Main actions",
     contact: "Contact us",
     learnMore: "Learn more about us",
-    sceneLoading: "Loading scene",
     // Первый экран-портал: камера пролетает в букву, внутри — объяснение.
     portalEnter: "Step inside",
     portalHint: "Scroll down to step into the letter",

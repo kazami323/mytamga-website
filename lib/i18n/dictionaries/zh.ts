@@ -37,7 +37,6 @@ export const zh: Dictionary = {
     actions: "主要操作",
     contact: "联系我们",
     learnMore: "了解我们",
-    sceneLoading: "场景加载中",
     // Первый экран-портал: камера пролетает в букву, внутри — объяснение.
     portalEnter: "走进来看看",
     portalHint: "向下滚动，穿过字母",

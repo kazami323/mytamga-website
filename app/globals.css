@@ -27,10 +27,6 @@
   --panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
   --panel-shadow-active: inset 0 1px 0 rgba(231, 217, 255, 0.26), inset 0 -10px 30px rgba(104, 68, 158, 0.2);
   --canvas-glow: rgba(199, 167, 255, 0.07);
-  --scene-glow: rgba(199, 167, 255, 0.12);
-  --orbit-line: rgba(199, 167, 255, 0.13);
-  --orbit-halo-1: rgba(199, 167, 255, 0.018);
-  --orbit-halo-2: rgba(199, 167, 255, 0.012);
   --field-bg: rgba(255, 255, 255, 0.03);
   --field-line: rgba(255, 255, 255, 0.09);
   --spotlight: #c7a7ff;
@@ -87,13 +83,9 @@
   --panel-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 10px 30px rgba(21, 22, 21, 0.06);
   --panel-shadow-active: inset 0 1px 0 #fff, 0 12px 34px rgba(109, 79, 209, 0.12);
   --canvas-glow: rgba(109, 79, 209, 0.05);
-  --scene-glow: rgba(109, 79, 209, 0.12);
-  --orbit-line: rgba(109, 79, 209, 0.2);
   /* Halo strength matches the dark theme's: the hero clips the orbit at its
      bottom edge, and anything stronger turns that clip into a visible seam
      against the next section. */
-  --orbit-halo-1: rgba(109, 79, 209, 0.018);
-  --orbit-halo-2: rgba(109, 79, 209, 0.012);
   --field-bg: rgba(21, 22, 21, 0.03);
   --field-line: rgba(21, 22, 21, 0.12);
   --spotlight: rgb(109 79 209 / 0.55);
@@ -168,22 +160,6 @@ body {
   color: var(--on-accent);
 }
 
-.hero-card::after {
-  position: absolute;
-  z-index: 0;
-  right: -18%;
-  bottom: -45%;
-  width: 58rem;
-  height: 58rem;
-  border: 1px solid var(--orbit-line);
-  border-radius: 50%;
-  box-shadow:
-    0 0 0 8rem var(--orbit-halo-1),
-    0 0 0 16rem var(--orbit-halo-2);
-  content: "";
-  pointer-events: none;
-}
-
 .hero-kicker,
 .section-kicker {
   display: flex;
@@ -197,37 +173,6 @@ body {
   height: 1px;
   background: var(--accent);
   content: "";
-}
-
-.hero-scene::before {
-  position: absolute;
-  z-index: 1;
-  inset: 12% 8% 10%;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--scene-glow), transparent 66%);
-  filter: blur(28px);
-  content: "";
-  pointer-events: none;
-}
-
-/* The robot is cropped at the waist: the stage runs past the cell, and the
-   mask dissolves it just before the hip joint so the cut never reads as a
-   hard edge. Percentages track the cell, so the crop holds at every width. */
-.hero-stage {
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    #000 0,
-    #000 42.5%,
-    transparent 46.4%
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    #000 0,
-    #000 42.5%,
-    transparent 46.4%
-  );
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
 }
 
 /* Anchored sections stop below the fixed header instead of under it. */
@@ -677,15 +622,6 @@ body {
   }
 }
 
-.spline-loader {
-  width: 2.25rem;
-  height: 2.25rem;
-  border: 1px solid rgb(var(--fg-rgb) / 0.16);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: loader-spin 900ms linear infinite;
-}
-
 .liquid-metal-shader canvas {
   /* Paper Shaders writes canvas dimensions inline; the host frame owns them.
      The radius is inherited so the same shader serves pills and panels. */
@@ -707,12 +643,6 @@ body {
   outline-offset: 4px;
 }
 
-@keyframes loader-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @keyframes liquid-metal-ripple {
   0% {
     opacity: 0.7;
@@ -722,15 +652,6 @@ body {
   100% {
     opacity: 0;
     transform: translate(-50%, -50%) scale(4);
-  }
-}
-
-@media (max-width: 767px) {
-  .hero-card::after {
-    right: -95%;
-    bottom: -18%;
-    width: 42rem;
-    height: 42rem;
   }
 }
 
@@ -1074,52 +995,4 @@ body {
   font-size: 0.95rem;
   line-height: 1.55;
   color: rgb(241 239 233 / 0.78);
-}
-
-/* ── Contact robot ──────────────────────────────────────────────────────────
-   Небольшая сцена под контактами. Робот обрезан по поясу мягкой маской, знак
-   лежит на груди поверх холста и проявляется вместе со сценой. */
-
-.contact-robot {
-  position: relative;
-  width: min(100%, 26rem);
-  aspect-ratio: 1;
-  margin-top: 2.5rem;
-  /* Низ сцены растворён маской — пустое место не должно отодвигать форму. */
-  margin-bottom: -18%;
-}
-
-.contact-robot-glow {
-  position: absolute;
-  inset: 14% 12% 18%;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--scene-glow), transparent 66%);
-  filter: blur(28px);
-  pointer-events: none;
-}
-
-.contact-robot-stage {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 78%);
-  mask-image: linear-gradient(to bottom, #000 62%, transparent 78%);
-}
-
-.contact-robot-logo {
-  position: absolute;
-  left: var(--robot-chest-x, 50%);
-  top: var(--robot-chest-y, 44%);
-  width: var(--robot-logo-size, 12%);
-  height: auto;
-  transform: translate(-50%, -50%);
-  opacity: 0;
-  filter: drop-shadow(0 0 10px rgb(232 178 74 / 0.35));
-  transition: opacity 600ms ease 200ms;
-  pointer-events: none;
-}
-
-.contact-robot[data-loaded="true"] .contact-robot-logo {
-  opacity: 0.92;
 }

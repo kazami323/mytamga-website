@@ -9,7 +9,7 @@
 
 ## Visual direction
 
-The interface uses a quiet, near-black exhibition space around one interactive 3D object. The signature is the contrast between the oversized wide display type and the off-axis orbital line behind the scene. Decorative effects stay subordinate to the Spline object.
+The interface uses a quiet, near-black exhibition space. The signature is the oversized wide display type: the first screen is the word MYTAMGA, and scrolling flies the camera into a letter where the explanation opens on a deep violet field. There is no 3D scene — the site carries no WebGL beyond the liquid-metal shaders.
 
 ## Runtime tokens
 
@@ -44,7 +44,7 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
 ## Preloader
 
 - A full-bleed overlay on the canvas: the liquid loader over the brand lockup — the app's gold symbol beside the name, the same lockup as the header.
-- It waits on the Spline scene, the one genuinely slow asset, not on a fixed timer — but never long. A 0.8s floor keeps it from flashing on a warm cache; a 1s ceiling plus a 250ms fade means the page is open within 1.5s of navigation at most, as the owner asked — the timers start only once scripts have loaded, so the budget has to leave room for that. When the scene is slower than that, the hero shows its own "loading scene" state while the copy and buttons are already usable.
+- It waits for the hero's display font (the portal measures the word by it), not on a fixed timer — but never long. A 0.8s floor keeps it from flashing on a warm cache; a 1s ceiling plus a 250ms fade means the page is open within 1.5s of navigation at most, as the owner asked — the timers start only once scripts have loaded, so the budget has to leave room for that.
 - Scroll is locked while it is up and restored when it leaves.
 - The loader keeps the source component's rainbow, which is deliberate and the only place on the site where the single-accent rule is set aside.
 - Frames are driven by rAF straight into the nodes. State-per-frame would re-render every layer thirty times a second and compete for the main thread with the very scene the overlay is waiting for.
@@ -80,8 +80,9 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
 - Every colour that differs between themes is a token. Neutral tints use the
   `--fg-rgb` helper, `rgb(var(--fg-rgb) / a)`, which resolves to the exact
   white alpha in dark and to ink alphas in light.
-- The robot, the liquid-metal buttons and the preloader rainbow are the same
-  in both themes. Cards keep their shader rim and swap only the face.
+- The liquid-metal buttons, the portal's violet field and the preloader
+  rainbow are the same in both themes; in dark the word MYTAMGA is white at
+  rest and turns into the violet field as the camera enters. Cards keep their shader rim and swap only the face.
 - Light text tokens clear 4.5:1 on canvas and surface — the faintest is
   4.64:1 — and keep the dark theme's order of prominence: ink, muted, soft,
   faint.
@@ -149,12 +150,11 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
   preloader — needs state that outlives the remount; a head script only runs
   on a full load.
 - Every WebGL canvas must be released with `releaseWebGL` (`lib/webgl.ts`)
-  when its component unmounts. Paper Shaders' and Spline's `dispose()` free
+  when its component unmounts. Paper Shaders' `dispose()` frees
   what is inside a context but leave the context to the garbage collector; a
   language switch remounts the whole page, so eight contexts leaked per switch
   until the browser hit its limit of sixteen and began killing the oldest.
   Release before `dispose()` — it removes the canvas.
-- The Spline scene must stay behind `SceneBoundary`. A failed fetch from its CDN surfaces as a render-time throw, and without a boundary React tears down the whole tree — header, hero and preloader with it, leaving a blank page and a scroll lock with nothing left running to release it.
 - Layout properties belong in utilities, not in `globals.css`. Rules there load after Tailwind at equal specificity, so a `display` written next to the colours will quietly defeat responsive variants like `md:hidden`.
 - Deployment, decided 2026-10-02: the site runs on ahost shared hosting
   ("Micro", cPanel, Node.js), the application's API on a VPS at eskiz.uz. The
@@ -197,15 +197,12 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
 
 ## Layout and behavior
 
-- Desktop: two unequal grid columns, copy on the left and the scene on the right. The row height is set by the copy column, so the scene cell inherits the exact vertical span of the text; stacked composition remains active through tablet widths so the statement never collapses into a cramped column.
-- Mobile: content stacks, with a 30svh floor under the 3D scene to prevent layout shift. Top padding clears the fixed header.
+- First screen: the word MYTAMGA centred, the kicker above it and the one-line statement and "look inside" pill below, all pinned to the measured edges of the word (`--gp-word-top/bottom`). Scrolling flies the camera into a letter; inside, the title, lead, the two primary actions and the three steps open on the violet field.
+- Mobile: the same portal; the word scales to the width, the steps stack into one column. Top padding clears the fixed header.
 - The two primary actions sit directly below the supporting copy and wrap as a pair on narrow screens.
 - CTA surfaces use a restrained liquid-metal rim while keeping high-contrast text on a dark center.
 - Button hover and keyboard focus shift the silver surface toward violet chrome without moving its geometry.
-- The Spline scene keeps a large fixed presentation scale and its authored cursor interaction instead of responsively shrinking the robot. An extra-wide, centered stage extends beyond the right column horizontally, so the model is never pinched by a narrow canvas.
-- The robot reads from the head to the waist. The stage overruns its cell and a gradient mask dissolves the figure just above the hip joint: the head sits on the kicker line and the waist fades out on the line that closes the buttons. Both offsets are percentages of the cell, so the crop holds through copy changes and every breakpoint.
-- The hero is full bleed: no rim, no radius, no shadow and no inset gutter, so the composition reads as the screen itself rather than as a card resting on it. The off-axis orbital line stays — it is the signature, not a frame.
-- The hero is clipped vertically but not horizontally (`overflow: visible clip`). The masked lower half of the stage and the orbital line would otherwise occupy layout space and open a band of dead scroll below the fold.
+- The hero is full bleed: no rim, no radius, no shadow and no inset gutter, so the composition reads as the screen itself rather than as a card resting on it. At its bottom the violet field dissolves into the page canvas instead of ending on a hard edge.
 - Stacked, the copy takes its natural height and the scene takes whatever is left, so the hero fills exactly one screen at any phone height.
 - Pointer spotlight is enhancement only; content does not depend on hover.
 - Motion respects `prefers-reduced-motion` and all owned scrollbars remain visible.
@@ -230,7 +227,7 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
   discussion says it may one day cost money.
 - The browser never talks to the application's API. Route handlers under
   `app/api/` do, and they keep tokens in `HttpOnly` cookies. Page scripts —
-  Spline and the shaders, both from a CDN — cannot read them.
+  the shaders included — cannot read them.
 - Cookies use `SameSite=Lax`, never `Strict`: the visitor comes back from the
   payment provider's site, a cross-site navigation, and `Strict` would drop the
   session exactly when the return page needs it.
