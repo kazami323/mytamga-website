@@ -6,6 +6,7 @@ import {
   hasLocale,
   type Locale,
 } from "@/lib/i18n/config";
+import { HSTS_VALUE, httpsRedirectTarget, shouldSendHsts } from "@/lib/https";
 
 // Four locales don't need a negotiation library: rank by q and match on the
 // primary subtag, so zh-TW lands on zh and uz-Cyrl on uz.
@@ -31,11 +32,24 @@ function fromAcceptLanguage(header: string | null): Locale | null {
   return match ? (match.primary as Locale) : null;
 }
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
+const IS_PRODUCTION = process.env.NODE_ENV === "production";
+
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Незащищённый адрес — сразу на https, до выбора языка: одно перенаправление.
+  const secure = httpsRedirectTarget(request.nextUrl, SITE_URL, IS_PRODUCTION);
+  if (secure) {
+    return NextResponse.redirect(secure, 308);
+  }
+
   if (hasLocale(pathname.split("/")[1] ?? "")) {
-    return NextResponse.next();
+    const response = NextResponse.next();
+    if (shouldSendHsts(request.nextUrl, SITE_URL, IS_PRODUCTION)) {
+      response.headers.set("Strict-Transport-Security", HSTS_VALUE);
+    }
+    return response;
   }
 
   const cookie = request.cookies.get(LOCALE_COOKIE)?.value;
