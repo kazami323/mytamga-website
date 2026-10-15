@@ -112,7 +112,7 @@ export function SitePreloader({ loadingLabel }: { loadingLabel: string }) {
           width={219}
           height={177}
           loading="eager"
-          className="h-9 w-auto"
+          className="h-16 w-auto sm:h-20"
         />
         MyTamga
       </p>
