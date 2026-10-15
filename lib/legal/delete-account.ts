@@ -83,7 +83,7 @@ const ru: DeleteAccountContent = {
       heading: "Нет доступа к приложению",
       mail: true,
       paragraphs: [
-        `Напишите на ${EMAIL} с темой «Удаление аккаунта» с номера телефона или адреса электронной почты аккаунта и укажите номер телефона аккаунта. Для подтверждения мы можем попросить подтвердить, что номер принадлежит вам. Мы удалим аккаунт в течение 30 дней.`,
+        `Напишите на ${EMAIL} с темой «Удаление аккаунта» и укажите номер телефона аккаунта. Если у аккаунта есть адрес электронной почты, пишите с него. Для подтверждения мы можем попросить подтвердить, что номер принадлежит вам. Мы удалим аккаунт в течение 30 дней.`,
         "Никогда не присылайте в письме пароль или код из SMS — мы их не запрашиваем.",
       ],
     },
@@ -139,7 +139,7 @@ const uz: DeleteAccountContent = {
       heading: "Ilovaga kirish imkoni yo‘q bo‘lsa",
       mail: true,
       paragraphs: [
-        `${EMAIL} manziliga «Akkauntni o‘chirish» mavzusida, akkaunt telefon raqami yoki elektron pochtasidan yozing va akkaunt telefon raqamini ko‘rsating. Tasdiqlash uchun raqam sizga tegishli ekanini tasdiqlashingizni so‘rashimiz mumkin. Akkauntni 30 kun ichida o‘chiramiz.`,
+        `${EMAIL} manziliga «Akkauntni o‘chirish» mavzusida xat yozing va akkaunt telefon raqamini ko‘rsating. Agar akkauntda elektron pochta bo‘lsa, o‘sha manzildan yozing. Tasdiqlash uchun raqam sizga tegishli ekanini tasdiqlashingizni so‘rashimiz mumkin. Akkauntni 30 kun ichida o‘chiramiz.`,
         "Xatda hech qachon parol yoki SMS-kodni yubormang — biz ularni so‘ramaymiz.",
       ],
     },
@@ -195,7 +195,7 @@ const en: DeleteAccountContent = {
       heading: "No access to the app",
       mail: true,
       paragraphs: [
-        `Email ${EMAIL} with the subject “Account deletion”, from the phone number or email address of the account, and state the account phone number. To verify, we may ask you to confirm that the number is yours. We will delete the account within 30 days.`,
+        `Email ${EMAIL} with the subject “Account deletion” and state the account phone number. If the account has an email address, write from it. To verify, we may ask you to confirm that the number is yours. We will delete the account within 30 days.`,
         "Never send a password or an SMS code by email — we do not ask for them.",
       ],
     },
@@ -250,7 +250,7 @@ const zh: DeleteAccountContent = {
       heading: "无法访问应用",
       mail: true,
       paragraphs: [
-        `请使用账户的手机号码或电子邮件地址，发送主题为“账户删除”的邮件至 ${EMAIL}，并注明账户的手机号码。为了验证，我们可能会请您确认该号码属于您。我们将在 30 天内删除账户。`,
+        `请发送主题为“账户删除”的邮件至 ${EMAIL}，并注明账户的手机号码。如果账户绑定了电子邮件地址，请使用该地址发送。为了验证，我们可能会请您确认该号码属于您。我们将在 30 天内删除账户。`,
         "请勿通过邮件发送密码或短信验证码——我们不会索取。",
       ],
     },
