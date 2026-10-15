@@ -84,7 +84,7 @@ test("4xx — без повтора", async () => {
   const { impl, calls } = fakeFetch(400);
   assert.equal(
     await sendLeadToTelegram(LEAD, { env: ENV, fetchImpl: impl }),
-    "unavailable",
+    "failed",
   );
   assert.equal(calls.length, 1);
 });
@@ -102,7 +102,7 @@ test("5xx дважды — unavailable, ровно две попытки", async
   const { impl, calls } = fakeFetch(500);
   assert.equal(
     await sendLeadToTelegram(LEAD, { env: ENV, fetchImpl: impl }),
-    "unavailable",
+    "failed",
   );
   assert.equal(calls.length, 2);
 });
@@ -132,7 +132,7 @@ test("текст обрезается до 4000 символов", async () => {
     { env: ENV, fetchImpl: impl },
   );
   const { text } = JSON.parse(String(calls[0].init.body));
-  assert.equal(text.length, TELEGRAM_TEXT_LIMIT);
+  assert.equal(Array.from(text as string).length, TELEGRAM_TEXT_LIMIT);
 });
 
 test("токен и заявка не попадают в лог", async () => {
@@ -165,9 +165,39 @@ test("лимит: окно 10 минут истекает", () => {
   assert.equal(limiter.take("1.1.1.1", 1000 + 600_000), true);
 });
 
-test("лимит: не более 60 в час со всех адресов", () => {
+test("лимит: не более 30 за 10 минут со всех адресов", () => {
   const limiter = createLeadRateLimiter();
-  for (let i = 0; i < 60; i++) assert.equal(limiter.take(`ip-${i}`, 1000), true);
+  for (let i = 0; i < 30; i++) assert.equal(limiter.take(`ip-${i}`, 1000), true);
   assert.equal(limiter.take("fresh", 2000), false);
-  assert.equal(limiter.take("fresh", 1000 + 3_600_000), true);
+  assert.equal(limiter.take("fresh", 1000 + 600_000), true);
+});
+
+test("лимит: без адреса действует только общий лимит", () => {
+  const limiter = createLeadRateLimiter();
+  // Больше пяти без адреса проходят: на IP лимита нет.
+  for (let i = 0; i < 30; i++) assert.equal(limiter.take(null, 1000), true);
+  assert.equal(limiter.take(null, 2000), false);
+  assert.equal(limiter.size, 0);
+});
+
+test("лимит: отказы и истечение окна не раздувают память", () => {
+  const limiter = createLeadRateLimiter();
+  for (let i = 0; i < 30; i++) limiter.take(`ip-${i}`, 1000);
+  for (let i = 0; i < 200; i++) limiter.take(`spam-${i}`, 2000); // все отказы
+  assert.equal(limiter.size, 30);
+  limiter.take("later", 1000 + 600_000);
+  assert.equal(limiter.size, 1);
+});
+
+test("обрезка не разрывает суррогатную пару на границе", async () => {
+  const { impl, calls } = fakeFetch(200);
+  await sendLeadToTelegram(
+    { ...LEAD, goods: "😀".repeat(5000) },
+    { env: ENV, fetchImpl: impl },
+  );
+  const { text } = JSON.parse(String(calls[0].init.body));
+  const chars = Array.from(text as string);
+  assert.equal(chars.length, TELEGRAM_TEXT_LIMIT);
+  assert.equal(chars[chars.length - 1], "😀");
+  assert.equal(/[\ud800-\udbff](?![\udc00-\udfff])|(?<![\ud800-\udbff])[\udc00-\udfff]/.test(text), false);
 });

@@ -8,7 +8,8 @@ export type LeadPayload = {
   goods: string;
 };
 
-export type DeliveryResult = "delivered" | "unavailable";
+// "unavailable" — канал не настроен; "failed" — настроен, но отправить не вышло.
+export type DeliveryResult = "delivered" | "unavailable" | "failed";
 
 // Читаем только LEAD_TELEGRAM_BOT_TOKEN и LEAD_TELEGRAM_CHAT_ID.
 export type DeliveryEnv = Record<string, string | undefined>;
@@ -49,7 +50,10 @@ export function formatLeadText(
 
   lines.push(`Время (UTC): ${now.toISOString()}`);
 
-  return lines.join("\n").slice(0, TELEGRAM_TEXT_LIMIT);
+  // По символам, а не по code unit: суррогатную пару не разрываем.
+  return Array.from(lines.join("\n"))
+    .slice(0, TELEGRAM_TEXT_LIMIT)
+    .join("");
 }
 
 type Attempt = "ok" | "retry" | "fail";
@@ -118,14 +122,13 @@ export async function sendLeadToTelegram(
     console.error("[lead] Telegram delivery failed");
   }
 
-  return result === "ok" ? "delivered" : "unavailable";
+  return result === "ok" ? "delivered" : "failed";
 }
 
 export const LEAD_RATE_LIMITS = {
-  perIpWindowMs: 10 * 60_000,
+  windowMs: 10 * 60_000,
   perIpMax: 5,
-  totalWindowMs: 60 * 60_000,
-  totalMax: 60,
+  totalMax: 30,
 } as const;
 
 /** Лимит в памяти процесса: при перезапуске счётчики обнуляются. */
@@ -134,32 +137,39 @@ export function createLeadRateLimiter() {
   let total: number[] = [];
 
   return {
-    /** true — заявку можно принять (и она засчитана). */
-    take(ip: string, nowMs: number): boolean {
-      const { perIpWindowMs, perIpMax, totalWindowMs, totalMax } =
-        LEAD_RATE_LIMITS;
+    /** Число хранимых адресов — для тестов. */
+    get size() {
+      return byIp.size;
+    },
+    /**
+     * true — заявку можно принять (и она засчитана). `ip === null` — адрес
+     * определить не удалось: тогда действует только общий лимит.
+     */
+    take(ip: string | null, nowMs: number): boolean {
+      const { windowMs, perIpMax, totalMax } = LEAD_RATE_LIMITS;
 
-      total = total.filter((at) => nowMs - at < totalWindowMs);
-      const recent = (byIp.get(ip) ?? []).filter(
-        (at) => nowMs - at < perIpWindowMs,
-      );
+      // Чистим при каждом вызове, что бы он ни решил: записей не больше
+      // totalMax, так что это дёшево.
+      total = total.filter((at) => nowMs - at < windowMs);
+      for (const [key, times] of byIp) {
+        const live = times.filter((at) => nowMs - at < windowMs);
+        if (live.length === 0) {
+          byIp.delete(key);
+        } else {
+          byIp.set(key, live);
+        }
+      }
+
+      const recent = ip === null ? [] : (byIp.get(ip) ?? []);
 
       if (recent.length >= perIpMax || total.length >= totalMax) {
-        byIp.set(ip, recent);
         return false;
       }
 
-      recent.push(nowMs);
       total.push(nowMs);
-      byIp.set(ip, recent);
 
-      // Не даём карте расти бесконечно.
-      if (byIp.size > 5000) {
-        for (const [key, times] of byIp) {
-          if (times.every((at) => nowMs - at >= perIpWindowMs)) {
-            byIp.delete(key);
-          }
-        }
+      if (ip !== null) {
+        byIp.set(ip, [...recent, nowMs]);
       }
 
       return true;

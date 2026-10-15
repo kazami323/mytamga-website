@@ -3,7 +3,11 @@
 import { headers } from "next/headers";
 
 import { clientIpFrom } from "@/lib/api/forwarded";
-import { createLeadRateLimiter, sendLeadToTelegram } from "@/lib/lead-delivery";
+import {
+  createLeadRateLimiter,
+  sendLeadToTelegram,
+  type DeliveryResult,
+} from "@/lib/lead-delivery";
 import {
   readLeadValues,
   validateLead,
@@ -15,18 +19,17 @@ const limiter = createLeadRateLimiter();
 
 async function deliverLead(
   values: LeadValues,
-): Promise<"delivered" | "unavailable"> {
+): Promise<DeliveryResult> {
   const requestHeaders = await headers();
-  const ip =
-    clientIpFrom(
-      requestHeaders.get("x-forwarded-for"),
-      requestHeaders.get("x-real-ip"),
-    ) ?? "unknown";
+  // Нет адреса — лимит на IP не применяется, остаётся только общий.
+  const ip = clientIpFrom(
+    requestHeaders.get("x-forwarded-for"),
+    requestHeaders.get("x-real-ip"),
+  );
 
-  // Превышение лимита выглядит для посетителя как «недоступно»: подсказывать
-  // спамеру границы незачем.
+  // Превышение лимита — «попробуйте ещё раз» ("failed"), не «недоступно».
   if (!limiter.take(ip, Date.now())) {
-    return "unavailable";
+    return "failed";
   }
 
   return sendLeadToTelegram(values, { env: process.env });
@@ -53,9 +56,11 @@ export async function submitLead(
 
   try {
     const result = await deliverLead(values);
-    return result === "delivered"
-      ? { status: "sent" }
-      : { status: "unavailable", values };
+    if (result === "delivered") {
+      return { status: "sent" };
+    }
+
+    return { status: result, values };
   } catch {
     return { status: "failed", values };
   }
