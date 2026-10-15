@@ -1,6 +1,7 @@
 import { CinematicFooter } from "@/components/ui/cinematic-footer";
 import { APP_LINKS } from "@/lib/app-links";
 import { getCurrentDictionary } from "@/lib/i18n/get-dictionary";
+import { DELETE_ACCOUNT } from "@/lib/legal/delete-account";
 
 /**
  * Серверная половина подвала: собирает строки и ссылки на языке страницы и
@@ -42,6 +43,7 @@ export async function SiteFooter() {
         { label: t.billing.legal.privacy, href: `/${locale}/privacy` },
         { label: t.billing.legal.terms, href: `/${locale}/terms` },
         { label: t.billing.legal.support, href: `/${locale}/support` },
+        { label: DELETE_ACCOUNT[locale].linkLabel, href: `/${locale}/delete-account` },
       ]}
       legalNavLabel={t.nav.footer}
       copyright={`© ${year} ${t.footer.legal}`}
