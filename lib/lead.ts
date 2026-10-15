@@ -73,6 +73,7 @@ export function validateLead(values: LeadValues): LeadFieldErrors {
 export type LeadState =
   | { status: "idle" }
   | { status: "invalid"; values: LeadValues; fieldErrors: LeadFieldErrors }
+  | { status: "sent" }
   | { status: "unavailable"; values: LeadValues }
   | { status: "failed"; values: LeadValues };
 

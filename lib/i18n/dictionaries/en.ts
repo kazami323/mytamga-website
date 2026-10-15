@@ -122,6 +122,7 @@ export const en: Dictionary = {
     unavailable:
       "Online requests aren't connected yet. Please use the contacts alongside — what you entered is kept.",
     failed: "Couldn't send. Try again or write to us directly.",
+    sent: "Request sent. We will get back to you.",
     errors: {
       "name.short": "Enter your name — at least 2 characters.",
       "name.long": "That name is too long.",

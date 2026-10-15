@@ -130,6 +130,7 @@ export const uz: Dictionary = {
     unavailable:
       "Onlayn arizalar hali ulanmagan. Yonidagi aloqa ma’lumotlari orqali bog‘laning — kiritgan ma’lumotlaringiz saqlanib qoldi.",
     failed: "Yuborib bo‘lmadi. Qayta urinib ko‘ring yoki bizga to‘g‘ridan-to‘g‘ri yozing.",
+    sent: "Ariza yuborildi. Tez orada siz bilan bog‘lanamiz.",
     errors: {
       "name.short": "Ismingizni kiriting — kamida 2 ta belgi.",
       "name.long": "Ism juda uzun.",

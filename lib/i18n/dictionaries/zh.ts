@@ -106,6 +106,7 @@ export const zh: Dictionary = {
     sending: "正在提交…",
     unavailable: "在线申请尚未开通。请通过旁边的联系方式与我们联系——您填写的内容已保留。",
     failed: "提交失败。请重试或直接联系我们。",
+    sent: "申请已提交，我们会尽快与您联系。",
     errors: {
       "name.short": "请输入姓名——至少 2 个字符。",
       "name.long": "姓名过长。",

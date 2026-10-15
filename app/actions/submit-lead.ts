@@ -1,5 +1,9 @@
 "use server";
 
+import { headers } from "next/headers";
+
+import { clientIpFrom } from "@/lib/api/forwarded";
+import { createLeadRateLimiter, sendLeadToTelegram } from "@/lib/lead-delivery";
 import {
   readLeadValues,
   validateLead,
@@ -7,21 +11,25 @@ import {
   type LeadValues,
 } from "@/lib/lead";
 
-/**
- * The seam. Wiring a real channel — Telegram, email, a CRM — is a change to
- * this function plus environment variables, and nothing else.
- *
- * It reports "unavailable" rather than pretending to succeed: a landing page
- * that swallows enquiries loses customers silently.
- */
+const limiter = createLeadRateLimiter();
+
 async function deliverLead(
   values: LeadValues,
 ): Promise<"delivered" | "unavailable"> {
-  // No channel is configured yet, so there is nothing to deliver to. Wiring
-  // one means replacing this body; `values` is the payload it will send.
-  void values;
+  const requestHeaders = await headers();
+  const ip =
+    clientIpFrom(
+      requestHeaders.get("x-forwarded-for"),
+      requestHeaders.get("x-real-ip"),
+    ) ?? "unknown";
 
-  return "unavailable";
+  // Превышение лимита выглядит для посетителя как «недоступно»: подсказывать
+  // спамеру границы незачем.
+  if (!limiter.take(ip, Date.now())) {
+    return "unavailable";
+  }
+
+  return sendLeadToTelegram(values, { env: process.env });
 }
 
 // A "use server" module may only export async functions, so the state type and
@@ -44,8 +52,10 @@ export async function submitLead(
   }
 
   try {
-    await deliverLead(values);
-    return { status: "unavailable", values };
+    const result = await deliverLead(values);
+    return result === "delivered"
+      ? { status: "sent" }
+      : { status: "unavailable", values };
   } catch {
     return { status: "failed", values };
   }
