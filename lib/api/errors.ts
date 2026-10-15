@@ -80,10 +80,10 @@ export function checkoutConflictFrom(body: unknown): {
   code: BillingErrorCode;
   detail: string | null;
 } {
-  const message =
-    typeof body === "object" && body !== null && "message" in body
-      ? (body as { message: unknown }).message
-      : null;
+  // Сервер (ApiExceptionFilter) кладёт текст в `error`; `message` — на случай
+  // ответа не через фильтр.
+  const record = typeof body === "object" && body !== null ? (body as Record<string, unknown>) : null;
+  const message = record ? (record.error ?? record.message ?? null) : null;
   const text = (Array.isArray(message) ? message.join(" ") : String(message ?? "")).trim();
 
   if (text.startsWith("Подписка организации оформлена через App Store")) {

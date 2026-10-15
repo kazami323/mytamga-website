@@ -106,3 +106,15 @@ test("неизвестный или небезопасный текст 409 не
     { code: "checkoutScheduled", detail: null },
   );
 });
+
+test("409 в реальном формате API — текст в поле error", () => {
+  // ApiExceptionFilter сервера отдаёт { error, requestId }, поля message нет.
+  assert.deepEqual(
+    checkoutConflictFrom({ error: "Тариф организации действует бессрочно: оплатить можно только более широкий тариф.", requestId: "r1" }),
+    { code: "checkoutPerpetual", detail: null },
+  );
+  assert.deepEqual(
+    checkoutConflictFrom({ error: "После текущего тарифа уже оплачен тариф Start. Оплатить можно его же или более широкий.", requestId: "r1" }),
+    { code: "checkoutScheduled", detail: "Start" },
+  );
+});
