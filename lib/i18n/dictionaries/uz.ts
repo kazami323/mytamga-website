@@ -44,10 +44,6 @@ export const uz: Dictionary = {
     actions: "Asosiy harakatlar",
     contact: "Biz bilan bog‘laning",
     learnMore: "Biz haqimizda",
-    // Первый экран-портал: камера пролетает в букву, внутри — объяснение.
-    portalEnter: "Ichkariga qarang",
-    portalHint: "Pastga aylantiring — harf ichiga kiramiz",
-    portalChoose: "Kirish uchun harfni tanlang",
   },
   capabilities: {
     kicker: "Imkoniyatlar",

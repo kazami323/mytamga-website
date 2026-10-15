@@ -9,7 +9,7 @@
 
 ## Visual direction
 
-The interface uses a quiet, near-black exhibition space. The signature is the oversized wide display type: the first screen is the word MYTAMGA, and scrolling flies the camera into a letter where the explanation opens on a deep violet field. There is no 3D scene — the site carries no WebGL beyond the liquid-metal shaders.
+The interface uses a quiet, near-black exhibition space. The first screen is a dark stage with a glowing horizon (`components/ui/glow-horizon.tsx`): layered white, violet and indigo ellipses rise from behind the top edge once, on load, and settle into an arc under the copy; the title appears word by word out of a blur. The stage is dark in both themes — the horizon is drawn for a black field — and fades into the page canvas at its bottom. There is no 3D scene and no scroll-driven camera.
 
 ## Runtime tokens
 
@@ -44,7 +44,7 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
 ## Preloader
 
 - A full-bleed overlay on the canvas: the liquid loader over the brand lockup — the app's gold symbol beside the name, the same lockup as the header.
-- It waits for the hero's display font (the portal measures the word by it), not on a fixed timer — but never long. A 0.8s floor keeps it from flashing on a warm cache; a 1s ceiling plus a 250ms fade means the page is open within 1.5s of navigation at most, as the owner asked — the timers start only once scripts have loaded, so the budget has to leave room for that.
+- It no longer waits on any asset: the hero signals ready on mount — but the floor and ceiling below still apply. A 0.8s floor keeps it from flashing on a warm cache; a 1s ceiling plus a 250ms fade means the page is open within 1.5s of navigation at most, as the owner asked — the timers start only once scripts have loaded, so the budget has to leave room for that.
 - Scroll is locked while it is up and restored when it leaves.
 - The loader keeps the source component's rainbow, which is deliberate and the only place on the site where the single-accent rule is set aside.
 - Frames are driven by rAF straight into the nodes. State-per-frame would re-render every layer thirty times a second and compete for the main thread with the very scene the overlay is waiting for.
@@ -80,9 +80,8 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
 - Every colour that differs between themes is a token. Neutral tints use the
   `--fg-rgb` helper, `rgb(var(--fg-rgb) / a)`, which resolves to the exact
   white alpha in dark and to ink alphas in light.
-- The liquid-metal buttons, the portal's violet field and the preloader
-  rainbow are the same in both themes; in dark the word MYTAMGA is white at
-  rest and turns into the violet field as the camera enters. Cards keep their shader rim and swap only the face.
+- The liquid-metal buttons, the dark hero stage with its horizon, the header
+  and the preloader rainbow are the same in both themes. Cards keep their shader rim and swap only the face.
 - Light text tokens clear 4.5:1 on canvas and surface — the faintest is
   4.64:1 — and keep the dark theme's order of prominence: ink, muted, soft,
   faint.
@@ -197,12 +196,13 @@ The canonical runtime values live in `app/globals.css` under `:root` and are exp
 
 ## Layout and behavior
 
-- First screen: the word MYTAMGA centred, the kicker above it and the one-line statement and "look inside" pill below, all pinned to the measured edges of the word (`--gp-word-top/bottom`). Scrolling flies the camera into a letter; inside, the title, lead, the two primary actions and the three steps open on the violet field.
-- Mobile: the same portal; the word scales to the width, the steps stack into one column. Top padding clears the fixed header.
+- First screen: kicker, the three-line title, the lead and the two primary actions, centred on the dark stage; the horizon arc runs under the buttons (its layer is taller than the stage, so the rim sits below the copy and never behind text). "How it works" follows as its own section.
+- Mobile: the same stage; the arc becomes a tall dome and the buttons stack. Top padding clears the fixed header.
 - The two primary actions sit directly below the supporting copy and wrap as a pair on narrow screens.
 - CTA surfaces use a restrained liquid-metal rim while keeping high-contrast text on a dark center.
 - Button hover and keyboard focus shift the silver surface toward violet chrome without moving its geometry.
-- The hero is full bleed: no rim, no radius, no shadow and no inset gutter, so the composition reads as the screen itself rather than as a card resting on it. At its bottom the violet field dissolves into the page canvas instead of ending on a hard edge.
+- The hero is full bleed: no rim, no radius, no shadow and no inset gutter, so the composition reads as the screen itself rather than as a card resting on it. At its bottom the stage dissolves into the page canvas instead of ending on a hard edge.
+- The header bar is always on its own dark violet-graphite surface, in both themes: the gold logo reads only on dark. In the light theme the header re-declares the dark tokens, and the switches' light finish is excluded from it (`:not(.site-header *)`).
 - Stacked, the copy takes its natural height and the scene takes whatever is left, so the hero fills exactly one screen at any phone height.
 - Pointer spotlight is enhancement only; content does not depend on hover.
 - Motion respects `prefers-reduced-motion` and all owned scrollbars remain visible.

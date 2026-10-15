@@ -30,6 +30,9 @@
   --field-bg: rgba(255, 255, 255, 0.03);
   --field-line: rgba(255, 255, 255, 0.09);
   --spotlight: #c7a7ff;
+  --header-bg: rgb(22 17 34 / 0.94);
+  --header-bg-scrolled: rgb(22 17 34 / 0.97);
+  --header-line: rgb(199 167 255 / 0.14);
   --shadow-panel: 0 24px 60px rgba(0, 0, 0, 0.72);
   --radius: 1.75rem;
   /* One horizontal inset shared by the header and the hero copy, so the
@@ -182,18 +185,47 @@ body {
 
 /* The bar is invisible over the hero and only earns a surface once content
    scrolls beneath it. */
+/* Шапка всегда тёмная, на своей фиолетово-графитовой поверхности — в обеих
+   темах: первый экран тёмный, а золотой логотип читается только на тёмном.
+   В светлой теме внутри шапки действуют цвета тёмной, а светлая отделка
+   переключателей ниже исключена для шапки через :not(.site-header *). */
+:root[data-theme="light"] .site-header {
+  --canvas: #050606;
+  --surface: #0b0d0d;
+  --surface-raised: #111414;
+  --ink: #f1efe9;
+  --ink-muted: #a7aaa4;
+  --line: #2a2e2d;
+  --accent: #c7a7ff;
+  --on-accent: #080909;
+  --fg-rgb: 255 255 255;
+  --ink-soft: rgb(255 255 255 / 0.55);
+  --ink-faint: rgb(255 255 255 / 0.45);
+  --ink-ghost: rgb(255 255 255 / 0.3);
+  --line-soft: rgb(255 255 255 / 0.08);
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] .site-header .brand-logo--dark {
+  display: block;
+}
+
+:root[data-theme="light"] .site-header .brand-logo--light {
+  display: none;
+}
+
 .site-header-bar {
-  border-bottom: 1px solid transparent;
+  border-bottom: 1px solid var(--header-line);
+  background: var(--header-bg);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
   transition:
     background-color 260ms ease,
     border-color 260ms ease;
 }
 
 .site-header-bar[data-scrolled="true"] {
-  border-bottom-color: rgb(var(--fg-rgb) / 0.07);
-  background: color-mix(in srgb, var(--canvas) 88%, transparent);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-  backdrop-filter: blur(16px) saturate(140%);
+  background: var(--header-bg-scrolled);
 }
 
 /* Header: quiet by default, the accent only appears on hover and focus so the
@@ -556,8 +588,8 @@ body {
   background: radial-gradient(circle, rgb(199 167 255 / 0.55) 0%, rgb(199 167 255 / 0) 70%);
 }
 
-:root[data-theme="light"] .cts,
-:root[data-theme="light"] .lss {
+:root[data-theme="light"] .cts:not(.site-header *),
+:root[data-theme="light"] .lss:not(.site-header *) {
   border-color: rgba(220, 216, 207, 0.6);
   background: radial-gradient(ellipse at top left, #ffffff 0%, #f6f4ef 40%, #d6d2c8 100%);
   box-shadow:
@@ -574,32 +606,32 @@ body {
     0 10px 20px rgba(0, 0, 0, 0.06);
 }
 
-:root[data-theme="light"] .cts-groove {
+:root[data-theme="light"] .cts-groove:not(.site-header *) {
   box-shadow:
     inset 0 1.5px 4px rgba(130, 126, 116, 0.4),
     inset 0 -1px 2px rgba(255, 255, 255, 0.8);
 }
 
-:root[data-theme="light"] .cts-gloss {
+:root[data-theme="light"] .cts-gloss:not(.site-header *) {
   background:
     radial-gradient(ellipse at top, rgba(255, 255, 255, 0.8) 0%, transparent 50%),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.7) 0%, transparent 30%, transparent 70%, rgba(170, 166, 156, 0.15) 100%);
 }
 
-:root[data-theme="light"] .cts-occlusion {
+:root[data-theme="light"] .cts-occlusion:not(.site-header *) {
   box-shadow: inset 0 0 10px rgba(170, 166, 156, 0.2);
 }
 
-:root[data-theme="light"] .cts-track-sun {
+:root[data-theme="light"] .cts-track-sun:not(.site-header *) {
   color: #d97706;
 }
 
-:root[data-theme="light"] .cts-track-moon {
+:root[data-theme="light"] .cts-track-moon:not(.site-header *) {
   color: #57534e;
 }
 
-:root[data-theme="light"] .cts-thumb,
-:root[data-theme="light"] .lss-thumb {
+:root[data-theme="light"] .cts-thumb:not(.site-header *),
+:root[data-theme="light"] .lss-thumb:not(.site-header *) {
   border-color: rgba(255, 255, 255, 0.9);
   background: linear-gradient(145deg, #ffffff 0%, #fefefd 50%, #f7f5f0 100%);
   box-shadow:
@@ -838,168 +870,80 @@ body {
   }
 }
 
-/* ── Hero portal ────────────────────────────────────────────────────────────
-   Первый экран: слово MYTAMGA, камера пролетает в букву. Подписи привязаны к
-   краям слова через --gp-word-top/--gp-word-bottom, которые меряет портал.
-   Внутри буквы всегда тёмное поле, поэтому цвета содержимого фиксированные,
-   а не из темы: светлый акцент #6d4fd1 на тёмном фиолетовом не читается. */
+/* ── Hero: светящийся горизонт ─────────────────────────────────────────────
+   Тёмная сцена в обеих темах: горизонт рассчитан на чёрный фон. Купол чёрного
+   эллипса занимает верх, светящаяся кромка проходит под текстом. */
 
-.hero-portal [data-gp-caption] {
-  inset: calc(var(--gp-word-bottom, 50%) + 104px) var(--gutter) auto;
-  justify-content: center;
+.hero-horizon {
+  position: relative;
+  display: grid;
+  min-height: 100svh;
+  overflow: hidden;
+  background: #050507;
+  color: #f1efe9;
 }
 
-.hero-portal [data-gp-hint] {
-  display: none;
-}
-
-.hero-portal [data-gp-enter] {
-  min-height: 46px;
-  padding: 0 22px;
-  gap: 14px;
-  border: 1px solid color-mix(in oklch, var(--ink) 14%, transparent);
-  border-radius: 999px;
-  background: color-mix(in oklch, var(--ink) 5%, transparent);
-  color: var(--ink);
-  font-size: 13px;
-  font-weight: 600;
-  transition:
-    background 200ms ease,
-    border-color 200ms ease;
-}
-
-.hero-portal [data-gp-enter]:hover {
-  border-color: color-mix(in oklch, var(--accent) 55%, transparent);
-  background: color-mix(in oklch, var(--ink) 9%, transparent);
-}
-
-.portal-eyebrow {
-  position: absolute;
-  inset: auto var(--gutter) calc(100% - var(--gp-word-top, 35%) + 28px);
-  margin: 0;
-  text-align: center;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-}
-
-.portal-support {
-  position: absolute;
-  inset: calc(var(--gp-word-bottom, 50%) + 26px) var(--gutter) auto;
-  margin: 0 auto;
-  max-width: 46ch;
-  text-align: center;
-  font-size: clamp(0.95rem, 1.5vw, 1.15rem);
-  line-height: 1.5;
-  color: var(--ink-soft);
-}
-
-.portal-scroll {
-  position: absolute;
-  inset: auto var(--gutter) 5%;
-  text-align: center;
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  color: var(--ink-faint);
-}
-
-.hero-portal [data-gp-content] {
-  padding: 7rem var(--gutter) 14rem;
-}
-
-/* Поле внизу растворяется в фоне страницы — без жёсткой границы со
-   следующим разделом. */
-.hero-portal [data-gp-content]::after {
+.hero-horizon::after {
   position: absolute;
   inset: auto 0 0;
-  height: 16rem;
+  height: 9rem;
   background: linear-gradient(to bottom, transparent, var(--canvas));
   content: "";
   pointer-events: none;
 }
 
-.portal-word-tint {
-  background: #f1efe9;
-  opacity: 0;
+.hero-horizon-glow {
+  position: absolute;
+  inset: 0 0 auto;
+  /* Выше блока: дуга опускается под кнопки, а весь текст стоит на тёмном. */
+  height: 128%;
   pointer-events: none;
 }
 
-:root:not([data-theme="light"]) .portal-word-tint {
-  opacity: var(--gp-caption, 1);
+.hero-horizon-copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: start;
+  margin-top: clamp(7.5rem, 20svh, 12rem);
+  padding: 0 var(--gutter);
+  text-align: center;
 }
 
-.portal-copy {
-  width: min(100%, 76rem);
-  margin: auto;
+.hero-horizon-kicker {
+  margin: 0 0 1.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgb(241 239 233 / 0.6);
 }
 
-.portal-title {
+.hero-title {
   margin: 0;
-  max-width: 18ch;
+  max-width: 20ch;
   font-family: var(--font-display);
-  font-size: clamp(1.6rem, 5.4vw, 4.2rem);
+  font-size: clamp(2rem, 6vw, 4.6rem);
   font-weight: 500;
-  line-height: 0.98;
+  line-height: 1;
   letter-spacing: -0.055em;
-  color: #f1efe9;
+  color: #f7f5f0;
 }
 
-.portal-lead {
+.hero-horizon-lead {
   margin: 1.75rem 0 0;
   max-width: 40rem;
   font-size: 1.05rem;
   line-height: 1.7;
-  color: rgb(241 239 233 / 0.78);
+  color: rgb(241 239 233 / 0.72);
 }
 
-.portal-actions {
+.hero-horizon-actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 1rem;
   margin-top: 2rem;
-}
-
-.portal-steps {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.75rem;
-  margin: clamp(2.5rem, 7svh, 4.5rem) 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-@media (min-width: 768px) {
-  .portal-steps {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 3rem;
-  }
-}
-
-.portal-step {
-  border-top: 1px solid rgb(241 239 233 / 0.2);
-  padding-top: 1.1rem;
-}
-
-.portal-step-title {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
-  line-height: 1.2;
-  color: #f1efe9;
-}
-
-.portal-step-no {
-  margin-right: 0.7rem;
-  font: 600 0.75rem ui-monospace, monospace;
-  letter-spacing: 0.08em;
-  color: #c7a7ff;
-}
-
-.portal-step-body {
-  margin: 0.55rem 0 0;
-  font-size: 0.95rem;
-  line-height: 1.55;
-  color: rgb(241 239 233 / 0.78);
 }

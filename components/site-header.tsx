@@ -68,7 +68,7 @@ export function SiteHeader({
   }, [isOpen, close]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
+    <header className="site-header fixed inset-x-0 top-0 z-50">
       <div className="site-header-bar" data-scrolled={isScrolled}>
         {/* Three tracks with equal 1fr flanks: the links are centred on the
             viewport itself, not on the space left over beside the wordmark.
