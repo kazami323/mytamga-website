@@ -334,22 +334,23 @@ provider prints the sign-in code to the API console.
 
 ## Brand assets
 
-- Sources are the app's own files in `apps/mobile/assets/` of the application
-  repository; nothing was redrawn. They are raster PNGs — a transparent SVG of
-  the logo still does not exist and would be better everywhere below.
-- The site uses the gold symbol (`tamga-symbol.png`) beside the name set in
-  text, in the header and the preloader. Not the full horizontal logo: its
-  silver "TAMGA" with a light halo all but disappears on the light theme, and
-  its tagline is unreadable at header height. The name stays real text, so it
-  is crisp, translatable to screen readers and searchable.
-- `public/brand/tamga-symbol.png` is trimmed and resized to 192px tall for a
-  mark shown at 28–36px — 46 KB instead of the 648 KB source.
-- The full logo appears only in the link preview (`app/opengraph-image.png`),
-  set on the dark canvas where it reads as designed.
-- The browser tab icon (`app/icon.png`, `app/favicon.ico`) is the gold symbol
-  on transparency, legible on light and dark tab bars. The iPhone home screen
-  icon (`app/apple-icon.png`) is the app's own square icon, because iOS needs
-  an opaque square and a visitor should see the same icon as the app.
+- One source: the owner's logo of 15.10.2026 — gold "My", the tamga mark, the
+  blue circuit line and "TAMGA", rendered on black. It replaces every earlier
+  mark; the previous symbol and the circuit-board logo are retired. A
+  transparent SVG still does not exist and would be better everywhere below.
+- The logo is cut out of its black background by brightness (the glow keeps a
+  soft alpha edge) and trimmed to the lockup. Two files, the same geometry:
+  `public/brand/mytamga-logo.png` keeps the gold glow for the dark theme;
+  `mytamga-logo-light.png` drops the faint outer glow, which on a light canvas
+  reads as a dirty brown fringe. CSS on `[data-theme]` shows one of them
+  (`components/brand-logo.tsx`), so nothing flickers on load.
+- The header and the preloader show the full lockup with no name set beside
+  it — the name is in the logo; the image carries `alt="MyTamga"`.
+- Link preview (`app/[lang]/opengraph-image.png`): the logo centred on a dark
+  canvas with a soft violet glow. Tab icons (`app/icon.png`, `favicon.ico`) are
+  the lockup on transparency; at 16px its lettering is not legible, by the
+  owner's choice of one logo everywhere. The iPhone icon (`app/apple-icon.png`)
+  is the lockup on near-black, because iOS needs an opaque square.
 - The preview's absolute URL is built from `NEXT_PUBLIC_SITE_URL`; without it
   in production the preview points at localhost.
 

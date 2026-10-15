@@ -207,12 +207,19 @@ body {
   transition: opacity 200ms ease;
 }
 
-.site-brand::after {
-  width: 0.3rem;
-  height: 0.3rem;
-  border-radius: 50%;
-  background: var(--accent);
-  content: "";
+/* Логотип: на светлой теме — вариант без свечения. */
+.brand-logo--light {
+  display: none;
+}
+
+:root[data-theme="light"] .brand-logo--dark {
+  display: none;
+}
+
+:root[data-theme="light"] .brand-logo--light {
+  display: block;
+  /* Золото на кремовом фоне мало контрастно — лёгкая тень отделяет знак. */
+  filter: drop-shadow(0 1px 1.5px rgb(60 40 10 / 0.28));
 }
 
 .site-brand:hover {
