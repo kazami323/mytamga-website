@@ -117,10 +117,52 @@ export function parsePlans(input: unknown): BillingPlan[] | null {
     return null;
   }
 
-  return input.plans.flatMap((entry) => {
-    const plan = parsePlan(entry);
-    return plan ? [plan] : [];
-  });
+  return sortPlans(
+    input.plans.flatMap((entry) => {
+      const plan = parsePlan(entry);
+      return plan ? [plan] : [];
+    }),
+  );
+}
+
+/**
+ * Порядок карточек: бесплатный, платные по возрастанию месячной цены, тариф по
+ * заявке последним. Сервер порядок обещает, но страница не должна на него
+ * полагаться: перепутанные карточки выглядят как ошибка в ценах.
+ */
+export function sortPlans(plans: BillingPlan[]): BillingPlan[] {
+  const rank = (plan: BillingPlan) =>
+    plan.isRequestOnly ? 2 : plan.priceMonthly === 0 ? 0 : 1;
+
+  return plans
+    .map((plan, index) => ({ plan, index }))
+    .sort(
+      (a, b) =>
+        rank(a.plan) - rank(b.plan) ||
+        a.plan.priceMonthly - b.plan.priceMonthly ||
+        a.index - b.index,
+    )
+    .map((entry) => entry.plan);
+}
+
+/** Цена за период из каталога. `null` — бесплатный, по заявке или без годовой цены. */
+export function planPrice(plan: BillingPlan, period: "monthly" | "yearly"): number | null {
+  if (plan.isRequestOnly) {
+    return null;
+  }
+  const value = period === "yearly" ? plan.priceYearly : plan.priceMonthly;
+  return value !== null && value > 0 ? value : null;
+}
+
+/** Сколько человек экономит, платя за год, а не за двенадцать месяцев. */
+export function yearlySaving(plan: BillingPlan): number | null {
+  const yearly = planPrice(plan, "yearly");
+  const monthly = planPrice(plan, "monthly");
+  if (yearly === null || monthly === null) {
+    return null;
+  }
+  const saving = monthly * 12 - yearly;
+  return saving > 0 ? saving : null;
 }
 
 const PROVIDER_STATUSES = new Set(["active", "manual", "not_connected"]);

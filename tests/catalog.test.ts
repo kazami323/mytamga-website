@@ -1,15 +1,15 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { isCatalogUsable, offerableProviders, parsePlans, parseProviders } from "../lib/billing/catalog.ts";
+import { isCatalogUsable, offerableProviders, parsePlans, parseProviders, planPrice, yearlySaving } from "../lib/billing/catalog.ts";
 import { PROVIDERS_HIDDEN_FROM_UI } from "../lib/billing/flags.ts";
 
 const plan = {
   key: "pro",
   label: "Pro",
   description: "Для постоянного импорта",
-  priceMonthly: 39000,
-  priceYearly: 390000,
+  priceMonthly: 349000,
+  priceYearly: 3490000,
   priceMonthlyFrom: null,
   currency: "UZS",
   trialDays: 0,
@@ -26,7 +26,7 @@ test("разбирает ответ каталога", () => {
   const parsed = parsePlans({ plans: [plan] });
   assert.equal(parsed?.length, 1);
   assert.equal(parsed?.[0].key, "pro");
-  assert.equal(parsed?.[0].priceMonthly, 39000);
+  assert.equal(parsed?.[0].priceMonthly, 349000);
   assert.equal(parsed?.[0].features[0].key, "ai_check");
   assert.equal(parsed?.[0].limits[0].unlimited, false);
 });
@@ -107,4 +107,35 @@ test("неподключённый провайдер не предлагает�
     providers: [{ key: "payme", label: "Payme", status: "not_connected", online: false }],
   });
   assert.deepEqual(offerableProviders(providers ?? [], PROVIDERS_HIDDEN_FROM_UI), []);
+});
+
+const grid = [
+  { ...plan, key: "vip", label: "Enterprise", priceMonthly: 0, priceYearly: null, isRequestOnly: true },
+  { ...plan, key: "team", priceMonthly: 790000, priceYearly: 7900000 },
+  { ...plan, key: "pro" },
+  { ...plan, key: "basic", priceMonthly: 0, priceYearly: 0 },
+  { ...plan, key: "corporate", priceMonthly: 1490000, priceYearly: 14900000 },
+  { ...plan, key: "start", priceMonthly: 49000, priceYearly: 490000 },
+  { ...plan, key: "business", priceMonthly: 149000, priceYearly: 1490000 },
+];
+
+test("карточки идут по возрастанию цены: бесплатный первым, по заявке последним", () => {
+  const keys = parsePlans({ plans: grid })?.map((p) => p.key);
+  assert.deepEqual(keys, ["basic", "start", "business", "pro", "team", "corporate", "vip"]);
+});
+
+test("цена периода берётся из каталога, а не считается на сайте", () => {
+  const pro = parsePlans({ plans: [plan] })![0];
+  assert.equal(planPrice(pro, "monthly"), 349000);
+  assert.equal(planPrice(pro, "yearly"), 3490000);
+  const vip = parsePlans({ plans: grid })!.find((p) => p.key === "vip")!;
+  assert.equal(planPrice(vip, "yearly"), null);
+  assert.equal(planPrice(vip, "monthly"), null);
+});
+
+test("выгода года — разница с двенадцатью месяцами", () => {
+  const start = parsePlans({ plans: grid })!.find((p) => p.key === "start")!;
+  assert.equal(yearlySaving(start), 98000);
+  const basic = parsePlans({ plans: grid })!.find((p) => p.key === "basic")!;
+  assert.equal(yearlySaving(basic), null);
 });

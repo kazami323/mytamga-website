@@ -32,6 +32,7 @@ test("смысл 400 задаёт вызывающий: на разных руч
   assert.equal(errorCodeFor(400, "phoneInvalid"), "phoneInvalid");
   // Переопределение касается только 400.
   assert.equal(errorCodeFor(409, "codeInvalid"), "store");
+  assert.equal(errorCodeFor(409, "requestOnly", "checkoutConflict"), "checkoutConflict");
   assert.equal(errorCodeFor(429, "codeInvalid"), "rate");
 });
 

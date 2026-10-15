@@ -12,7 +12,9 @@ export type BillingErrorCode =
   // Наши собственные проверки, до обращения к API.
   | "phoneInvalid"
   | "codeInvalid"
-  | "pricesPending";
+  | "pricesPending"
+  // 409 на оплате: бессрочный тариф или уже оплачен другой отложенный.
+  | "checkoutConflict";
 
 export class ApiError extends Error {
   readonly status: number;
@@ -38,6 +40,7 @@ export class ApiError extends Error {
 export function errorCodeFor(
   status: number,
   badRequestCode: BillingErrorCode = "requestOnly",
+  conflictCode: BillingErrorCode = "store",
 ): BillingErrorCode {
   if (status === 400) {
     return badRequestCode;
@@ -49,7 +52,7 @@ export function errorCodeFor(
     case 403:
       return "forbidden";
     case 409:
-      return "store";
+      return conflictCode;
     case 503:
       return "unavailable";
     case 404:

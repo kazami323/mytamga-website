@@ -1,5 +1,12 @@
 export type SubscriptionSource = "site" | "appStore" | "playStore" | "other";
 
+export type ScheduledPlan = {
+  key: string;
+  label: string;
+  startsAt: string | null;
+  until: string | null;
+};
+
 export type SubscriptionView = {
   planKey: string;
   planLabel: string;
@@ -17,6 +24,8 @@ export type SubscriptionView = {
   organizationName: string | null;
   seatsPurchased: number | null;
   seatsUsed: number | null;
+  /** Тариф, оплаченный наперёд: начнётся после окончания текущего. */
+  scheduledPlan: ScheduledPlan | null;
 };
 
 // Метки источника, которыми сервер помечает подписку.
@@ -30,6 +39,19 @@ const STATUSES = new Set(["active", "trial", "expired"]);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function parseScheduledPlan(value: unknown): ScheduledPlan | null {
+  if (!isRecord(value) || typeof value.key !== "string" || !value.key) {
+    return null;
+  }
+  const date = (field: unknown) => (typeof field === "string" && field ? field : null);
+  return {
+    key: value.key,
+    label: typeof value.label === "string" && value.label ? value.label : value.key,
+    startsAt: date(value.startsAt),
+    until: date(value.until),
+  };
 }
 
 export function parseSubscription(input: unknown): SubscriptionView | null {
@@ -65,5 +87,6 @@ export function parseSubscription(input: unknown): SubscriptionView | null {
     organizationName: typeof organization.name === "string" ? organization.name : null,
     seatsPurchased: typeof input.seatsPurchased === "number" ? input.seatsPurchased : null,
     seatsUsed: typeof input.seatsUsed === "number" ? input.seatsUsed : null,
+    scheduledPlan: parseScheduledPlan(input.scheduledPlan),
   };
 }

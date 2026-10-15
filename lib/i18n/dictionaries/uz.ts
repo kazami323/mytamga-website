@@ -169,6 +169,8 @@ export const uz: Dictionary = {
     seatsIncluded: "Jamoada {count} o‘rin",
     extraSeat: "Qo‘shimcha o‘rin uchun {amount} so‘m",
     unlimited: "Cheklovsiz",
+    invoiceForCompany: "Shartlar va hisob-faktura kompaniya uchun",
+    yearlySaving: "Foyda {amount} so‘m",
     catalogUnavailable:
       "Narxlar vaqtincha mavjud emas. Bizga yozing — amaldagi shartlarni yuboramiz.",
     renewManual: "30 kunga bir martalik to‘lov. Qo‘lda uzaytiriladi.",
@@ -178,6 +180,7 @@ export const uz: Dictionary = {
       buy: "Rasmiylashtirish",
       request: "So‘rov yuborish",
       download: "Ilovani yuklab olish",
+      lead: "So‘rov qoldirish",
     },
     providers: {
       label: "To‘lov usuli",
@@ -196,6 +199,18 @@ export const uz: Dictionary = {
       signOut: "Chiqish",
       currentPlan: "Amaldagi tarif",
       until: "{date} gacha amal qiladi",
+      scheduled: "{date} dan — {plan}",
+      amountToPay: "To‘lov summasi: {amount} so‘m",
+      continueToClick: "Click’ga o‘tish",
+      cancelPayment: "Bekor qilish",
+      effect: {
+        new: "Yangi tarif: to‘lovdan keyin darhol ochiladi.",
+        newUntil: "Yangi tarif: to‘lovdan keyin darhol ochiladi va {date} gacha amal qiladi.",
+        extend: "Joriy tarifni uzaytirish: muddat ko‘payadi.",
+        extendUntil: "Joriy tarifni uzaytirish: {date} gacha amal qiladi.",
+        upgrade: "Oshirish: joriy tarif qoldig‘i yangi tarif kunlariga qayta hisoblanib, muddatga qo‘shiladi.",
+        defer: "Joriy tarif tugagach boshlanadi: hozir hech narsa o‘zgarmaydi.",
+      },
       pay: "To‘lovga o‘tish",
       requestSent: "So‘rov yuborildi — biz siz bilan bog‘lanamiz.",
       ownerOnly: "To‘lovni tashkilot egasi rasmiylashtiradi.",
@@ -216,6 +231,7 @@ export const uz: Dictionary = {
       noOrganization: "Tashkilot topilmadi. Qaytadan kiring.",
       signedOut: "Sessiya tugadi. Qaytadan kiring.",
       network: "Server bilan bog‘lanib bo‘lmadi. Yana urinib ko‘ring.",
+      checkoutConflict: "Bu tarifni hozir to‘lab bo‘lmaydi: u muddatsiz berilgan yoki joriy tarifdan keyin boshqa tarif allaqachon to‘langan. Bizga yozing — hal qilamiz.",
       phoneInvalid:
         "Raqamni tekshiring: O‘zbekiston raqami kerak, masalan +998 90 123 45 67.",
       codeInvalid: "SMS dagi kod — olti raqam.",

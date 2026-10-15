@@ -3,7 +3,7 @@ import { Check } from "lucide-react";
 import { PlanCta } from "@/components/pricing/plan-cta";
 import { LiquidMetalPanel } from "@/components/ui/liquid-metal-panel";
 import { PRICES_PUBLISHED } from "@/lib/billing/flags";
-import type { BillingPlan } from "@/lib/billing/catalog";
+import { yearlySaving, type BillingPlan } from "@/lib/billing/catalog";
 import { groupDigits, yearlyMonths } from "@/lib/billing/format";
 import { FEATURE_LABELS, LIMIT_LABELS } from "@/lib/billing/label-maps";
 import { labelFor } from "@/lib/billing/labels";
@@ -21,11 +21,12 @@ export function PlanCard({ plan, strings, locale }: PlanCardProps) {
   const features = FEATURE_LABELS[locale as "uz" | "en" | "zh"];
   const limits = LIMIT_LABELS[locale as "uz" | "en" | "zh"];
   const months = yearlyMonths(plan.priceMonthly, plan.priceYearly ?? 0);
+  const saving = yearlySaving(plan);
 
   // Кнопка говорит правду о том, что произойдёт: бесплатный тариф не
   // «оформляют», а тариф по заявке и тариф без объявленной цены не покупают.
   const ctaLabel = plan.isRequestOnly
-    ? strings.cta.request
+    ? strings.cta.lead
     : plan.priceMonthly === 0
       ? strings.cta.included
       : PRICES_PUBLISHED
@@ -51,11 +52,14 @@ export function PlanCard({ plan, strings, locale }: PlanCardProps) {
             заявке считается по договору: написать про них «обсуждается» значит
             сказать неправду. */}
         {plan.isRequestOnly && (
-          <p className="text-sm font-semibold text-[var(--ink)]">
-            {PRICES_PUBLISHED && plan.priceMonthlyFrom
-              ? fill(strings.fromMonthly, { amount: groupDigits(plan.priceMonthlyFrom) })
-              : strings.byRequest}
-          </p>
+          <>
+            <p className="text-sm font-semibold text-[var(--ink)]">
+              {PRICES_PUBLISHED && plan.priceMonthlyFrom
+                ? fill(strings.fromMonthly, { amount: groupDigits(plan.priceMonthlyFrom) })
+                : strings.byRequest}
+            </p>
+            <p className="mt-2 text-xs leading-5 text-ink-faint">{strings.invoiceForCompany}</p>
+          </>
         )}
 
         {!plan.isRequestOnly && plan.priceMonthly === 0 && (
@@ -85,9 +89,11 @@ export function PlanCard({ plan, strings, locale }: PlanCardProps) {
                 {fill(strings.perYear, { amount: groupDigits(plan.priceYearly) })}
               </p>
             )}
+            {/* Выгода видна только в режиме «год»: в месячном её нет. */}
             {months !== null && (
-              <p className="mt-2 text-xs leading-5 text-ink-faint">
+              <p className="plan-price-yearly mt-2 text-xs leading-5 text-ink-faint">
                 {fill(strings.yearlyAs, { months })}
+                {saving !== null && ` · ${fill(strings.yearlySaving, { amount: groupDigits(saving) })}`}
               </p>
             )}
           </>
@@ -135,7 +141,18 @@ export function PlanCard({ plan, strings, locale }: PlanCardProps) {
       </dl>
 
       <div className="mt-auto">
-        <PlanCta planKey={plan.key} label={ctaLabel} />
+        {plan.isRequestOnly ? (
+          // Заявка по Enterprise — это письмо в контакты, а не касса: счёт
+          // выставляется под компанию. Форма заявки живёт в разделе контактов.
+          <a
+            href={`/${locale}#contacts`}
+            className="liquid-metal-trigger mt-8 inline-flex h-11 items-center justify-center rounded-full border border-line px-6 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)]"
+          >
+            {ctaLabel}
+          </a>
+        ) : (
+          <PlanCta planKey={plan.key} label={ctaLabel} />
+        )}
       </div>
     </LiquidMetalPanel>
   );

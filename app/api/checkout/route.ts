@@ -3,10 +3,9 @@ import { NextResponse, type NextRequest } from "next/server";
 import { COOKIE, MAX_AGE, cookieOptions } from "@/lib/api/cookies";
 import { isSameOrigin } from "@/lib/api/origin";
 import { attachSession, callWithSession, failure, failureFrom, readContext } from "@/lib/api/session";
+import { normalizePeriod, parseCheckout } from "@/lib/billing/checkout-effect";
 import { PRICES_PUBLISHED } from "@/lib/billing/flags";
 import { loadProviders } from "@/lib/billing/plans.server";
-
-type CheckoutResult = { url?: unknown; transactionId?: unknown };
 
 export async function POST(request: NextRequest) {
   if (!isSameOrigin(request.headers.get("origin"), request.headers.get("host"))) {
@@ -20,11 +19,12 @@ export async function POST(request: NextRequest) {
   }
 
   const body = (await request.json().catch(() => null)) as
-    | { planKey?: unknown; provider?: unknown }
+    | { planKey?: unknown; provider?: unknown; billingPeriod?: unknown }
     | null;
 
   const planKey = String(body?.planKey ?? "");
   const provider = String(body?.provider ?? "");
+  const billingPeriod = normalizePeriod(body?.billingPeriod);
 
   if (!planKey) {
     return failure("requestOnly");
@@ -42,20 +42,29 @@ export async function POST(request: NextRequest) {
   const context = readContext(request);
 
   try {
-    const { data, tokens } = await callWithSession<CheckoutResult>(context, {
+    const { data, tokens } = await callWithSession<unknown>(context, {
       path: "/api/organizations/current/subscription/checkout-session",
       method: "POST",
-      body: { planKey, provider, source: "website" },
+      body: { planKey, provider, billingPeriod, source: "website" },
     });
 
-    const url = typeof data?.url === "string" ? data.url : "";
-    const transactionId = typeof data?.transactionId === "string" ? data.transactionId : "";
+    const offer = parseCheckout(data);
 
-    if (!url) {
+    if (!offer) {
       return failure("network");
     }
 
-    const response = NextResponse.json({ ok: true, url });
+    const { url, transactionId, effect, amount } = offer;
+
+    // effect и amount есть только у нового сервера; старый их не присылает, и
+    // страница тогда идёт в Click сразу, как раньше.
+    const response = NextResponse.json({
+      ok: true,
+      url,
+      effect,
+      amount,
+      billingPeriod: offer.billingPeriod ?? billingPeriod,
+    });
 
     if (transactionId) {
       // Провайдер вернёт человека без наших параметров, а номер платежа нужен
@@ -68,6 +77,8 @@ export async function POST(request: NextRequest) {
 
     return tokens ? attachSession(response, tokens) : response;
   } catch (error) {
-    return failureFrom(error);
+    // 409 здесь — не только «оплачено в магазине»: тариф может быть выдан
+    // бессрочно или после текущего уже оплачен другой.
+    return failureFrom(error, undefined, "checkoutConflict");
   }
 }

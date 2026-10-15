@@ -5,8 +5,7 @@ import { checkoutActions, type SelectedPlan } from "../lib/billing/checkout-stat
 import { CHECKOUT_SELLABLE_PLAN_KEYS } from "../lib/billing/flags.ts";
 import type { SubscriptionView } from "../lib/billing/subscription.ts";
 
-const pro: SelectedPlan = { key: "pro", isRequestOnly: false, priceMonthly: 39000 };
-const business: SelectedPlan = { key: "business", isRequestOnly: false, priceMonthly: 249000 };
+const pro: SelectedPlan = { key: "pro", isRequestOnly: false, priceMonthly: 349000 };
 const vip: SelectedPlan = { key: "vip", isRequestOnly: true, priceMonthly: 0 };
 const basic: SelectedPlan = { key: "basic", isRequestOnly: false, priceMonthly: 0 };
 
@@ -22,6 +21,7 @@ const owner: SubscriptionView = {
   organizationName: "998901234567",
   seatsPurchased: 1,
   seatsUsed: 1,
+  scheduledPlan: null,
 };
 
 const admin: SubscriptionView = {
@@ -92,10 +92,12 @@ test("тариф по заявке не продаётся кассой, даж�
   assert.equal(state.canPay, false);
 });
 
-test("Business через кассу тоже не оформляется", () => {
-  const state = checkoutActions({ pricesPublished: true, subscription: owner, onlineProviders: 1, plan: business, sellablePlanKeys: CHECKOUT_SELLABLE_PLAN_KEYS });
-  assert.equal(state.block, "requestOnly");
-  assert.equal(state.canPay, false);
+test("все платные тарифы сетки оформляются через кассу", () => {
+  for (const key of ["start", "business", "pro", "team", "corporate"]) {
+    const state = checkoutActions({ pricesPublished: true, subscription: owner, onlineProviders: 1, plan: { key, isRequestOnly: false, priceMonthly: 1 }, sellablePlanKeys: CHECKOUT_SELLABLE_PLAN_KEYS });
+    assert.equal(state.block, null, key);
+    assert.equal(state.canPay, true, key);
+  }
 });
 
 test("бесплатный тариф не продают: он уже включён", () => {
@@ -132,17 +134,7 @@ test("порядок причин: своё право важнее общего
 });
 
 test("список продаваемых тарифов — состояние сервера, а не догадка", () => {
-  // Сегодня Click оформляет только Pro. Когда сервер научится Business, здесь
-  // изменится один ключ, и касса откроется сама.
-  assert.deepEqual([...CHECKOUT_SELLABLE_PLAN_KEYS], ["pro"]);
-
-  const state = checkoutActions({
-    pricesPublished: true,
-    subscription: owner,
-    onlineProviders: 1,
-    plan: business,
-    sellablePlanKeys: ["pro", "business"],
-  });
-  assert.equal(state.block, null);
-  assert.equal(state.canPay, true);
+  assert.deepEqual([...CHECKOUT_SELLABLE_PLAN_KEYS], ["start", "business", "pro", "team", "corporate"]);
+  assert.equal(CHECKOUT_SELLABLE_PLAN_KEYS.includes("vip" as never), false);
+  assert.equal(CHECKOUT_SELLABLE_PLAN_KEYS.includes("basic" as never), false);
 });

@@ -20,8 +20,10 @@ export function pollOutcome(input: {
   const { subscription, code, elapsedMs, expectedPlanKey } = input;
 
   if (subscription && subscription.status === "active") {
+    // Оплаченный наперёд тариф текущим не становится — его видно в scheduledPlan.
     const isExpected = expectedPlanKey
-      ? subscription.planKey === expectedPlanKey
+      ? subscription.planKey === expectedPlanKey ||
+        subscription.scheduledPlan?.key === expectedPlanKey
       : subscription.planKey !== "basic";
 
     // Успех проверяется до времени: ответ мог прийти на последней секунде.

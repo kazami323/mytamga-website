@@ -8,7 +8,9 @@ import {
   type ReactNode,
 } from "react";
 
-export type BillingPeriod = "monthly" | "yearly";
+import type { BillingPeriod } from "@/lib/billing/checkout-effect";
+
+export type { BillingPeriod };
 
 type PricingState = {
   period: BillingPeriod;

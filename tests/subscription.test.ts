@@ -78,3 +78,22 @@ test("неизвестный статус сводится к истёкшему
   // Ошибаться надо в сторону «доступа нет»: обратное открывает платное даром.
   assert.equal(parseSubscription({ ...summary, status: "что-то новое" })?.status, "expired");
 });
+
+test("отложенный тариф попадает в сводку", () => {
+  const view = parseSubscription({
+    ...summary,
+    scheduledPlan: { key: "business", label: "Business", startsAt: "2026-11-01T00:00:00.000Z", until: "2026-12-01T00:00:00.000Z" },
+  });
+  assert.deepEqual(view?.scheduledPlan, {
+    key: "business",
+    label: "Business",
+    startsAt: "2026-11-01T00:00:00.000Z",
+    until: "2026-12-01T00:00:00.000Z",
+  });
+});
+
+test("старый сервер без scheduledPlan и null дают null", () => {
+  assert.equal(parseSubscription(summary)?.scheduledPlan, null);
+  assert.equal(parseSubscription({ ...summary, scheduledPlan: null })?.scheduledPlan, null);
+  assert.equal(parseSubscription({ ...summary, scheduledPlan: { label: "без ключа" } })?.scheduledPlan, null);
+});

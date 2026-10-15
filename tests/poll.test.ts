@@ -15,6 +15,7 @@ const active = {
   organizationName: null,
   seatsPurchased: 1,
   seatsUsed: 1,
+  scheduledPlan: null,
 };
 
 test("опрос идёт каждые три секунды, не дольше минуты", () => {
@@ -69,5 +70,17 @@ test("успех перевешивает истечение времени", ()
   assert.equal(
     pollOutcome({ subscription: active, elapsedMs: 60_000, expectedPlanKey: "pro" }),
     "success",
+  );
+});
+
+test("отложенный тариф: оплата видна по scheduledPlan, текущий тариф не меняется", () => {
+  const scheduled = { key: "business", label: "Business", startsAt: "2026-11-01T00:00:00.000Z", until: null };
+  assert.equal(
+    pollOutcome({ subscription: { ...active, scheduledPlan: scheduled }, elapsedMs: 3000, expectedPlanKey: "business" }),
+    "success",
+  );
+  assert.equal(
+    pollOutcome({ subscription: active, elapsedMs: 3000, expectedPlanKey: "business" }),
+    "pending",
   );
 });

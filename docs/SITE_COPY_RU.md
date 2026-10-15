@@ -182,6 +182,8 @@
 - `billing.seatsIncluded` — Мест в команде: {count}
 - `billing.extraSeat` — {amount} сум за место сверх
 - `billing.unlimited` — Без ограничений
+- `billing.invoiceForCompany` — Условия и счёт под компанию
+- `billing.yearlySaving` — Выгода {amount} сум
 - `billing.catalogUnavailable` — Цены временно недоступны. Напишите нам — пришлём действующие условия.
 - `billing.renewManual` — Разовая оплата на 30 дней. Продлевать вручную.
 - `billing.renewAuto` — Продлевается автоматически, отменить можно в любой момент.
@@ -189,6 +191,7 @@
 - `billing.cta.buy` — Оформить
 - `billing.cta.request` — Запросить
 - `billing.cta.download` — Скачать приложение
+- `billing.cta.lead` — Оставить заявку
 - `billing.providers.label` — Способ оплаты
 - `billing.providers.connecting` — Подключается
 - `billing.checkout.title` — Оформление
@@ -203,6 +206,16 @@
 - `billing.checkout.signOut` — Выйти
 - `billing.checkout.currentPlan` — Текущий тариф
 - `billing.checkout.until` — Действует до {date}
+- `billing.checkout.scheduled` — С {date} — {plan}
+- `billing.checkout.amountToPay` — К оплате: {amount} сум
+- `billing.checkout.continueToClick` — Перейти в Click
+- `billing.checkout.cancelPayment` — Отменить
+- `billing.checkout.effect.new` — Новый тариф: доступ откроется сразу после оплаты.
+- `billing.checkout.effect.newUntil` — Новый тариф: доступ откроется сразу после оплаты и продлится до {date}.
+- `billing.checkout.effect.extend` — Продление текущего тарифа: срок увеличится.
+- `billing.checkout.effect.extendUntil` — Продление текущего тарифа: доступ продлится до {date}.
+- `billing.checkout.effect.upgrade` — Повышение: остаток текущего тарифа пересчитан в дни нового и добавлен к сроку.
+- `billing.checkout.effect.defer` — Начнётся после окончания текущего тарифа: сейчас ничего не меняется.
 - `billing.checkout.pay` — Перейти к оплате
 - `billing.checkout.requestSent` — Заявка отправлена — мы свяжемся с вами.
 - `billing.checkout.ownerOnly` — Оплату оформляет владелец организации.
@@ -218,6 +231,7 @@
 - `billing.errors.noOrganization` — Организация не найдена. Войдите заново.
 - `billing.errors.signedOut` — Сессия истекла. Войдите заново.
 - `billing.errors.network` — Не удалось связаться с сервером. Попробуйте ещё раз.
+- `billing.errors.checkoutConflict` — Оплатить этот тариф сейчас нельзя: он выдан бессрочно или после текущего уже оплачен другой тариф. Напишите нам — разберёмся.
 - `billing.errors.phoneInvalid` — Проверьте номер: нужен узбекский, например +998 90 123 45 67.
 - `billing.errors.codeInvalid` — Код из SMS — шесть цифр.
 - `billing.errors.pricesPending` — Оплата пока не открыта.

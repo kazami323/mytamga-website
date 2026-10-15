@@ -6,7 +6,14 @@ import { usePricing } from "@/components/pricing/pricing-provider";
 import { LiquidMetalPanel } from "@/components/ui/liquid-metal-panel";
 import { TextField } from "@/components/ui/text-field";
 import { getJson, postJson, type ApiResult } from "@/lib/api/client";
-import { offerableProviders } from "@/lib/billing/catalog";
+import { offerableProviders, planPrice } from "@/lib/billing/catalog";
+import {
+  effectEndsAt,
+  effectNeedsConfirmation,
+  parseCheckout,
+  type CheckoutOffer,
+} from "@/lib/billing/checkout-effect";
+import { groupDigits } from "@/lib/billing/format";
 import type { BillingPlan, BillingProvider } from "@/lib/billing/catalog";
 import { checkoutActions, type CheckoutBlock } from "@/lib/billing/checkout-state";
 import {
@@ -32,7 +39,7 @@ interface CheckoutPanelProps {
 type Session = "unknown" | "anonymous" | "signed";
 
 export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPanelProps) {
-  const { selected } = usePricing();
+  const { selected, period } = usePricing();
   const [session, setSession] = useState<Session>("unknown");
   const [subscription, setSubscription] = useState<SubscriptionView | null>(null);
   const [step, setStep] = useState<"phone" | "code">("phone");
@@ -41,6 +48,9 @@ export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPan
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  // Предложение сервера ждёт подтверждения: ключ привязывает его к выбору, и
+  // при смене тарифа или периода оно перестаёт показываться.
+  const [pending, setPending] = useState<{ key: string; offer: CheckoutOffer; at: number } | null>(null);
 
   const online = offerableProviders(providers, PROVIDERS_HIDDEN_FROM_UI);
   const [provider, setProvider] = useState(online[0]?.key ?? "");
@@ -154,6 +164,7 @@ export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPan
       const result = await postJson<{ url: string }>("/api/checkout", {
         planKey: selected,
         provider,
+        billingPeriod: period,
       });
 
       if (!result.ok) {
@@ -161,8 +172,24 @@ export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPan
         return;
       }
 
-      window.location.assign(result.url);
+      const offer = parseCheckout(result);
+
+      if (!offer) {
+        setError(strings.errors.network);
+        return;
+      }
+
+      // Новый сервер говорит, что сделает оплата: показываем это до Click.
+      // Старый effect не присылает — тогда переходим сразу, как раньше.
+      if (effectNeedsConfirmation(offer)) {
+        setPending({ key: `${selected}:${period}`, offer, at: Date.now() });
+        return;
+      }
+
+      window.location.assign(offer.url);
     });
+
+  const confirmedOffer = pending && pending.key === `${selected}:${period}` ? pending.offer : null;
 
   const requestPlan = () =>
     act(async () => {
@@ -184,15 +211,41 @@ export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPan
       setStep("phone");
     });
 
-  const until =
-    subscription?.nextBillingAt &&
-    new Intl.DateTimeFormat(HTML_LANG[locale], { dateStyle: "long" }).format(
-      new Date(subscription.nextBillingAt),
-    );
+  const formatDate = (value: string | null) =>
+    value
+      ? new Intl.DateTimeFormat(HTML_LANG[locale], { dateStyle: "long" }).format(new Date(value))
+      : "";
+
+  const until = subscription?.nextBillingAt ? formatDate(subscription.nextBillingAt) : "";
+
+  // Описание последствий оплаты. Даты — только там, где их можно назвать честно.
+  function effectText(offer: CheckoutOffer, at: number): string {
+    const text = strings.checkout.effect;
+    const endsAt = effectEndsAt({
+      effect: offer.effect,
+      period: offer.billingPeriod ?? period,
+      currentEnd: subscription?.nextBillingAt ?? null,
+      now: at,
+    });
+    const date = endsAt ? formatDate(endsAt.toISOString()) : "";
+
+    switch (offer.effect) {
+      case "new":
+        return date ? fill(text.newUntil, { date }) : text.new;
+      case "extend":
+        return date ? fill(text.extendUntil, { date }) : text.extend;
+      case "upgrade":
+        return text.upgrade;
+      default:
+        return text.defer;
+    }
+  }
 
   // Что предлагаем и почему — решает проверенная функция, а не цепочка
   // тернарников в разметке: привести человека в тупик здесь слишком легко.
   const selectedPlan = plans.find((entry) => entry.key === selected) ?? null;
+
+  const selectedPrice = selectedPlan ? planPrice(selectedPlan, period) : null;
 
   const { block, canPay, canRequest } = checkoutActions({
     pricesPublished: PRICES_PUBLISHED,
@@ -306,6 +359,49 @@ export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPan
                 {fill(strings.checkout.until, { date: until })}
               </p>
             )}
+            {subscription.scheduledPlan && (
+              <p data-scheduled className="text-xs text-ink-faint">
+                {fill(strings.checkout.scheduled, {
+                  date: formatDate(subscription.scheduledPlan.startsAt ?? subscription.nextBillingAt),
+                  plan: subscription.scheduledPlan.label,
+                })}
+              </p>
+            )}
+          </div>
+        )}
+
+        {session === "signed" && selectedPlan && canPay && selectedPrice !== null && (
+          <p data-selected-plan className="text-sm text-[var(--ink)] [font-variant-numeric:tabular-nums]">
+            {selectedPlan.label} ·{" "}
+            {fill(period === "yearly" ? strings.perYear : strings.perMonth, {
+              amount: groupDigits(selectedPrice),
+            })}
+          </p>
+        )}
+
+        {confirmedOffer && confirmedOffer.effect && (
+          <div data-effect={confirmedOffer.effect} className="flex flex-col gap-2">
+            <p className="text-sm leading-6 text-[var(--ink)]">
+              {effectText(confirmedOffer, pending?.at ?? 0)}
+            </p>
+            {confirmedOffer.amount !== null && (
+              <p className="text-sm text-ink-soft [font-variant-numeric:tabular-nums]">
+                {fill(strings.checkout.amountToPay, { amount: groupDigits(confirmedOffer.amount) })}
+              </p>
+            )}
+            <div className="flex flex-wrap gap-3">
+              <button
+                type="button"
+                data-action="continue-to-click"
+                onClick={() => window.location.assign(confirmedOffer.url)}
+                className="liquid-metal-trigger inline-flex h-11 items-center justify-center rounded-full border border-line px-6 text-sm font-semibold text-[var(--ink)]"
+              >
+                {strings.checkout.continueToClick}
+              </button>
+              <button type="button" onClick={() => setPending(null)} className="nav-link text-sm">
+                {strings.checkout.cancelPayment}
+              </button>
+            </div>
           </div>
         )}
 
@@ -329,7 +425,7 @@ export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPan
 
         {session === "signed" && (
           <div className="flex flex-wrap items-center gap-3">
-            {canPay && (
+            {canPay && !confirmedOffer && (
               <button
                 type="button"
                 data-action="pay"

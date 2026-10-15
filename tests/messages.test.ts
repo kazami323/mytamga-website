@@ -16,6 +16,7 @@ const strings = {
   phoneInvalid: "Проверьте номер.",
   codeInvalid: "Код из SMS — шесть цифр.",
   pricesPending: "Оплата пока не открыта.",
+  checkoutConflict: "Этот тариф сейчас оплатить нельзя.",
 };
 
 test("секунды подставляются в сообщение о частоте", () => {
@@ -31,6 +32,7 @@ test("остальные коды переводятся прямо", () => {
   assert.equal(messageFor("forbidden", null, strings), strings.forbidden);
   assert.equal(messageFor("store", null, strings), strings.store);
   assert.equal(messageFor("pricesPending", null, strings), strings.pricesPending);
+  assert.equal(messageFor("checkoutConflict", null, strings), strings.checkoutConflict);
 });
 
 test("неизвестный код не оставляет человека без объяснения", () => {
