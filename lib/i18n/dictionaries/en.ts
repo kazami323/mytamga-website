@@ -249,6 +249,7 @@ export const en: Dictionary = {
       detailsTitle: "Registration details",
       supportTitle: "Support",
       supportBody: "Write to us — we reply on working days.",
+      supportHint: "Describe the problem, the case number (if any), your device model and app version. Never send SMS codes, passwords or bank card details — we never ask for them.",
       openRussian: "Open in Russian",
     },
   },

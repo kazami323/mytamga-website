@@ -77,6 +77,7 @@ const ru: DeleteAccountContent = {
       heading: "Если в организации есть другие участники",
       paragraphs: [
         "Если вы единственный владелец организации, в которой есть другие участники, удалить аккаунт нельзя, пока вы не передадите владение другому участнику или не удалите участников.",
+        "Если вы участник чужой организации, ваше участие прекращается, а организация и её дела остаются у других участников.",
       ],
     },
     {
@@ -133,6 +134,7 @@ const uz: DeleteAccountContent = {
       heading: "Tashkilotda boshqa a’zolar bo‘lsa",
       paragraphs: [
         "Agar siz boshqa a’zolari bor tashkilotning yagona egasi bo‘lsangiz, egalikni boshqa a’zoga o‘tkazmaguningizcha yoki a’zolarni o‘chirmaguningizcha akkauntni o‘chirib bo‘lmaydi.",
+        "Agar siz boshqa birovning tashkilotida a’zo bo‘lsangiz, a’zoligingiz tugaydi, tashkilot va uning ishlari esa boshqa a’zolarda qoladi.",
       ],
     },
     {
@@ -189,6 +191,7 @@ const en: DeleteAccountContent = {
       heading: "If the organization has other members",
       paragraphs: [
         "If you are the only owner of an organization that has other members, you cannot delete your account until you transfer ownership to another member or remove the members.",
+        "If you are a member of someone else’s organization, your membership ends, and the organization and its cases stay with the other members.",
       ],
     },
     {
@@ -244,6 +247,7 @@ const zh: DeleteAccountContent = {
       heading: "如果组织中还有其他成员",
       paragraphs: [
         "如果您是有其他成员的组织的唯一所有者，则在将所有权转让给其他成员或移除这些成员之前，无法删除账户。",
+        "如果您是他人组织的成员，您的成员身份将终止，该组织及其案件仍归其他成员所有。",
       ],
     },
     {

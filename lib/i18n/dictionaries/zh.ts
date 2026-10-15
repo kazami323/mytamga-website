@@ -228,6 +228,7 @@ export const zh: Dictionary = {
       detailsTitle: "工商登记信息",
       supportTitle: "客户支持",
       supportBody: "请联系我们，我们会在工作日回复。",
+      supportHint: "请描述问题、案件编号（如有）、设备型号和应用版本。请勿发送短信验证码、密码或银行卡信息——我们从不索取这些信息。",
       openRussian: "查看俄语版本",
     },
   },

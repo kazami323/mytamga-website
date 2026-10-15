@@ -38,6 +38,9 @@ export default async function SupportPage({ params }: PageProps<"/[lang]/support
           <p className="mt-8 max-w-xl text-sm leading-6 text-ink-soft">
             {t.billing.legal.supportBody}
           </p>
+          <p className="mt-4 max-w-xl text-sm leading-6 text-ink-soft">
+            {t.billing.legal.supportHint}
+          </p>
           <p className="mt-4 text-sm leading-6">
             <a href={`mailto:${COMPANY.supportEmail}`} className="nav-link">
               {COMPANY.supportEmail}

@@ -259,6 +259,7 @@ export const uz: Dictionary = {
       detailsTitle: "Rekvizitlar",
       supportTitle: "Qo‘llab-quvvatlash",
       supportBody: "Bizga yozing — ish kunlari javob beramiz.",
+      supportHint: "Muammoni, ish raqamini (bo‘lsa), qurilma modelini va ilova versiyasini yozing. SMS kodlari, parollar va bank kartasi ma’lumotlarini yubormang — biz ularni hech qachon so‘ramaymiz.",
       openRussian: "Rus tilida ochish",
     },
   },
