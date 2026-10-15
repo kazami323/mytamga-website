@@ -129,6 +129,9 @@ export function LeadForm({ strings }: { strings: Dictionary["form"] }) {
           state.status === "unavailable" &&
           strings.unavailable}
         {!isPending &&
+          state.status === "sent" &&
+          strings.sent}
+        {!isPending &&
           state.status === "failed" &&
           strings.failed}
       </p>
