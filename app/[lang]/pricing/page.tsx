@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { LimitsTable } from "@/components/pricing/limits-table";
 import { PlanGrid } from "@/components/pricing/plan-grid";
 import { CheckoutPanel } from "@/components/pricing/checkout-panel";
 import { PeriodToggle } from "@/components/pricing/period-toggle";
@@ -86,6 +87,8 @@ export default async function PricingPage({ params }: PageProps<"/[lang]/pricing
               )}
 
               <PlanGrid plans={plans} strings={t.billing} locale={lang} />
+
+              <LimitsTable plans={plans} strings={t.billing} locale={lang} />
 
               <p className="mt-10 text-xs leading-5 text-ink-faint">
                 {AUTORENEW_AVAILABLE ? t.billing.renewAuto : t.billing.renewManual}
