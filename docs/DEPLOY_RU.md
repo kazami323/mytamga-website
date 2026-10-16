@@ -207,7 +207,7 @@ cPanel → «Программное обеспечение» → **Setup Node.js
 | `MYTAMGA_API_URL` | `https://api.mytamga.uz` |
 | `MYTAMGA_API_PROXY_KEY` | ключ сайта из шага 1 |
 | `NEXT_PUBLIC_SITE_URL` | `https://mytamga.uz` |
-| `FORCE_HTTPS` | `1` — включить только после проверки `https://mytamga.uz/api/diag-forwarded`: в ответе на https-запрос `origin.proto` должно быть `https`. Иначе будет бесконечное перенаправление. Надёжнее — «Force HTTPS Redirect» в cPanel → Domains |
+| `FORCE_HTTPS` | `1` — перенаправление на https и HSTS. Проверено 16.10.2026: прокси aHOST передаёт X-Forwarded-Proto верно и дописывает адрес посетителя справа в X-Forwarded-For. На другом хостинге сначала проверить, иначе возможно бесконечное перенаправление |
 
 Сохранить. Кнопку **Run NPM Install не нажимать**: все зависимости уже в
 архиве.

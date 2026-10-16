@@ -36,7 +36,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
 // Перенаправление на https и HSTS — только при FORCE_HTTPS=1 (настройка
 // приложения в cPanel). Если прокси хостинга не передаёт X-Forwarded-Proto,
 // Next подставляет «http» даже для https-запросов, и без проверки включение
-// дало бы бесконечное перенаправление. Включать после /api/diag-forwarded.
+// дало бы бесконечное перенаправление. На aHOST проверено 16.10.2026 — можно.
 const IS_PRODUCTION =
   process.env.NODE_ENV === "production" && process.env.FORCE_HTTPS === "1";
 
