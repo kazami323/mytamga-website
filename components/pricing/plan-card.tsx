@@ -5,21 +5,27 @@ import { LiquidMetalPanel } from "@/components/ui/liquid-metal-panel";
 import { PRICES_PUBLISHED } from "@/lib/billing/flags";
 import { yearlySaving, type BillingPlan } from "@/lib/billing/catalog";
 import { groupDigits, yearlyMonths } from "@/lib/billing/format";
-import { FEATURE_LABELS, LIMIT_LABELS } from "@/lib/billing/label-maps";
+import { FEATURE_LABELS, PLAN_DESCRIPTIONS } from "@/lib/billing/label-maps";
 import { labelFor } from "@/lib/billing/labels";
+import { newFeatureKeys, pluralize, teamLineCount } from "@/lib/billing/presentation";
 import type { Locale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/dictionaries/ru";
 import { fill } from "@/lib/i18n/interpolate";
 
 interface PlanCardProps {
   plan: BillingPlan;
+  /** Предыдущий тариф в порядке каталога: от него считаются «новые» возможности. */
+  previous: BillingPlan | null;
   strings: Dictionary["billing"];
   locale: Locale;
 }
 
-export function PlanCard({ plan, strings, locale }: PlanCardProps) {
-  const features = FEATURE_LABELS[locale as "uz" | "en" | "zh"];
-  const limits = LIMIT_LABELS[locale as "uz" | "en" | "zh"];
+export function PlanCard({ plan, previous, strings, locale }: PlanCardProps) {
+  const features = FEATURE_LABELS[locale];
+  const description = labelFor(PLAN_DESCRIPTIONS[locale], plan.key, plan.description);
+  const featureKeys = newFeatureKeys(plan, previous);
+  const apiFeatureLabels = new Map(plan.features.map((f) => [f.key, f.label]));
+  const teamCount = teamLineCount(plan, previous);
   const months = yearlyMonths(plan.priceMonthly, plan.priceYearly ?? 0);
   const saving = yearlySaving(plan);
 
@@ -42,8 +48,8 @@ export function PlanCard({ plan, strings, locale }: PlanCardProps) {
         {plan.label}
       </h3>
 
-      {plan.description && (
-        <p className="mt-2 text-sm leading-6 text-ink-soft">{plan.description}</p>
+      {description && (
+        <p className="mt-2 text-sm leading-6 text-ink-soft">{description}</p>
       )}
 
       <div className="mt-7">
@@ -100,9 +106,9 @@ export function PlanCard({ plan, strings, locale }: PlanCardProps) {
         )}
       </div>
 
-      {plan.seatsIncluded !== null && (
-        <p className="mt-5 text-sm text-ink-soft">
-          {fill(strings.seatsIncluded, { count: plan.seatsIncluded })}
+      {plan.trialDays > 0 && (
+        <p className="mt-5 text-sm font-semibold text-[var(--accent)]">
+          {fill(pluralize(locale, plan.trialDays, strings.trial), { days: plan.trialDays })}
         </p>
       )}
 
@@ -112,33 +118,36 @@ export function PlanCard({ plan, strings, locale }: PlanCardProps) {
         </p>
       )}
 
-      <ul className="mt-7 flex flex-col gap-2">
-        {plan.features.map((feature) => (
-          <li key={feature.key} className="flex items-start gap-2">
-            <Check
-              className="mt-1 h-3.5 w-3.5 shrink-0 text-[var(--accent)]"
-              strokeWidth={2}
-              aria-hidden="true"
-            />
-            <span className="text-sm leading-6 text-ink-soft">
-              {labelFor(features, feature.key, feature.label)}
-            </span>
-          </li>
-        ))}
-      </ul>
+      <div className="mt-7">
+        <p className="text-xs font-semibold uppercase tracking-[0.08em] text-ink-faint">
+          {previous === null || plan.isRequestOnly
+            ? strings.includes.title
+            : fill(strings.includes.fromPlan, { plan: previous.label })}
+        </p>
 
-      <dl className="mt-7 flex flex-col gap-1.5 border-t border-line-soft pt-5">
-        {plan.limits.map((limit) => (
-          <div key={limit.key} className="flex items-baseline justify-between gap-4">
-            <dt className="text-xs text-ink-faint">
-              {labelFor(limits, limit.key, limit.label)}
-            </dt>
-            <dd className="text-xs text-ink-soft [font-variant-numeric:tabular-nums]">
-              {limit.unlimited ? strings.unlimited : groupDigits(limit.value)}
-            </dd>
-          </div>
-        ))}
-      </dl>
+        <ul className="mt-3 flex flex-col gap-2">
+          {(plan.isRequestOnly
+            ? [strings.includes.allFeatures, strings.includes.byContract]
+            : [
+                ...(teamCount !== null
+                  ? [fill(pluralize(locale, teamCount, strings.includes.team), { count: teamCount })]
+                  : []),
+                ...featureKeys.map((key) =>
+                  labelFor(features, key, apiFeatureLabels.get(key) ?? ""),
+                ),
+              ]
+          ).map((text) => (
+            <li key={text} className="flex items-start gap-2">
+              <Check
+                className="mt-1 h-3.5 w-3.5 shrink-0 text-[var(--accent)]"
+                strokeWidth={2}
+                aria-hidden="true"
+              />
+              <span className="text-sm leading-6 text-ink-soft">{text}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       <div className="mt-auto">
         {plan.isRequestOnly ? (

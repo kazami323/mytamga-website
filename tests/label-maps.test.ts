@@ -19,21 +19,16 @@ const LIMITS = [
   "ai_checks_per_month", "pdf_exports_per_month", "team_seats",
 ];
 
-test("русского в картах нет: подписи берутся из каталога", () => {
-  assert.equal("ru" in FEATURE_LABELS, false);
-  assert.equal("ru" in LIMIT_LABELS, false);
-});
-
-test("три языка переводят все известные возможности", () => {
-  for (const locale of ["uz", "en", "zh"] as const) {
+test("четыре языка переводят все известные возможности", () => {
+  for (const locale of ["ru", "uz", "en", "zh"] as const) {
     for (const key of FEATURES) {
       assert.ok(FEATURE_LABELS[locale]?.[key], `${locale}: нет подписи для ${key}`);
     }
   }
 });
 
-test("три языка переводят все известные лимиты", () => {
-  for (const locale of ["uz", "en", "zh"] as const) {
+test("четыре языка переводят все известные лимиты", () => {
+  for (const locale of ["ru", "uz", "en", "zh"] as const) {
     for (const key of LIMITS) {
       assert.ok(LIMIT_LABELS[locale]?.[key], `${locale}: нет подписи для ${key}`);
     }
@@ -41,7 +36,7 @@ test("три языка переводят все известные лимит�
 });
 
 test("лишних ключей в картах нет — иначе они переживут удаление из каталога", () => {
-  for (const locale of ["uz", "en", "zh"] as const) {
+  for (const locale of ["ru", "uz", "en", "zh"] as const) {
     assert.deepEqual(Object.keys(FEATURE_LABELS[locale] ?? {}).sort(), [...FEATURES].sort());
     assert.deepEqual(Object.keys(LIMIT_LABELS[locale] ?? {}).sort(), [...LIMITS].sort());
   }

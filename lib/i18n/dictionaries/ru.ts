@@ -167,7 +167,25 @@ export const ru = {
     // «{months} из 12 месяцев»: существительное согласовано с 12, которое
     // постоянно, поэтому число платежей может быть любым без «2 месяцев».
     yearlyAs: "Год: {months} из 12 месяцев",
-    seatsIncluded: "Мест в команде: {count}",
+    // Подача тарифов: карточка и таблица лимитов.
+    trial: { one: "{days} день бесплатно", few: "{days} дня бесплатно", many: "{days} дней бесплатно", other: "{days} дня бесплатно" },
+    includes: {
+      title: "Что входит",
+      fromPlan: "Всё из «{plan}», плюс:",
+      allFeatures: "Все функции",
+      byContract: "Условия по договору",
+      team: { one: "Команда из {count} человека", few: "Команда из {count} человек", many: "Команда из {count} человек", other: "Команда из {count} человек" },
+    },
+    limitsTable: {
+      title: "Лимиты в месяц",
+      caption: "Лимиты тарифов в месяц",
+      limit: "Лимит",
+      none: "—",
+      unlimited: "∞",
+      unlimitedSr: "без ограничений",
+      byContract: "по договору",
+      noneSr: "нет",
+    },
     extraSeat: "{amount} сум за место сверх",
     unlimited: "Без ограничений",
     invoiceForCompany: "Условия и счёт под компанию",
