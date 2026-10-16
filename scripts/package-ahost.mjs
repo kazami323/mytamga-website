@@ -50,6 +50,10 @@ try {
 
 // 3. Сборка. Переданные адреса сильнее, чем .env.local: Next не переписывает
 //    переменные, которые уже заданы в окружении.
+//    Кэш запросов Next (.next/cache/fetch-cache) переживает сборки: без его
+//    очистки страница тарифов собирается из старого ответа API, а не из того,
+//    что сервер отдаёт сейчас (16.10.2026 так в архив попали старые цены).
+rmSync(join(root, ".next", "cache", "fetch-cache"), { recursive: true, force: true });
 execFileSync("npm", ["run", "build"], { cwd: root, stdio: "inherit", env: process.env });
 
 const standalone = join(root, ".next", "standalone");
