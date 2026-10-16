@@ -39,3 +39,10 @@ test("HSTS только на защищённый запрос к боевому
   assert.equal(shouldSendHsts({ host: "localhost", proto: "https" }, SITE, true), false);
   assert.equal(shouldSendHsts({ host: "mytamga.uz", proto: "https" }, SITE, false), false);
 });
+
+test("путь вида //чужой.хост не уводит на чужой сайт", () => {
+  for (const path of ["//evil.com/x", "///evil.com", "/\\evil.com"]) {
+    const target = httpsRedirectTarget(new URL("http://127.0.0.1:3000" + path), { host: "mytamga.uz", proto: "http" }, SITE, true);
+    assert.equal(target?.host, "mytamga.uz", path);
+  }
+});

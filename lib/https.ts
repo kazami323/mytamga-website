@@ -52,7 +52,12 @@ export function httpsRedirectTarget(
   if (!isProduction || !host || origin.host !== host || origin.proto !== "http") {
     return null;
   }
-  return new URL(`${url.pathname}${url.search}`, `https://${host}`);
+  // Путь присваивается явно, а не разбирается от базы: путь вида //evil.com
+  // иначе превратился бы в чужой хост (открытый редирект).
+  const target = new URL(`https://${host}`);
+  target.pathname = url.pathname;
+  target.search = url.search;
+  return target.host === host ? target : null;
 }
 
 /** Ставить ли HSTS: только на защищённый запрос к боевому хосту. */
