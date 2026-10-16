@@ -159,7 +159,6 @@ export const zh: Dictionary = {
     },
     extraSeat: "每增加一个席位 {amount} 苏姆",
     unlimited: "不限量",
-    invoiceForCompany: "按公司需求提供条款与发票",
     yearlySaving: "节省 {amount} 苏姆",
     catalogUnavailable: "价格暂时无法显示。请联系我们，我们会发送现行条款。",
     renewManual: "一次性付费，有效期 30 天，需手动续费。",

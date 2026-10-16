@@ -64,7 +64,6 @@ export function PlanCard({ plan, previous, strings, locale }: PlanCardProps) {
                 ? fill(strings.fromMonthly, { amount: groupDigits(plan.priceMonthlyFrom) })
                 : strings.byRequest}
             </p>
-            <p className="mt-2 text-xs leading-5 text-ink-faint">{strings.invoiceForCompany}</p>
           </>
         )}
 

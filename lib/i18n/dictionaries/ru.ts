@@ -188,7 +188,6 @@ export const ru = {
     },
     extraSeat: "{amount} сум за место сверх",
     unlimited: "Без ограничений",
-    invoiceForCompany: "Условия и счёт под компанию",
     yearlySaving: "Выгода {amount} сум",
     catalogUnavailable:
       "Цены временно недоступны. Напишите нам — пришлём действующие условия.",

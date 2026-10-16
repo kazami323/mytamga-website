@@ -183,7 +183,6 @@ export const uz: Dictionary = {
     },
     extraSeat: "Qo‘shimcha o‘rin uchun {amount} so‘m",
     unlimited: "Cheklovsiz",
-    invoiceForCompany: "Shartlar va hisob-faktura kompaniya uchun",
     yearlySaving: "Foyda {amount} so‘m",
     catalogUnavailable:
       "Narxlar vaqtincha mavjud emas. Bizga yozing — amaldagi shartlarni yuboramiz.",

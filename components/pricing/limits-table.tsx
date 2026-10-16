@@ -30,7 +30,7 @@ export function LimitsTable({ plans, strings, locale }: LimitsTableProps) {
       </h2>
 
       {/* Прокрутка живёт внутри блока: страница целиком по горизонтали не едет. */}
-      <div className="mt-6 max-w-full overflow-x-auto rounded-2xl border border-line-soft">
+      <div className="relative mt-6 max-w-full overflow-x-auto rounded-2xl border border-line-soft">
         <table className="w-full min-w-[44rem] border-collapse text-left text-sm">
           <caption className="sr-only">{t.caption}</caption>
           <thead>

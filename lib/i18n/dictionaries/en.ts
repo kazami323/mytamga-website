@@ -175,7 +175,6 @@ export const en: Dictionary = {
     },
     extraSeat: "{amount} UZS per extra seat",
     unlimited: "Unlimited",
-    invoiceForCompany: "Terms and an invoice for your company",
     yearlySaving: "You save {amount} UZS",
     catalogUnavailable:
       "Prices are temporarily unavailable. Write to us and we will send the current terms.",
