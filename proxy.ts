@@ -6,7 +6,7 @@ import {
   hasLocale,
   type Locale,
 } from "@/lib/i18n/config";
-import { HSTS_VALUE, httpsRedirectTarget, shouldSendHsts } from "@/lib/https";
+import { HSTS_VALUE, httpsRedirectTarget, requestOrigin, shouldSendHsts } from "@/lib/https";
 
 // Four locales don't need a negotiation library: rank by q and match on the
 // primary subtag, so zh-TW lands on zh and uz-Cyrl on uz.
@@ -33,20 +33,26 @@ function fromAcceptLanguage(header: string | null): Locale | null {
 }
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
-const IS_PRODUCTION = process.env.NODE_ENV === "production";
+// Перенаправление на https и HSTS — только при FORCE_HTTPS=1 (настройка
+// приложения в cPanel). Если прокси хостинга не передаёт X-Forwarded-Proto,
+// Next подставляет «http» даже для https-запросов, и без проверки включение
+// дало бы бесконечное перенаправление. Включать после /api/diag-forwarded.
+const IS_PRODUCTION =
+  process.env.NODE_ENV === "production" && process.env.FORCE_HTTPS === "1";
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Незащищённый адрес — сразу на https, до выбора языка: одно перенаправление.
-  const secure = httpsRedirectTarget(request.nextUrl, SITE_URL, IS_PRODUCTION);
+  const origin = requestOrigin(request.headers);
+  const secure = httpsRedirectTarget(request.nextUrl, origin, SITE_URL, IS_PRODUCTION);
   if (secure) {
     return NextResponse.redirect(secure, 308);
   }
 
   if (hasLocale(pathname.split("/")[1] ?? "")) {
     const response = NextResponse.next();
-    if (shouldSendHsts(request.nextUrl, SITE_URL, IS_PRODUCTION)) {
+    if (shouldSendHsts(origin, SITE_URL, IS_PRODUCTION)) {
       response.headers.set("Strict-Transport-Security", HSTS_VALUE);
     }
     return response;

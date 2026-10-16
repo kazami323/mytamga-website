@@ -207,6 +207,7 @@ cPanel → «Программное обеспечение» → **Setup Node.js
 | `MYTAMGA_API_URL` | `https://api.mytamga.uz` |
 | `MYTAMGA_API_PROXY_KEY` | ключ сайта из шага 1 |
 | `NEXT_PUBLIC_SITE_URL` | `https://mytamga.uz` |
+| `FORCE_HTTPS` | `1` — включить только после проверки `https://mytamga.uz/api/diag-forwarded`: в ответе на https-запрос `origin.proto` должно быть `https`. Иначе будет бесконечное перенаправление. Надёжнее — «Force HTTPS Redirect» в cPanel → Domains |
 
 Сохранить. Кнопку **Run NPM Install не нажимать**: все зависимости уже в
 архиве.
