@@ -178,7 +178,7 @@ export const en: Dictionary = {
     yearlySaving: "You save {amount} UZS",
     catalogUnavailable:
       "Prices are temporarily unavailable. Write to us and we will send the current terms.",
-    renewManual: "A single payment for 30 days. Renewed manually.",
+    renewManual: "Pay for a month or a year. Renew manually — the remaining days are kept.",
     renewAuto: "Renews automatically; cancel at any time.",
     cta: {
       included: "Already included",

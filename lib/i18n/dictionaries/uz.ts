@@ -186,7 +186,7 @@ export const uz: Dictionary = {
     yearlySaving: "Foyda {amount} so‘m",
     catalogUnavailable:
       "Narxlar vaqtincha mavjud emas. Bizga yozing — amaldagi shartlarni yuboramiz.",
-    renewManual: "30 kunga bir martalik to‘lov. Qo‘lda uzaytiriladi.",
+    renewManual: "Bir oyga yoki bir yilga to‘lov. Uzaytirish qo‘lda, qolgan kunlar saqlanadi.",
     renewAuto: "Avtomatik uzaytiriladi, istalgan vaqtda bekor qilish mumkin.",
     cta: {
       included: "Allaqachon kiritilgan",

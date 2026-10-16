@@ -161,7 +161,7 @@ export const zh: Dictionary = {
     unlimited: "不限量",
     yearlySaving: "节省 {amount} 苏姆",
     catalogUnavailable: "价格暂时无法显示。请联系我们，我们会发送现行条款。",
-    renewManual: "一次性付费，有效期 30 天，需手动续费。",
+    renewManual: "按月或按年付费。需手动续费，剩余天数会保留。",
     renewAuto: "自动续费，可随时取消。",
     cta: {
       included: "已包含",
