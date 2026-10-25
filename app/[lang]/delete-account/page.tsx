@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { SectionHeading } from "@/components/section-heading";
 import { SiteFooter } from "@/components/site-footer";
 import { hasLocale } from "@/lib/i18n/config";
+import { pageMetadata } from "@/lib/seo-copy";
 import { COMPANY } from "@/lib/legal/company";
 import { DELETE_ACCOUNT } from "@/lib/legal/delete-account";
 
@@ -12,12 +13,7 @@ export async function generateMetadata({
 }: PageProps<"/[lang]/delete-account">): Promise<Metadata> {
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
-  const content = DELETE_ACCOUNT[lang];
-  return {
-    title: content.title,
-    description: content.description,
-    robots: { index: true, follow: true },
-  };
+  return pageMetadata(lang, "/delete-account");
 }
 
 export default async function DeleteAccountPage({
@@ -39,6 +35,7 @@ export default async function DeleteAccountPage({
           aria-labelledby="delete-account-title"
         >
           <SectionHeading
+            as="h1"
             id="delete-account-title"
             kicker={content.linkLabel}
             title={content.title}

@@ -13,7 +13,16 @@ import { getDictionary } from "@/lib/i18n/get-dictionary";
 // Страница личная: она читает куки и ничего не значит для поисковика.
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = { robots: { index: false, follow: false } };
+export async function generateMetadata({
+  params,
+}: PageProps<"/[lang]/pay/return">): Promise<Metadata> {
+  const { lang } = await params;
+
+  return {
+    ...(hasLocale(lang) ? { title: getDictionary(lang).billing.pay.title } : {}),
+    robots: { index: false, follow: false },
+  };
+}
 
 export default async function PayReturnPage({
   params,
@@ -41,6 +50,7 @@ export default async function PayReturnPage({
           aria-labelledby="pay-title"
         >
           <SectionHeading
+            as="h1"
             id="pay-title"
             kicker={t.billing.kicker}
             title={t.billing.pay.title}
