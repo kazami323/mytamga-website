@@ -288,6 +288,7 @@ export const uz: Dictionary = {
     // адреса в lib/app-links.ts нет, вместо неё — «скоро».
     appStoreCaption: "Yuklab oling",
     googlePlayCaption: "Yuklab oling",
+    storesLabel: "Ilovani yuklab olish",
     comingSoon: "Tez kunda",
   },
 };

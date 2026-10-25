@@ -5,6 +5,7 @@ import "@fontsource-variable/unbounded";
 import "../globals.css";
 
 import { InlineScript } from "@/components/inline-script";
+import { FloatingStores } from "@/components/floating-stores";
 import { SiteHeader } from "@/components/site-header";
 import { SitePreloader } from "@/components/site-preloader";
 import { HTML_LANG, LOCALES, hasLocale } from "@/lib/i18n/config";
@@ -88,6 +89,11 @@ export default async function RootLayout({
           }}
         />
         {children}
+        <FloatingStores
+          availableIn={t.footer.googlePlayCaption}
+          comingSoon={t.footer.comingSoon}
+          label={t.footer.storesLabel}
+        />
       </body>
     </html>
   );

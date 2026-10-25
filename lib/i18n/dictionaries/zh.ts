@@ -257,6 +257,7 @@ export const zh: Dictionary = {
     // адреса в lib/app-links.ts нет, вместо неё — «скоро».
     appStoreCaption: "下载于",
     googlePlayCaption: "下载于",
+    storesLabel: "下载应用",
     comingSoon: "即将登陆",
   },
 };

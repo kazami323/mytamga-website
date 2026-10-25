@@ -10,6 +10,7 @@ import {
 } from "framer-motion";
 import { useRef, type PointerEvent, type ReactNode } from "react";
 
+import { StoreGlyph } from "@/components/ui/store-glyph";
 
 type FooterLink = { label: string; href: string };
 
@@ -107,18 +108,6 @@ function MagneticLink({
   );
 }
 
-/** Знаки магазинов в цвете текста — светлая тема перекрашивает их сама. */
-function StoreGlyph({ store }: { store: "appStore" | "googlePlay" }) {
-  return store === "appStore" ? (
-    <svg className="h-6 w-6 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.04 2.26-.79 3.59-.76 1.56.04 2.87.67 3.55 1.76-3.13 1.77-2.62 5.92.35 7.14-.65 1.58-1.57 3.1-2.57 4.03zm-3.21-14.7c-.55 1.4-1.89 2.37-3.25 2.28.09-1.5 1.05-2.82 2.38-3.4 1.25-.57 2.66-.41 3.25.04-.15.35-.26.72-.38 1.08z" />
-    </svg>
-  ) : (
-    <svg className="h-6 w-6 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M4.2 2.6c-.25.26-.4.67-.4 1.2v16.4c0 .53.15.94.4 1.2l.06.06L13.4 12.3v-.2L4.26 2.54l-.06.06zm12.27 12.76L13.4 12.3v-.2l3.07-3.07.07.04 3.63 2.06c1.04.59 1.04 1.55 0 2.14l-3.63 2.06-.07.03zm-.07.04L13.4 12.2l-9.2 9.2c.34.36.9.4 1.53.05l10.67-6.05zm0-6.6L5.73 2.75c-.63-.36-1.19-.31-1.53.05l9.2 9.2 3-3.2z" />
-    </svg>
-  );
-}
 
 /**
  * Подвал-занавес. Обёртка стоит в потоке и обрезана clip-path, подвал под ней
