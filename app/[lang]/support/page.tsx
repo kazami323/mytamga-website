@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { SectionHeading } from "@/components/section-heading";
 import { SiteFooter } from "@/components/site-footer";
 import { hasLocale } from "@/lib/i18n/config";
+import { pageMetadata } from "@/lib/seo-copy";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { COMPANY } from "@/lib/legal/company";
 
@@ -11,7 +12,7 @@ export async function generateMetadata({
   params,
 }: PageProps<"/[lang]/support">): Promise<Metadata> {
   const { lang } = await params;
-  return hasLocale(lang) ? { title: getDictionary(lang).billing.legal.support } : {};
+  return hasLocale(lang) ? pageMetadata(lang, "/support") : {};
 }
 
 export default async function SupportPage({ params }: PageProps<"/[lang]/support">) {
@@ -31,6 +32,7 @@ export default async function SupportPage({ params }: PageProps<"/[lang]/support
           aria-labelledby="support-title"
         >
           <SectionHeading
+            as="h1"
             id="support-title"
             kicker={t.billing.legal.support}
             title={t.billing.legal.supportTitle}

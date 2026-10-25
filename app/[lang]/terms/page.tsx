@@ -4,13 +4,14 @@ import { notFound } from "next/navigation";
 import { LegalDocumentView } from "@/components/legal/legal-document";
 import { SiteFooter } from "@/components/site-footer";
 import { hasLocale } from "@/lib/i18n/config";
+import { pageMetadata } from "@/lib/seo-copy";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 
 export async function generateMetadata({
   params,
 }: PageProps<"/[lang]/terms">): Promise<Metadata> {
   const { lang } = await params;
-  return hasLocale(lang) ? { title: getDictionary(lang).billing.legal.terms } : {};
+  return hasLocale(lang) ? pageMetadata(lang, "/terms") : {};
 }
 
 export default async function TermsPage({ params }: PageProps<"/[lang]/terms">) {

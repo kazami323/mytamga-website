@@ -4,13 +4,14 @@ import { notFound } from "next/navigation";
 import { LegalDocumentView } from "@/components/legal/legal-document";
 import { SiteFooter } from "@/components/site-footer";
 import { hasLocale } from "@/lib/i18n/config";
+import { pageMetadata } from "@/lib/seo-copy";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 
 export async function generateMetadata({
   params,
 }: PageProps<"/[lang]/privacy">): Promise<Metadata> {
   const { lang } = await params;
-  return hasLocale(lang) ? { title: getDictionary(lang).billing.legal.privacy } : {};
+  return hasLocale(lang) ? pageMetadata(lang, "/privacy") : {};
 }
 
 export default async function PrivacyPage({ params }: PageProps<"/[lang]/privacy">) {

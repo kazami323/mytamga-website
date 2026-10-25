@@ -11,8 +11,12 @@ import { SiteFooter } from "@/components/site-footer";
 import { AUTORENEW_AVAILABLE, PRICES_PUBLISHED } from "@/lib/billing/flags";
 import { isCatalogUsable } from "@/lib/billing/catalog";
 import { loadPlans, loadProviders } from "@/lib/billing/plans.server";
-import { HTML_LANG, LOCALES, hasLocale } from "@/lib/i18n/config";
+import { JsonLd } from "@/components/json-ld";
+import { APP_LINKS } from "@/lib/app-links";
+import { hasLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { highestPlanPrice, mobileApplicationJsonLd } from "@/lib/seo";
+import { pageMetadata } from "@/lib/seo-copy";
 
 export async function generateMetadata({
   params,
@@ -23,19 +27,7 @@ export async function generateMetadata({
     return {};
   }
 
-  const t = getDictionary(lang);
-
-  return {
-    title: t.billing.metaTitle,
-    description: t.billing.metaDescription,
-    alternates: {
-      canonical: `/${lang}/pricing`,
-      languages: {
-        ...Object.fromEntries(LOCALES.map((l) => [HTML_LANG[l], `/${l}/pricing`])),
-        "x-default": "/ru/pricing",
-      },
-    },
-  };
+  return pageMetadata(lang, "/pricing");
 }
 
 export default async function PricingPage({ params }: PageProps<"/[lang]/pricing">) {
@@ -50,6 +42,12 @@ export default async function PricingPage({ params }: PageProps<"/[lang]/pricing
 
   return (
     <>
+      <JsonLd
+        data={mobileApplicationJsonLd({
+          googlePlay: APP_LINKS.googlePlay,
+          highPrice: PRICES_PUBLISHED && isCatalogUsable(plans) ? highestPlanPrice(plans) : null,
+        })}
+      />
       <main>
         <section
           id="pricing"
@@ -57,6 +55,7 @@ export default async function PricingPage({ params }: PageProps<"/[lang]/pricing
           aria-labelledby="pricing-title"
         >
           <SectionHeading
+            as="h1"
             id="pricing-title"
             kicker={t.billing.kicker}
             title={t.billing.title}

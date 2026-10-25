@@ -8,8 +8,18 @@ import { InlineScript } from "@/components/inline-script";
 import { FloatingStores } from "@/components/floating-stores";
 import { SiteHeader } from "@/components/site-header";
 import { SitePreloader } from "@/components/site-preloader";
+import { JsonLd } from "@/components/json-ld";
+import { APP_LINKS } from "@/lib/app-links";
 import { HTML_LANG, LOCALES, hasLocale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { companyFor } from "@/lib/legal/company";
+import {
+  organizationJsonLd,
+  siteUrl,
+  verificationTags,
+  websiteJsonLd,
+} from "@/lib/seo";
+import { BRAND_SUFFIX, SEO_COPY } from "@/lib/seo-copy";
 
 // Only the four locales exist; anything else is a 404 decided at build time,
 // never a server round trip.
@@ -28,23 +38,13 @@ export async function generateMetadata({
     return {};
   }
 
-  const t = getDictionary(lang);
-
   return {
-    // The production domain is a launch item; until then links resolve
-    // against the local server.
-    metadataBase: new URL(
-      process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-    ),
-    title: t.meta.title,
-    description: t.meta.description,
-    alternates: {
-      canonical: `/${lang}`,
-      languages: {
-        ...Object.fromEntries(LOCALES.map((l) => [HTML_LANG[l], `/${l}`])),
-        "x-default": "/ru",
-      },
-    },
+    metadataBase: new URL(siteUrl()),
+    // Страницы задают короткий заголовок, бренд добавляет шаблон; у главной
+    // заголовок полный (`absolute`).
+    title: { template: `%s${BRAND_SUFFIX}`, default: SEO_COPY[lang][""].title },
+    description: SEO_COPY[lang][""].description,
+    verification: verificationTags(),
   };
 }
 
@@ -59,6 +59,7 @@ export default async function RootLayout({
   }
 
   const t = getDictionary(lang);
+  const company = companyFor(lang);
 
   return (
     // The inline script adds data-theme before React hydrates; the attribute
@@ -79,6 +80,16 @@ export default async function RootLayout({
         />
       </head>
       <body>
+        <JsonLd
+          data={organizationJsonLd({
+            legalName: company.legalName,
+            address: company.address,
+            phone: company.phone,
+            email: company.supportEmail,
+            googlePlay: APP_LINKS.googlePlay,
+          })}
+        />
+        <JsonLd data={websiteJsonLd(lang)} />
         <SitePreloader loadingLabel={t.preloader.loading} />
         <SiteHeader
           locale={lang}

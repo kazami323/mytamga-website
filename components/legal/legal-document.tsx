@@ -22,6 +22,7 @@ export function LegalDocumentView({ slug, locale, strings }: LegalDocumentViewPr
       aria-labelledby="legal-title"
     >
       <SectionHeading
+        as="h1"
         id="legal-title"
         kicker={strings.legal[slug]}
         title={document?.title ?? strings.legal[slug]}
