@@ -25,21 +25,21 @@ export function Capabilities({ strings }: { strings: Dictionary["capabilities"] 
   return (
     <section
       id="services"
-      className="section-anchor w-full px-[var(--gutter)] py-24 lg:py-36"
+      className="section-anchor w-full px-[var(--gutter)] section section-alt"
       aria-labelledby="capabilities-title"
     >
-      <p className="hero-kicker mb-7 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-ink-faint sm:text-xs">
+      <p className="hero-kicker">
         {strings.kicker}
       </p>
 
       <h2
         id="capabilities-title"
-        className="max-w-3xl text-[clamp(1.6rem,4.5vw,2.1rem)] font-semibold leading-[1.12] tracking-[-0.035em] text-[var(--ink)] lg:text-[clamp(2rem,2.6vw,3rem)]"
+        className="max-w-3xl text-[1.875rem] font-semibold leading-[1.12] tracking-[-0.035em] text-[var(--ink)] sm:text-[2.25rem] lg:text-[clamp(2.5rem,3.2vw,2.875rem)]"
       >
         {strings.title}
       </h2>
 
-      <ul className="mt-14 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <ul className="section-body grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {strings.items.map(({ id, title, body }, index) => {
           const Icon = ICONS[id] ?? ScanBarcode;
           return (
@@ -55,17 +55,17 @@ export function Capabilities({ strings }: { strings: Dictionary["capabilities"] 
           >
             <LiquidMetalPanel
               className="w-full"
-              innerClassName="flex h-full flex-col px-7 pb-9 pt-8"
+              innerClassName="flex h-full flex-col px-6 pb-7 pt-7"
             >
               <Icon
-                className="h-5 w-5 text-[var(--accent)]"
+                className="h-6 w-6 text-[var(--accent)]"
                 strokeWidth={1.5}
                 aria-hidden="true"
               />
-              <h3 className="mt-7 text-base font-semibold tracking-[-0.01em] text-[var(--ink)]">
+              <h3 className="mt-7 text-[1.1875rem] font-semibold leading-snug tracking-[-0.01em] text-[var(--ink)]">
                 {title}
               </h3>
-              <p className="mt-3 text-sm leading-6 text-ink-soft">{body}</p>
+              <p className="mt-3 text-base leading-[1.6] text-ink-soft">{body}</p>
             </LiquidMetalPanel>
           </motion.li>
           );

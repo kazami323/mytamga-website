@@ -370,3 +370,12 @@ provider prints the sign-in code to the API console.
   built package. Next serves it at `/-/opengraph-image.png`, which the locale
   redirect leaves alone because the path has a dot.
 - Step-by-step upload to cPanel: `docs/DEPLOY_RU.md`.
+
+## Плотность и шрифты, 25.10.2026
+
+- Отступы: `.section` (главная) — 56 / 64 / 88 px сверху и снизу (тел. / sm / lg); `.page-section` (подстраницы) — сверху 116 / 136 px под шапкой 80 / 96 px, снизу как `.section`; `.section-body` — отступ «заголовок → содержимое» 32 / 40 px. Свои `py-*`/`mt-14` в разделах не писать.
+- Шрифты: основной текст 16 px (межстрочный 1,6), лиды `.section-lead` 17–18 px, кикеры `.section-kicker`/`.hero-kicker` 13 px, разрядка 0,16em, цвет `--accent`; h2 разделов 30 → 36 → 44–46 px; заголовки карточек 19 px; подзаголовки служебных страниц 20–21 px. Мельче 13 px в основном тексте не бывает; метки в тарифах 13–14 px, возможности 15–16 px.
+- Ритм: «Возможности» и «О нас» стоят на `--surface` с мягкой границей (`.section-alt`), остальные — на фоне страницы. Hero не менялся (кроме кикера 13 px и лида 18 px).
+- «Три шага» — карточки с акцентной цифрой 44 px; «О нас» — цифры 44 / 56 px акцентом, подпись 15 px, текст не шире 65 знаков.
+- Служебные страницы: колонка `.prose-page` до 760 px; поддержка — одна карточка с адресом 20–22 px.
+- Dev в worktree: Turbopack не принимает симлинк node_modules за пределами корня, запускать `next dev --webpack`.

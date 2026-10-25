@@ -7,12 +7,12 @@ interface SectionHeadingProps {
 export function SectionHeading({ id, kicker, title }: SectionHeadingProps) {
   return (
     <>
-      <p className="section-kicker mb-7 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-ink-faint sm:text-xs">
+      <p className="section-kicker">
         {kicker}
       </p>
       <h2
         id={id}
-        className="max-w-3xl text-[clamp(1.6rem,4.5vw,2.1rem)] font-semibold leading-[1.12] tracking-[-0.035em] text-[var(--ink)] lg:text-[clamp(2rem,2.6vw,3rem)]"
+        className="max-w-3xl text-[1.875rem] font-semibold leading-[1.12] tracking-[-0.035em] text-[var(--ink)] sm:text-[2.25rem] lg:text-[clamp(2.5rem,3.2vw,2.875rem)]"
       >
         {title}
       </h2>

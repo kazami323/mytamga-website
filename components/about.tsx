@@ -9,7 +9,7 @@ export async function About() {
   return (
     <section
       id="about"
-      className="section-anchor w-full px-[var(--gutter)] py-24 lg:py-36"
+      className="section-anchor w-full px-[var(--gutter)] section section-alt"
       aria-labelledby="about-title"
     >
       <SectionHeading
@@ -19,19 +19,19 @@ export async function About() {
       />
 
       <Reveal>
-        <p className="mt-8 max-w-2xl text-base leading-7 text-ink-soft sm:text-lg sm:leading-8">
+        <p className="section-lead mt-6 max-w-[65ch] text-ink-soft">
           {about.body}
         </p>
       </Reveal>
 
-      <dl className="mt-16 grid gap-10 sm:grid-cols-3 sm:gap-6">
+      <dl className="mt-12 grid gap-8 sm:grid-cols-3 sm:gap-6 lg:mt-14">
         {about.facts.map((fact, index) => (
           <div key={fact.id} data-about-fact>
-            <Reveal delay={index * 0.08}>
-              <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-ink-faint">
+            <Reveal className="flex flex-col-reverse" delay={index * 0.08}>
+              <dt className="mt-3 text-[0.9375rem] font-medium leading-snug text-ink-soft">
                 {fact.label}
               </dt>
-              <dd className="mt-3 text-lg font-semibold tracking-[-0.02em] text-[var(--ink)]">
+              <dd className="text-[2.75rem] font-semibold leading-none tracking-[-0.03em] text-[var(--accent)] [font-variant-numeric:tabular-nums] lg:text-[3.5rem]">
                 {fact.value}
               </dd>
             </Reveal>

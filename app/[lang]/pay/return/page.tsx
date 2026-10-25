@@ -37,7 +37,7 @@ export default async function PayReturnPage({
     <>
       <main>
         <section
-          className="section-anchor w-full px-[var(--gutter)] pb-24 pt-36 lg:pb-36 lg:pt-44"
+          className="section-anchor w-full px-[var(--gutter)] page-section"
           aria-labelledby="pay-title"
         >
           <SectionHeading
@@ -56,7 +56,7 @@ export default async function PayReturnPage({
             baseline={baseline}
           />
 
-          <a href={`/${lang}/pricing`} className="nav-link mt-10 inline-block text-sm">
+          <a href={`/${lang}/pricing`} className="nav-link mt-10 inline-block text-base">
             {t.billing.pay.backToPricing}
           </a>
         </section>

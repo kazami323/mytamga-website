@@ -72,11 +72,11 @@ export function ReturnPoller({
           : strings.pay.waiting;
 
   return (
-    <div className="mt-8 flex flex-col gap-3">
+    <div className="section-body flex flex-col gap-3">
       <p
         aria-live="polite"
         data-pay-outcome={outcome}
-        className="text-sm leading-6 text-[var(--ink)]"
+        className="section-lead text-[var(--ink)]"
       >
         {message}
       </p>
@@ -84,14 +84,14 @@ export function ReturnPoller({
       {/* Номер платежа нужен, только когда что-то пошло не по плану: с ним
           поддержка найдёт платёж, не переспрашивая. */}
       {transactionId && outcome !== "success" && (
-        <p className="text-xs leading-5 text-ink-faint [font-variant-numeric:tabular-nums]">
+        <p className="text-sm leading-5 text-ink-faint [font-variant-numeric:tabular-nums]">
           {fill(strings.pay.transaction, { id: transactionId })}
         </p>
       )}
 
       {/* Текст просит написать в поддержку — значит адрес должен быть здесь же. */}
       {outcome !== "success" && outcome !== "pending" && (
-        <p data-support className="text-sm leading-6">
+        <p data-support className="text-lg font-semibold leading-6">
           <a href={`mailto:${COMPANY.supportEmail}`} className="nav-link">
             {COMPANY.supportEmail}
           </a>

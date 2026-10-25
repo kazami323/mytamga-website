@@ -53,7 +53,7 @@ export default async function PricingPage({ params }: PageProps<"/[lang]/pricing
       <main>
         <section
           id="pricing"
-          className="section-anchor w-full px-[var(--gutter)] pb-24 pt-36 lg:pb-36 lg:pt-44"
+          className="section-anchor w-full px-[var(--gutter)] page-section"
           aria-labelledby="pricing-title"
         >
           <SectionHeading
@@ -62,7 +62,7 @@ export default async function PricingPage({ params }: PageProps<"/[lang]/pricing
             title={t.billing.title}
           />
 
-          <p className="mt-6 max-w-2xl text-sm leading-6 text-ink-soft">
+          <p className="section-lead mt-6 max-w-[65ch] text-ink-soft">
             {t.billing.lead}
           </p>
 
@@ -71,7 +71,7 @@ export default async function PricingPage({ params }: PageProps<"/[lang]/pricing
           {!isCatalogUsable(plans) && (
             <p
               data-catalog="unavailable"
-              className="mt-14 max-w-xl text-sm leading-6 text-ink-soft"
+              className="section-body max-w-xl text-base leading-[1.6] text-ink-soft"
             >
               {t.billing.catalogUnavailable}
             </p>
@@ -81,7 +81,7 @@ export default async function PricingPage({ params }: PageProps<"/[lang]/pricing
             <PricingProvider>
               {/* Пока цены не объявлены, сравнивать нечего. */}
               {PRICES_PUBLISHED && (
-                <div className="mt-10">
+                <div className="section-body">
                   <PeriodToggle strings={t.billing.period} />
                 </div>
               )}
@@ -90,7 +90,7 @@ export default async function PricingPage({ params }: PageProps<"/[lang]/pricing
 
               <LimitsTable plans={plans} strings={t.billing} locale={lang} />
 
-              <p className="mt-10 text-xs leading-5 text-ink-faint">
+              <p className="mt-10 text-[0.8125rem] leading-5 text-ink-faint">
                 {AUTORENEW_AVAILABLE ? t.billing.renewAuto : t.billing.renewManual}
               </p>
 

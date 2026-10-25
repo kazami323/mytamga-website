@@ -17,7 +17,7 @@ export function PlanCta({ planKey, label }: PlanCtaProps) {
   return (
     <a
       href="#checkout"
-      className="liquid-metal-trigger mt-8 inline-flex h-11 items-center justify-center rounded-full border border-line px-6 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)]"
+      className="liquid-metal-trigger mt-8 inline-flex h-11 items-center justify-center rounded-full border border-line px-6 text-base font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)]"
       onClick={() => select(planKey)}
     >
       {label}

@@ -27,7 +27,7 @@ export default async function SupportPage({ params }: PageProps<"/[lang]/support
     <>
       <main>
         <section
-          className="section-anchor w-full px-[var(--gutter)] pb-24 pt-36 lg:pb-36 lg:pt-44"
+          className="section-anchor w-full px-[var(--gutter)] page-section"
           aria-labelledby="support-title"
         >
           <SectionHeading
@@ -35,17 +35,19 @@ export default async function SupportPage({ params }: PageProps<"/[lang]/support
             kicker={t.billing.legal.support}
             title={t.billing.legal.supportTitle}
           />
-          <p className="mt-8 max-w-xl text-sm leading-6 text-ink-soft">
-            {t.billing.legal.supportBody}
-          </p>
-          <p className="mt-4 max-w-xl text-sm leading-6 text-ink-soft">
-            {t.billing.legal.supportHint}
-          </p>
-          <p className="mt-4 text-sm leading-6">
-            <a href={`mailto:${COMPANY.supportEmail}`} className="nav-link">
-              {COMPANY.supportEmail}
-            </a>
-          </p>
+          <div className="section-body prose-page rounded-[1.25rem] border border-line-soft bg-[var(--surface)] p-6 sm:p-8">
+            <p className="section-lead text-ink">
+              {t.billing.legal.supportBody}
+            </p>
+            <p className="mt-3 text-base leading-[1.6] text-ink-soft">
+              {t.billing.legal.supportHint}
+            </p>
+            <p className="mt-6 text-xl font-semibold tracking-[-0.01em] sm:text-[1.375rem]">
+              <a href={`mailto:${COMPANY.supportEmail}`} className="nav-link text-[var(--accent)]">
+                {COMPANY.supportEmail}
+              </a>
+            </p>
+          </div>
         </section>
       </main>
       <SiteFooter />

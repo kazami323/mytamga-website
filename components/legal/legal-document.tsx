@@ -18,7 +18,7 @@ export function LegalDocumentView({ slug, locale, strings }: LegalDocumentViewPr
 
   return (
     <section
-      className="section-anchor w-full px-[var(--gutter)] pb-24 pt-36 lg:pb-36 lg:pt-44"
+      className="section-anchor w-full px-[var(--gutter)] page-section"
       aria-labelledby="legal-title"
     >
       <SectionHeading
@@ -29,11 +29,11 @@ export function LegalDocumentView({ slug, locale, strings }: LegalDocumentViewPr
 
       {/* Текста на этом языке нет — не делаем вид, что он есть. */}
       {!document && (
-        <div data-legal="translation-missing" className="mt-10 max-w-2xl">
-          <p className="text-sm leading-6 text-ink-soft">
+        <div data-legal="translation-missing" className="section-body prose-page">
+          <p className="text-base leading-[1.6] text-ink-soft">
             {strings.legal.contractLanguage}
           </p>
-          <a href={`/ru/${slug}`} className="nav-link mt-4 inline-block text-sm">
+          <a href={`/ru/${slug}`} className="nav-link mt-4 inline-block text-base">
             {strings.legal.openRussian}
           </a>
         </div>
@@ -41,26 +41,26 @@ export function LegalDocumentView({ slug, locale, strings }: LegalDocumentViewPr
 
       {document && (
         <>
-          <p className="mt-8 text-xs text-ink-faint">
+          <p className="mt-6 text-[0.8125rem] text-ink-faint">
             {fill(strings.legal.updated, { date: document.updated })}
           </p>
 
           {document.isDraft && (
             <p
               data-legal="draft"
-              className="mt-4 max-w-2xl border-l-2 border-[var(--accent)] pl-4 text-sm leading-6 text-ink-soft"
+              className="prose-page mt-4 border-l-2 border-[var(--accent)] pl-4 text-base leading-[1.6] text-ink-soft"
             >
               {strings.legal.draftNotice}
             </p>
           )}
 
-          <div className="mt-10 flex max-w-2xl flex-col gap-5">
+          <div className="mt-8 prose-page flex flex-col gap-5">
             {document.blocks.map((block, index) => {
               if (block.kind === "h2") {
                 return (
                   <h2
                     key={index}
-                    className="mt-5 text-base font-semibold tracking-[-0.01em] text-[var(--ink)]"
+                    className="mt-6 text-xl font-semibold leading-snug tracking-[-0.01em] text-[var(--ink)]"
                   >
                     {block.text}
                   </h2>
@@ -69,9 +69,9 @@ export function LegalDocumentView({ slug, locale, strings }: LegalDocumentViewPr
 
               if (block.kind === "ul") {
                 return (
-                  <ul key={index} className="flex list-disc flex-col gap-2 pl-5">
+                  <ul key={index} className="flex list-disc flex-col gap-2.5 pl-6 marker:text-[var(--accent)]">
                     {block.items.map((item) => (
-                      <li key={item} className="text-sm leading-6 text-ink-soft">
+                      <li key={item} className="text-base leading-[1.6] text-ink-soft">
                         {item}
                       </li>
                     ))}
@@ -80,7 +80,7 @@ export function LegalDocumentView({ slug, locale, strings }: LegalDocumentViewPr
               }
 
               return (
-                <p key={index} className="text-sm leading-6 text-ink-soft">
+                <p key={index} className="text-base leading-[1.6] text-ink-soft">
                   {block.text}
                 </p>
               );
@@ -89,16 +89,16 @@ export function LegalDocumentView({ slug, locale, strings }: LegalDocumentViewPr
 
           {/* Реквизиты требует Click. Пока их нет, страница говорит об этом
               прямо, а не оставляет пустой раздел. */}
-          <div className="mt-12 max-w-2xl border-t border-line-soft pt-8">
-            <h2 className="text-base font-semibold tracking-[-0.01em] text-[var(--ink)]">
+          <div className="mt-12 prose-page border-t border-line-soft pt-8">
+            <h2 className="text-xl font-semibold tracking-[-0.01em] text-[var(--ink)]">
               {strings.legal.detailsTitle}
             </h2>
             {missing.length > 0 ? (
-              <p data-legal="details-missing" className="mt-3 text-sm leading-6 text-ink-soft">
+              <p data-legal="details-missing" className="mt-3 text-base leading-[1.6] text-ink-soft">
                 {strings.legal.detailsMissing}
               </p>
             ) : (
-              <dl className="mt-3 flex flex-col gap-1 text-sm leading-6 text-ink-soft">
+              <dl className="mt-3 flex flex-col gap-1 text-base leading-[1.6] text-ink-soft">
                 <div>{company.legalName}</div>
                 <div>
                   {company.taxLabel} {company.taxId}
@@ -111,7 +111,7 @@ export function LegalDocumentView({ slug, locale, strings }: LegalDocumentViewPr
                 </div>
               </dl>
             )}
-            <p className="mt-3 text-sm leading-6 text-ink-soft">
+            <p className="mt-3 text-base leading-[1.6] text-ink-soft">
               <a href={`mailto:${COMPANY.supportEmail}`} className="nav-link">
                 {COMPANY.supportEmail}
               </a>
