@@ -64,13 +64,13 @@ export function seoLanguages(path: string): Record<string, string> {
 }
 
 /**
- * Картинка для предпросмотра ссылок — app/[lang]/opengraph-image.png. Next
- * сам подставляет её только в метаданные того сегмента, где она лежит; страница
- * со своим openGraph её теряет, поэтому адрес указан явно. Файл отдаётся под
- * `/-/opengraph-image.png` (так Next называет маршрут динамического сегмента).
+ * Картинка для предпросмотра ссылок — статичный public/og-image.png (копия
+ * app/[lang]/opengraph-image.png). Страница со своим openGraph теряет картинку
+ * сегмента, поэтому адрес указан явно — обычным файлом, а не внутренним
+ * маршрутом Next, который может поменяться с обновлением.
  */
 export function ogImageUrl(): string {
-  return `${siteUrl()}/-/opengraph-image.png`;
+  return `${siteUrl()}/og-image.png`;
 }
 
 const OG_IMAGE = { width: 1200, height: 630, alt: SITE_NAME };
@@ -198,7 +198,8 @@ export function highestPlanPrice(plans: readonly PricedPlan[] | null): number | 
 
   const prices = plans
     .filter((plan) => !plan.isRequestOnly && plan.currency === "UZS")
-    .flatMap((plan) => [plan.priceMonthly, plan.priceYearly ?? 0]);
+    // Только месячные цены: годовая в разметке читалась бы как цена подписки.
+    .map((plan) => plan.priceMonthly);
   const highest = Math.max(0, ...prices);
 
   return highest > 0 ? highest : null;

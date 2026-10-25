@@ -131,7 +131,7 @@ test("JSON-LD: валидный JSON, `<` экранирован, оценок �
   assert.equal("sameAs" in organizationJsonLd({ ...{ legalName: "", address: "", phone: "", email: "" }, googlePlay: null }), false);
 });
 
-test("highestPlanPrice берёт максимум из каталога и игнорирует «по заявке»", () => {
+test("highestPlanPrice — максимум месячных цен, годовые и «по заявке» не учитываются", () => {
   const plan = { priceMonthly: 0, priceYearly: null, currency: "UZS", isRequestOnly: false };
   assert.equal(highestPlanPrice(null), null);
   assert.equal(highestPlanPrice([plan]), null);
@@ -141,7 +141,7 @@ test("highestPlanPrice берёт максимум из каталога и иг
       { ...plan, priceMonthly: 39000, priceYearly: 390000 },
       { ...plan, priceMonthly: 999999, isRequestOnly: true },
     ]),
-    390000,
+    39000,
   );
 });
 

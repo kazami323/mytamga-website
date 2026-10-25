@@ -35,7 +35,7 @@ export const SEO_COPY: Record<Locale, Record<IndexablePath, PageCopy>> = {
         "Поддержка MyTamga: напишите на почту, если нужна помощь с приложением для кода ТН ВЭД и расчёта таможенных платежей, подпиской или оплатой. Отвечаем по рабочим дням.",
     },
     "/delete-account": {
-      title: "Удаление аккаунта MyTamga: как удалить свои данные",
+      title: "Удаление аккаунта: как удалить свои данные",
       description:
         "Как удалить аккаунт MyTamga: в приложении или письмом в поддержку, что удаляется, что остаётся обезличенным и как отменить подписку в магазине приложений.",
     },
@@ -124,7 +124,7 @@ export const SEO_COPY: Record<Locale, Record<IndexablePath, PageCopy>> = {
         "MyTamga terms of use: rules for working with the app that finds HS codes and calculates customs payments for imports to Uzbekistan, and the duties of both sides.",
     },
     "/offer": {
-      title: "Public offer for the MyTamga app subscription",
+      title: "Public offer for the customs app subscription",
       description:
         "MyTamga public offer for the subscription: terms for ordering and paying app plans for importers and customs brokers in Uzbekistan, with the company details.",
     },
