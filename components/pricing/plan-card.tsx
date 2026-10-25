@@ -42,14 +42,14 @@ export function PlanCard({ plan, previous, strings, locale }: PlanCardProps) {
   return (
     <LiquidMetalPanel
       className="h-full w-full"
-      innerClassName="flex h-full flex-col px-7 pb-9 pt-8"
+      innerClassName="flex h-full flex-col px-6 pb-7 pt-7"
     >
-      <h3 className="text-base font-semibold tracking-[-0.01em] text-[var(--ink)]">
+      <h3 className="text-[1.1875rem] font-semibold leading-snug tracking-[-0.01em] text-[var(--ink)]">
         {plan.label}
       </h3>
 
       {description && (
-        <p className="mt-2 text-sm leading-6 text-ink-soft">{description}</p>
+        <p className="mt-2 text-base leading-[1.6] text-ink-soft">{description}</p>
       )}
 
       <div className="mt-7">
@@ -59,7 +59,7 @@ export function PlanCard({ plan, previous, strings, locale }: PlanCardProps) {
             сказать неправду. */}
         {plan.isRequestOnly && (
           <>
-            <p className="text-sm font-semibold text-[var(--ink)]">
+            <p className="text-base font-semibold text-[var(--ink)]">
               {PRICES_PUBLISHED && plan.priceMonthlyFrom
                 ? fill(strings.fromMonthly, { amount: groupDigits(plan.priceMonthlyFrom) })
                 : strings.byRequest}
@@ -72,14 +72,14 @@ export function PlanCard({ plan, previous, strings, locale }: PlanCardProps) {
             <p className="text-2xl font-semibold tracking-[-0.02em] text-[var(--ink)] [font-variant-numeric:tabular-nums]">
               {strings.free}
             </p>
-            <p className="mt-2 text-xs leading-5 text-ink-faint">
+            <p className="mt-2 text-sm leading-5 text-ink-faint">
               {strings.freeForever}
             </p>
           </>
         )}
 
         {!plan.isRequestOnly && plan.priceMonthly > 0 && !PRICES_PUBLISHED && (
-          <p className="text-sm font-semibold text-[var(--accent)]">
+          <p className="text-base font-semibold text-[var(--accent)]">
             {strings.pricePending}
           </p>
         )}
@@ -96,7 +96,7 @@ export function PlanCard({ plan, previous, strings, locale }: PlanCardProps) {
             )}
             {/* Выгода видна только в режиме «год»: в месячном её нет. */}
             {months !== null && (
-              <p className="plan-price-yearly mt-2 text-xs leading-5 text-ink-faint">
+              <p className="plan-price-yearly mt-2 text-sm leading-5 text-ink-faint">
                 {fill(strings.yearlyAs, { months })}
                 {saving !== null && ` · ${fill(strings.yearlySaving, { amount: groupDigits(saving) })}`}
               </p>
@@ -106,19 +106,19 @@ export function PlanCard({ plan, previous, strings, locale }: PlanCardProps) {
       </div>
 
       {plan.trialDays > 0 && (
-        <p className="mt-5 text-sm font-semibold text-[var(--accent)]">
+        <p className="mt-5 text-base font-semibold text-[var(--accent)]">
           {fill(pluralize(locale, plan.trialDays, strings.trial), { days: plan.trialDays })}
         </p>
       )}
 
       {plan.extraSeatPriceMonthly !== null && plan.extraSeatPriceMonthly > 0 && PRICES_PUBLISHED && (
-        <p className="mt-1 text-xs leading-5 text-ink-faint">
+        <p className="mt-1 text-sm leading-5 text-ink-faint">
           {fill(strings.extraSeat, { amount: groupDigits(plan.extraSeatPriceMonthly) })}
         </p>
       )}
 
       <div className="mt-7">
-        <p className="text-xs font-semibold uppercase tracking-[0.08em] text-ink-faint">
+        <p className="text-[0.8125rem] font-semibold uppercase tracking-[0.08em] text-ink-faint">
           {previous === null || plan.isRequestOnly
             ? strings.includes.title
             : fill(strings.includes.fromPlan, { plan: previous.label })}
@@ -138,11 +138,11 @@ export function PlanCard({ plan, previous, strings, locale }: PlanCardProps) {
           ).map((text) => (
             <li key={text} className="flex items-start gap-2">
               <Check
-                className="mt-1 h-3.5 w-3.5 shrink-0 text-[var(--accent)]"
+                className="mt-[0.4rem] h-4 w-4 shrink-0 text-[var(--accent)]"
                 strokeWidth={2}
                 aria-hidden="true"
               />
-              <span className="text-sm leading-6 text-ink-soft">{text}</span>
+              <span className="text-[0.9375rem] leading-[1.55] text-ink-soft sm:text-base">{text}</span>
             </li>
           ))}
         </ul>
@@ -154,7 +154,7 @@ export function PlanCard({ plan, previous, strings, locale }: PlanCardProps) {
           // выставляется под компанию. Форма заявки живёт в разделе контактов.
           <a
             href={`/${locale}#contacts`}
-            className="liquid-metal-trigger mt-8 inline-flex h-11 items-center justify-center rounded-full border border-line px-6 text-sm font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)]"
+            className="liquid-metal-trigger mt-8 inline-flex h-11 items-center justify-center rounded-full border border-line px-6 text-base font-semibold text-[var(--ink)] transition-colors hover:border-[var(--accent)]"
           >
             {ctaLabel}
           </a>

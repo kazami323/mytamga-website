@@ -122,7 +122,7 @@ export function LeadForm({ strings }: { strings: Dictionary["form"] }) {
       <p
         aria-live="polite"
         data-lead-status={isPending ? "pending" : state.status}
-        className="text-sm leading-6 text-ink-soft"
+        className="text-base leading-[1.6] text-ink-soft"
       >
         {isPending && strings.sending}
         {!isPending &&

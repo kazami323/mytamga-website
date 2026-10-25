@@ -11,7 +11,7 @@ interface PlanGridProps {
 
 export function PlanGrid({ plans, strings, locale }: PlanGridProps) {
   return (
-    <ul className="mt-14 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <ul className="section-body grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       {plans.map((plan, index) => (
         <li key={plan.key} className="flex">
           <PlanCard plan={plan} previous={plans[index - 1] ?? null} strings={strings} locale={locale} />

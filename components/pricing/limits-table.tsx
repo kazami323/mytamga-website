@@ -21,23 +21,23 @@ export function LimitsTable({ plans, strings, locale }: LimitsTableProps) {
   }
 
   return (
-    <section className="mt-16" aria-labelledby="limits-title">
+    <section className="mt-12" aria-labelledby="limits-title">
       <h2
         id="limits-title"
-        className="text-lg font-semibold tracking-[-0.01em] text-[var(--ink)]"
+        className="text-xl font-semibold tracking-[-0.01em] text-[var(--ink)]"
       >
         {t.title}
       </h2>
 
       {/* Прокрутка живёт внутри блока: страница целиком по горизонтали не едет. */}
       <div className="relative mt-6 max-w-full overflow-x-auto rounded-2xl border border-line-soft">
-        <table className="w-full min-w-[44rem] border-collapse text-left text-sm">
+        <table className="w-full min-w-[44rem] border-collapse text-left text-[0.9375rem]">
           <caption className="sr-only">{t.caption}</caption>
           <thead>
             <tr className="border-b border-line-soft">
               <th
                 scope="col"
-                className="sticky left-0 z-10 bg-[var(--surface)] px-4 py-3 text-xs font-semibold text-ink-faint"
+                className="sticky left-0 z-10 bg-[var(--surface)] px-4 py-3 text-sm font-semibold text-ink-faint"
               >
                 {t.limit}
               </th>
@@ -45,7 +45,7 @@ export function LimitsTable({ plans, strings, locale }: LimitsTableProps) {
                 <th
                   key={plan.key}
                   scope="col"
-                  className="px-4 py-3 text-xs font-semibold text-[var(--ink)]"
+                  className="px-4 py-3 text-sm font-semibold text-[var(--ink)]"
                 >
                   {plan.label}
                 </th>
@@ -57,7 +57,7 @@ export function LimitsTable({ plans, strings, locale }: LimitsTableProps) {
               <tr key={row.key} className="border-b border-line-soft last:border-b-0">
                 <th
                   scope="row"
-                  className="sticky left-0 z-10 bg-[var(--surface)] px-4 py-3 text-sm font-normal text-ink-soft"
+                  className="sticky left-0 z-10 bg-[var(--surface)] px-4 py-3 text-[0.9375rem] font-normal text-ink-soft"
                 >
                   {labelFor(LIMIT_LABELS[locale], row.key, row.apiLabel)}
                 </th>

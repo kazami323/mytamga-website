@@ -20,7 +20,7 @@ export function PeriodToggle({
   return (
     <fieldset
       data-period-toggle
-      className="lss relative inline-flex h-10 w-[200px] shrink-0 rounded-full border-[1.5px] p-1"
+      className="lss relative inline-flex h-11 w-[220px] shrink-0 rounded-full border-[1.5px] p-1"
       style={{ "--lss-index": index } as CSSProperties}
     >
       <legend className="sr-only">{strings.label}</legend>
@@ -42,7 +42,7 @@ export function PeriodToggle({
           <label
             key={option}
             data-active={option === period}
-            className="lss-link flex h-full w-full cursor-pointer items-center justify-center rounded-full text-xs font-semibold tracking-[0.02em]"
+            className="lss-link flex h-full w-full cursor-pointer items-center justify-center rounded-full text-sm font-semibold tracking-[0.02em]"
           >
             <input
               type="radio"

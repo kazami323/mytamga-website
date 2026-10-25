@@ -10,7 +10,7 @@ export async function Calculation() {
   return (
     <section
       id="calc"
-      className="section-anchor w-full px-[var(--gutter)] py-24 lg:py-36"
+      className="section-anchor w-full px-[var(--gutter)] section"
       aria-labelledby="calc-title"
     >
       <SectionHeading
@@ -19,18 +19,18 @@ export async function Calculation() {
         title={calculation.title}
       />
 
-      <ul className="mt-14 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <ul className="section-body grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {calculation.inputs.map((input, index) => (
           <li key={input.id} className="flex" data-calc-input>
             <Reveal className="w-full" delay={index * 0.08}>
               <LiquidMetalPanel
                 className="h-full w-full"
-                innerClassName="flex h-full flex-col px-7 pb-9 pt-8"
+                innerClassName="flex h-full flex-col px-6 pb-7 pt-7"
               >
-                <h3 className="text-base font-semibold tracking-[-0.01em] text-[var(--ink)]">
+                <h3 className="text-[1.1875rem] font-semibold leading-snug tracking-[-0.01em] text-[var(--ink)]">
                   {input.title}
                 </h3>
-                <p className="mt-3 text-sm leading-6 text-ink-soft">
+                <p className="mt-3 text-base leading-[1.6] text-ink-soft">
                   {input.body}
                 </p>
               </LiquidMetalPanel>
@@ -39,7 +39,7 @@ export async function Calculation() {
         ))}
       </ul>
 
-      <p className="section-kicker mb-7 mt-20 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-ink-faint sm:text-xs">
+      <p className="section-kicker mt-14">
         {calculation.resultKicker}
       </p>
 
@@ -47,10 +47,10 @@ export async function Calculation() {
         {calculation.results.map((result, index) => (
           <li key={result.id} data-calc-result>
             <Reveal delay={index * 0.08}>
-              <h3 className="text-base font-semibold tracking-[-0.01em] text-[var(--ink)]">
+              <h3 className="text-[1.1875rem] font-semibold leading-snug tracking-[-0.01em] text-[var(--ink)]">
                 {result.title}
               </h3>
-              <p className="mt-3 max-w-xs text-sm leading-6 text-ink-soft">
+              <p className="mt-3 max-w-sm text-base leading-[1.6] text-ink-soft">
                 {result.body}
               </p>
             </Reveal>
@@ -60,7 +60,7 @@ export async function Calculation() {
 
       <a
         href="#contacts"
-        className="nav-link mt-14 inline-block text-sm font-semibold"
+        className="nav-link mt-10 inline-block text-base font-semibold"
       >
         {calculation.cta} →
       </a>

@@ -54,12 +54,12 @@ export function TextField({
       : undefined,
     "aria-invalid": error ? (true as const) : undefined,
     "aria-describedby": error ? errorId : undefined,
-    className: "text-field w-full px-4 py-3 text-sm",
+    className: "text-field w-full px-4 py-3 text-base",
   };
 
   return (
     <div className={cn("flex flex-col gap-2", className)}>
-      <label htmlFor={id} className="text-sm text-ink-soft">
+      <label htmlFor={id} className="text-[0.9375rem] text-ink-soft">
         {label}
         {!required && optionalLabel && (
           <span className="text-ink-ghost"> — {optionalLabel}</span>
@@ -75,7 +75,7 @@ export function TextField({
       {/* The message is text, not just a red border: colour alone is not a
           signal everyone can read. */}
       {error && (
-        <p id={errorId} className="field-error text-xs">
+        <p id={errorId} className="field-error text-sm">
           {error}
         </p>
       )}

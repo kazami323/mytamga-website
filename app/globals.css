@@ -168,6 +168,13 @@ body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  color: var(--accent);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1.4;
+  text-transform: uppercase;
 }
 
 .hero-kicker::before,
@@ -181,6 +188,72 @@ body {
 /* Anchored sections stop below the fixed header instead of under it. */
 .section-anchor {
   scroll-margin-top: 7rem;
+}
+
+/* Отступы разделов: один источник для главной и подстраниц. Шапка — 80 px
+   (на lg 96 px), подстраница начинается под ней с запасом 36–40 px. */
+.section {
+  padding-block: 3.5rem;
+}
+
+.page-section {
+  padding-top: 7.25rem;
+  padding-bottom: 3.5rem;
+}
+
+@media (min-width: 640px) {
+  .section {
+    padding-block: 4rem;
+  }
+
+  .page-section {
+    padding-bottom: 4rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section {
+    padding-block: 5.5rem;
+  }
+
+  .page-section {
+    padding-top: 8.5rem;
+    padding-bottom: 5.5rem;
+  }
+}
+
+/* Отступ «заголовок раздела → содержимое». */
+.section-body {
+  margin-top: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .section-body {
+    margin-top: 2.5rem;
+  }
+}
+
+/* Чередование фона: раздел на чуть иной поверхности во всю ширину экрана. */
+.section-alt {
+  border-block: 1px solid var(--line-soft);
+  background: var(--surface);
+}
+
+/* Вводный абзац раздела и основной текст служебных страниц. */
+.section-lead {
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+
+@media (min-width: 640px) {
+  .section-lead {
+    font-size: 1.125rem;
+  }
+}
+
+/* Служебные страницы: колонка текста до ~760 px. */
+.prose-page {
+  max-width: 47.5rem;
 }
 
 /* The bar is invisible over the hero and only earns a surface once content
@@ -914,9 +987,9 @@ body {
 
 .hero-horizon-kicker {
   margin: 0 0 1.5rem;
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   font-weight: 600;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: rgb(241 239 233 / 0.6);
 }
@@ -935,8 +1008,8 @@ body {
 .hero-horizon-lead {
   margin: 1.75rem 0 0;
   max-width: 40rem;
-  font-size: 1.05rem;
-  line-height: 1.7;
+  font-size: 1.125rem;
+  line-height: 1.65;
   color: rgb(241 239 233 / 0.72);
 }
 

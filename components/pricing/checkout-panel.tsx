@@ -290,19 +290,19 @@ export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPan
       id="checkout"
       data-checkout
       data-session={session}
-      className="section-anchor mt-20 max-w-xl"
+      className="section-anchor mt-14 max-w-xl"
       aria-labelledby="checkout-title"
     >
       <LiquidMetalPanel innerClassName="flex flex-col gap-5 px-7 pb-9 pt-8">
         <h3
           id="checkout-title"
-          className="text-base font-semibold tracking-[-0.01em] text-[var(--ink)]"
+          className="text-[1.1875rem] font-semibold tracking-[-0.01em] text-[var(--ink)]"
         >
           {strings.checkout.title}
         </h3>
 
         {needsUzNotice && (
-          <p className="text-sm leading-6 text-ink-soft">
+          <p className="text-base leading-6 text-ink-soft">
             {strings.checkout.uzPhoneOnly}
           </p>
         )}
@@ -324,7 +324,7 @@ export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPan
               data-action="request-code"
               disabled={busy}
               onClick={requestCode}
-              className="liquid-metal-trigger inline-flex h-11 items-center justify-center rounded-full border border-line px-6 text-sm font-semibold text-[var(--ink)]"
+              className="liquid-metal-trigger inline-flex h-11 items-center justify-center rounded-full border border-line px-6 text-base font-semibold text-[var(--ink)]"
             >
               {strings.checkout.sendCode}
             </button>
@@ -349,14 +349,14 @@ export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPan
                 data-action="verify-code"
                 disabled={busy}
                 onClick={verifyCode}
-                className="liquid-metal-trigger inline-flex h-11 items-center justify-center rounded-full border border-line px-6 text-sm font-semibold text-[var(--ink)]"
+                className="liquid-metal-trigger inline-flex h-11 items-center justify-center rounded-full border border-line px-6 text-base font-semibold text-[var(--ink)]"
               >
                 {strings.checkout.confirm}
               </button>
               <button
                 type="button"
                 onClick={() => setStep("phone")}
-                className="nav-link text-sm"
+                className="nav-link text-base"
               >
                 {strings.checkout.changeNumber}
               </button>
@@ -366,16 +366,16 @@ export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPan
 
         {session === "signed" && subscription && (
           <div className="flex flex-col gap-2">
-            <p className="text-sm text-ink-soft">
+            <p className="text-base text-ink-soft">
               {strings.checkout.currentPlan}: {subscription.planLabel}
             </p>
             {until && (
-              <p className="text-xs text-ink-faint">
+              <p className="text-base text-ink-faint">
                 {fill(strings.checkout.until, { date: until })}
               </p>
             )}
             {subscription.scheduledPlan && (
-              <p data-scheduled className="text-xs text-ink-faint">
+              <p data-scheduled className="text-base text-ink-faint">
                 {fill(strings.checkout.scheduled, {
                   date: formatDate(subscription.scheduledPlan.startsAt ?? subscription.nextBillingAt),
                   plan: subscription.scheduledPlan.label,
@@ -386,7 +386,7 @@ export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPan
         )}
 
         {session === "signed" && selectedPlan && canPay && selectedPrice !== null && (
-          <p data-selected-plan className="text-sm text-[var(--ink)] [font-variant-numeric:tabular-nums]">
+          <p data-selected-plan className="text-base text-[var(--ink)] [font-variant-numeric:tabular-nums]">
             {selectedPlan.label} ·{" "}
             {fill(period === "yearly" ? strings.perYear : strings.perMonth, {
               amount: groupDigits(selectedPrice),
@@ -396,11 +396,11 @@ export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPan
 
         {confirmedOffer && confirmedOffer.effect && (
           <div data-effect={confirmedOffer.effect} className="flex flex-col gap-2">
-            <p className="text-sm leading-6 text-[var(--ink)]">
+            <p className="text-base leading-6 text-[var(--ink)]">
               {effectText(confirmedOffer, pending?.at ?? 0)}
             </p>
             {confirmedOffer.amount !== null && (
-              <p className="text-sm text-ink-soft [font-variant-numeric:tabular-nums]">
+              <p className="text-base text-ink-soft [font-variant-numeric:tabular-nums]">
                 {fill(strings.checkout.amountToPay, { amount: groupDigits(confirmedOffer.amount) })}
               </p>
             )}
@@ -409,11 +409,11 @@ export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPan
                 type="button"
                 data-action="continue-to-click"
                 onClick={() => goToClick(confirmedOffer)}
-                className="liquid-metal-trigger inline-flex h-11 items-center justify-center rounded-full border border-line px-6 text-sm font-semibold text-[var(--ink)]"
+                className="liquid-metal-trigger inline-flex h-11 items-center justify-center rounded-full border border-line px-6 text-base font-semibold text-[var(--ink)]"
               >
                 {strings.checkout.continueToClick}
               </button>
-              <button type="button" onClick={() => setPending(null)} className="nav-link text-sm">
+              <button type="button" onClick={() => setPending(null)} className="nav-link text-base">
                 {strings.checkout.cancelPayment}
               </button>
             </div>
@@ -422,9 +422,9 @@ export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPan
 
         {session === "signed" && online.length > 1 && canPay && (
           <fieldset className="flex flex-col gap-2">
-            <legend className="text-sm text-ink-soft">{strings.providers.label}</legend>
+            <legend className="text-base text-ink-soft">{strings.providers.label}</legend>
             {online.map((entry) => (
-              <label key={entry.key} className="flex items-center gap-2 text-sm text-ink-soft">
+              <label key={entry.key} className="flex items-center gap-2 text-base text-ink-soft">
                 <input
                   type="radio"
                   name="provider"
@@ -446,7 +446,7 @@ export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPan
                 data-action="pay"
                 disabled={busy || !selected}
                 onClick={pay}
-                className="liquid-metal-trigger inline-flex h-11 items-center justify-center rounded-full border border-line px-6 text-sm font-semibold text-[var(--ink)]"
+                className="liquid-metal-trigger inline-flex h-11 items-center justify-center rounded-full border border-line px-6 text-base font-semibold text-[var(--ink)]"
               >
                 {strings.checkout.pay}
               </button>
@@ -458,32 +458,32 @@ export function CheckoutPanel({ strings, locale, providers, plans }: CheckoutPan
                 data-action="request-plan"
                 disabled={busy || !selected}
                 onClick={requestPlan}
-                className="liquid-metal-trigger inline-flex h-11 items-center justify-center rounded-full border border-line px-6 text-sm font-semibold text-[var(--ink)]"
+                className="liquid-metal-trigger inline-flex h-11 items-center justify-center rounded-full border border-line px-6 text-base font-semibold text-[var(--ink)]"
               >
                 {strings.cta.request}
               </button>
             )}
 
-            <button type="button" onClick={signOut} className="nav-link text-sm">
+            <button type="button" onClick={signOut} className="nav-link text-base">
               {strings.checkout.signOut}
             </button>
           </div>
         )}
 
         {blocked !== null && (
-          <p data-blocked className="text-sm leading-6 text-ink-soft">
+          <p data-blocked className="text-base leading-6 text-ink-soft">
             {blocked}
           </p>
         )}
 
-        <p aria-live="polite" data-checkout-status className="text-sm leading-6 text-ink-soft">
+        <p aria-live="polite" data-checkout-status className="text-base leading-6 text-ink-soft">
           {error ?? notice}
         </p>
 
         {/* «Напишите нам» без адреса — тупик. Он настоящий и тот же, что в
             политике и условиях приложения. */}
         {(blocked !== null || error !== null) && (
-          <p data-support className="text-sm leading-6">
+          <p data-support className="text-base leading-6">
             <a href={`mailto:${COMPANY.supportEmail}`} className="nav-link">
               {COMPANY.supportEmail}
             </a>

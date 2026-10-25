@@ -35,7 +35,7 @@ export default async function DeleteAccountPage({
     <>
       <main>
         <section
-          className="section-anchor w-full px-[var(--gutter)] pb-24 pt-36 lg:pb-36 lg:pt-44"
+          className="section-anchor w-full px-[var(--gutter)] page-section"
           aria-labelledby="delete-account-title"
         >
           <SectionHeading
@@ -43,38 +43,38 @@ export default async function DeleteAccountPage({
             kicker={content.linkLabel}
             title={content.title}
           />
-          <div className="mt-10 flex max-w-2xl flex-col gap-5">
-            <p className="text-sm leading-6 text-ink-soft">{content.intro}</p>
+          <div className="section-body prose-page flex flex-col gap-5">
+            <p className="section-lead text-ink-soft">{content.intro}</p>
             {content.sections.map((section) => (
               <div key={section.heading} className="flex flex-col gap-3">
-                <h2 className="mt-5 text-base font-semibold tracking-[-0.01em] text-[var(--ink)]">
+                <h2 className="mt-6 text-[1.3125rem] font-semibold leading-snug tracking-[-0.01em] text-[var(--ink)]">
                   {section.heading}
                 </h2>
                 {section.steps && (
-                  <ol className="flex list-decimal flex-col gap-2 pl-5">
+                  <ol className="flex list-decimal flex-col gap-2.5 pl-6 marker:text-[var(--accent)]">
                     {section.steps.map((step) => (
-                      <li key={step} className="text-sm leading-6 text-ink-soft">
+                      <li key={step} className="text-base leading-[1.6] text-ink-soft">
                         {step}
                       </li>
                     ))}
                   </ol>
                 )}
                 {section.items && (
-                  <ul className="flex list-disc flex-col gap-2 pl-5">
+                  <ul className="flex list-disc flex-col gap-2.5 pl-6 marker:text-[var(--accent)]">
                     {section.items.map((item) => (
-                      <li key={item} className="text-sm leading-6 text-ink-soft">
+                      <li key={item} className="text-base leading-[1.6] text-ink-soft">
                         {item}
                       </li>
                     ))}
                   </ul>
                 )}
                 {section.paragraphs?.map((text) => (
-                  <p key={text} className="text-sm leading-6 text-ink-soft">
+                  <p key={text} className="text-base leading-[1.6] text-ink-soft">
                     {text}
                   </p>
                 ))}
                 {section.mail && (
-                  <p className="text-sm leading-6">
+                  <p className="text-lg font-semibold leading-[1.6]">
                     <a href={`mailto:${COMPANY.supportEmail}`} className="nav-link">
                       {COMPANY.supportEmail}
                     </a>
