@@ -294,6 +294,8 @@ export const ru = {
     // адреса в lib/app-links.ts нет, вместо неё — «скоро».
     appStoreCaption: "Загрузите в",
     googlePlayCaption: "Доступно в",
+    storesTitle: "Скачайте приложение",
+    soonTag: "скоро",
     storesLabel: "Скачать приложение",
     comingSoon: "Скоро в",
   },

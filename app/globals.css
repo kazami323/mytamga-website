@@ -1021,9 +1021,11 @@ body {
   margin-top: 2rem;
 }
 
-/* ── Плавающие кнопки магазинов ─────────────────────────────────────────────
-   В правом нижнем углу на всех страницах; тёмные в обеих темах, как шапка.
-   Прячутся, когда открыт подвал с большими кнопками магазинов. */
+/* ── Плавающая карточка «Скачайте приложение» ───────────────────────────────
+   В правом нижнем углу на всех страницах; тёмная в обеих темах, как шапка.
+   Google Play — главная кнопка с фирменным значком и названием, App Store —
+   приглушённая с пометкой «скоро». На телефоне — компактная полоска без
+   заголовка. Прячется, когда открыт подвал с большими кнопками магазинов. */
 
 .floating-stores {
   position: fixed;
@@ -1033,13 +1035,14 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  padding: 0.375rem;
+  width: 13.5rem;
+  padding: 0.75rem;
   border: 1px solid var(--header-line);
-  border-radius: 999px;
+  border-radius: 1.1rem;
   background: var(--header-bg-scrolled);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   backdrop-filter: blur(14px) saturate(140%);
-  box-shadow: 0 10px 30px rgb(0 0 0 / 0.35);
+  box-shadow: 0 14px 36px rgb(0 0 0 / 0.38);
   transition:
     opacity 220ms ease,
     transform 220ms ease;
@@ -1051,23 +1054,63 @@ body {
   pointer-events: none;
 }
 
-.floating-store {
-  position: relative;
-  display: grid;
-  width: 2.75rem;
-  height: 2.75rem;
-  place-items: center;
-  border-radius: 999px;
-  color: #f1efe9;
-  transition:
-    background-color 180ms ease,
-    color 180ms ease;
+.floating-stores-title {
+  margin: 0 0 0.15rem 0.15rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: rgb(241 239 233 / 0.72);
 }
 
-.floating-store:hover,
-.floating-store:focus-visible {
-  background: rgb(199 167 255 / 0.16);
-  color: #fff;
+.floating-store {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.8rem;
+  color: #f1efe9;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.1;
+  text-decoration: none;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease;
+}
+
+.floating-store small {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: rgb(241 239 233 / 0.6);
+}
+
+.floating-store--primary {
+  border: 1px solid rgb(199 167 255 / 0.35);
+  background: linear-gradient(135deg, rgb(109 79 209 / 0.55), rgb(52 35 98 / 0.75));
+}
+
+.floating-store--primary:hover,
+.floating-store--primary:focus-visible {
+  background: linear-gradient(135deg, rgb(129 99 229 / 0.7), rgb(62 45 118 / 0.85));
+}
+
+.floating-store--soon {
+  border: 1px solid rgb(255 255 255 / 0.08);
+  color: rgb(241 239 233 / 0.6);
+  cursor: default;
+}
+
+.floating-store-tag {
+  margin-left: auto;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.08);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: rgb(241 239 233 / 0.7);
 }
 
 .floating-store:focus-visible {
@@ -1075,14 +1118,9 @@ body {
   outline-offset: 2px;
 }
 
-.floating-store[data-soon="true"] {
-  color: rgb(241 239 233 / 0.55);
-  cursor: default;
-}
-
 .floating-store-hint {
   position: absolute;
-  right: calc(100% + 0.6rem);
+  right: calc(100% + 1.4rem);
   top: 50%;
   transform: translateY(-50%);
   white-space: nowrap;
@@ -1091,7 +1129,52 @@ body {
   background: rgb(22 17 34 / 0.96);
   color: #f1efe9;
   font-size: 0.8125rem;
+  font-weight: 500;
   box-shadow: 0 6px 18px rgb(0 0 0 / 0.3);
+}
+
+/* Телефон: полоска из двух кнопок без заголовка, по ширине экрана. */
+@media (max-width: 639px) {
+  .floating-stores {
+    left: max(0.75rem, env(safe-area-inset-left));
+    right: max(0.75rem, env(safe-area-inset-right));
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+    width: auto;
+    flex-direction: row;
+    padding: 0.4rem;
+    border-radius: 1rem;
+  }
+
+  .floating-stores-title {
+    display: none;
+  }
+
+  .floating-store {
+    flex: 1 1 0;
+    justify-content: center;
+    padding: 0.45rem 0.6rem;
+  }
+
+  .floating-store--primary {
+    flex-grow: 1.4;
+  }
+
+  .floating-store > span {
+    white-space: nowrap;
+  }
+
+  .floating-store--soon {
+    gap: 0.4rem;
+    font-size: 0.875rem;
+  }
+
+  /* На телефоне подсказка — над полоской, а не слева за краем экрана. */
+  .floating-store-hint {
+    right: 0;
+    top: auto;
+    bottom: calc(100% + 0.6rem);
+    transform: none;
+  }
 }
 
 @media (min-width: 1024px) {

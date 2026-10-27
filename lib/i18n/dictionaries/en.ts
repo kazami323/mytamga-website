@@ -278,6 +278,8 @@ export const en: Dictionary = {
     // адреса в lib/app-links.ts нет, вместо неё — «скоро».
     appStoreCaption: "Download on the",
     googlePlayCaption: "Get it on",
+    storesTitle: "Get the app",
+    soonTag: "soon",
     storesLabel: "Get the app",
     comingSoon: "Coming soon to",
   },

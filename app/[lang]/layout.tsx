@@ -107,8 +107,10 @@ export default async function RootLayout({
         />
         {children}
         <FloatingStores
+          title={t.footer.storesTitle}
           availableIn={t.footer.googlePlayCaption}
           comingSoon={t.footer.comingSoon}
+          soonTag={t.footer.soonTag}
           label={t.footer.storesLabel}
         />
       </body>
