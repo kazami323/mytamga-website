@@ -25,6 +25,12 @@ import { BRAND_SUFFIX, SEO_COPY } from "@/lib/seo-copy";
 // never a server round trip.
 export const dynamicParams = false;
 
+// Страницы пересобираются не реже раза в 10 минут. Перед сайтом на хостинге
+// стоит кэш nginx, который хранит страницу столько, сколько велит s-maxage:
+// у полностью статичной страницы это год, и после выкладки он отдавал старую
+// версию (27.10.2026). С revalidate ответ несёт s-maxage=600.
+export const revalidate = 600;
+
 export function generateStaticParams() {
   return LOCALES.map((lang) => ({ lang }));
 }

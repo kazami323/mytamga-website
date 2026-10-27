@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
   // 50 000 файлов. Разработку это не меняет. Сборку упаковывает
   // `npm run package:ahost`.
   output: "standalone",
+  // Сколько кэш хостинга может отдавать устаревшую страницу, пока она
+  // пересобирается (stale-while-revalidate = expireTime − revalidate).
+  expireTime: 3600,
 };
 
 export default nextConfig;
